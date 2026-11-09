@@ -16,6 +16,7 @@ ProtoPediaに公開された実在の作品を2つ「親」として選び、生
 | 作品データ | ProtoPedia API v2 → 少数取得（`data/sample-prototypes.json` ほか）→ 候補プール |
 | 配合ワーカー | GitHub Actions（起床は一定間隔、実行可否は設定間隔で判定 + 手動 `workflow_dispatch`） |
 | 頻度設定 | `config/schedule.json`（候補更新間隔・配合間隔・候補件数をファイルで変更 / issue #15） |
+| プロンプト文言 | `config/prompts.json`（配合タイプ指示・共通ルール・画像スタイルをファイルで変更 / issue #25。**出力JSONスキーマと言語ルールはコード固定**） |
 | 永続データ | リポジトリ内の `data/offspring.json` / `data/breeding-state.json` / `data/element-cache.json` / `data/processed-issues.json` / `data/ai-usage.json` |
 | AI | **Cloudflare Workers AI**（Actionsサーバー側から呼ぶ。テキスト `@cf/openai/gpt-oss-20b`・画像 `@cf/black-forest-labs/flux-1-schnell` / issue #16） |
 | サムネイル | 生成成功時 `public/static/assets/inventions/<子ID>.png`（ViteのpublicDirから `dist/assets/inventions/` へ配信）（512×512）。**失敗してもテキストは保存**（`imagePath: null`） |
@@ -87,6 +88,29 @@ npm run dev            # http://localhost:5173
 - **設定が不正なとき**: rotate / validate は exit 1 で処理を停止してエラーを通知（= AIを呼ばない）。フロントは既定値で表示を続けつつエラーを告知する。
 - 既存の `data/offspring.json`・Issue申請・`current-candidates.json` は変更不要（設定変更との互換性を維持）。
 - ローカル開発で枠内に再生成したいときだけ `npm run rotate:candidates -- --force`（ワークフローからは渡さない）。
+
+## 配合プロンプト設定（config/prompts.json）
+
+配合プロンプトの**文言だけ**を設定ファイルで変更できる（issue #25）。**ファイルの変更をコミットするだけで反映**され、`lib/blend.ts` のコード修正は不要。
+
+```json
+{
+  "modeInstructions": { "fusion": "…", "genetic": "…", "mutation": "…" },
+  "sharedRules": ["- …", "- …"],
+  "imageStyleSuffix": "Style: retro 16-bit pixel art …"
+}
+```
+
+| キー | 意味 | 上限 |
+| --- | --- | --- |
+| `modeInstructions` | 配合タイプ別（fusion / genetic / mutation）の指示。3キーすべて必須の非空文字列 | 各500字 |
+| `sharedRules` | system に入れる共通ルールの箇条書き（`- ` 始まり。見出し「ルール:」はコード側） | 1〜30件・各300字 |
+| `imageStyleSuffix` | 画像プロンプト末尾のスタイル指定（flux-1-schnell 向け・英語） | 546字 |
+
+- **JSON化しないもの（コード固定）**: 出力JSONスキーマと字数上限（`lib/blend.ts` の `CAP_*` — パーサー `parseBlendResponse` と一致必須）、**出力言語ルールと命令無視の文言**（`lib/language.ts` / `OUTPUT_LANGUAGE_RULE`・issue #23 の剛性）、要素抽出プロンプト（`lib/elements.ts`）。
+- `imageStyleSuffix` に上限があるのは **flux-1-schnell のプロンプト上限2048字**のため（生成側 `imagePrompt` 最大1500字 + 句点 + ここ）。上限に収めることで末尾の「文字（text）禁止」句が切り落とされない。
+- **設定が不正なとき**: `scripts/process-breeding.ts`（AIを呼ばず exit 1）と `npm run validate-data`（停止）が同じ `lib/prompts.ts` の検証を通す。`config/schedule.json` と同じ扱い。
+- **JSONを書き換えてもコード・テストの修正は不要**（文言の出力元はこのファイル。`lib/prompts.ts` の `DEFAULT_PROMPTS` はファイル未使用時のフォールバック）。`tests/prompts.test.ts` は「出荷済みJSONが常に有効」だけを検証し、`tests/blend.test.ts` が**既定値（コード側）**の文言をアサートしている。
 
 ## 日時表示（JST統一 / issue #18）
 
@@ -251,8 +275,8 @@ npm test                # パーサー・世代計算・候補選出・フロン
 npm run build           # 型チェック + 本番ビルド（各IDの個別ページと 404.html も生成）
 npm run translate:offspring -- --id=<id>        # 既存データの日本語化: 対象確認（AI呼び出しなし）
 npm run translate:offspring -- --id=<id> --write # 翻訳して書き込み（AI呼び出し・issue #23）
-npm run validate-data   # config/schedule + offspring / prototypes / sample-prototypes / current-candidates /
-                        # breeding-state / element-cache / processed-issues / ai-usage の検証
+npm run validate-data   # config/schedule + config/prompts + offspring / prototypes / sample-prototypes /
+                        # current-candidates / breeding-state / element-cache / processed-issues / ai-usage の検証
 npm run fetch:sample    # ProtoPediaから少数だけ取得 → data/sample-prototypes.json（トークン要）
 npm run rotate:candidates # 候補をスロットから決定的に選出 → data/current-candidates.json（トークン不要・設定間隔の枠内ならスキップ / --force で解除）
 npm run breed:dry         # 配合ワーカーの安全確認（AI・データ書き込み・Issue操作をしない）
@@ -284,10 +308,12 @@ npm run screenshot      # 両テーマ×デスクトップ/詳細/モバイル +
 │   └── static/          # そのまま配信する生ファイル（dist直下へコピー）
 │       └── sprites/     # ピクセル絵素材の原本（切り出し元）
 ├── lib/                 # 型・Issueパーサー・世代計算・候補選出・頻度設定(schedule.ts) /
-                         # 配合: blend.ts（プロンプトと出力検証）/ elements.ts（要素抽出とキャッシュ） /
+                         # 配合: blend.ts（プロンプトと出力検証）/ prompts.ts（プロンプト文言設定 / issue #25） /
+                         # elements.ts（要素抽出とキャッシュ） /
                          # queue.ts（キュー選択）/ cloudflare.ts（Workers AI）/ usage.ts（利用量）/
                          # github.ts（Issue対応）/ ProtoPedia/設定（フロント/ワーカー共有）
-├── config/              # schedule.json（頻度設定: 候補更新間隔・配合間隔・候補件数 / issue #15）
+├── config/              # schedule.json（頻度設定: 候補更新間隔・配合間隔・候補件数 / issue #15）/
+                         # prompts.json（配合プロンプトの文言 / issue #25）
 ├── data/                # offspring.json / current-candidates.json / breeding-state.json /
                          # element-cache.json / processed-issues.json / ai-usage.json / *sample*.json
 ├── logs/                # 開発ログ（public公開のため秘密情報は書かない / 書式は logs/README.md）

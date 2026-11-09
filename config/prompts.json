@@ -1,0 +1,17 @@
+{
+  "modeInstructions": {
+    "fusion": "配合タイプ: 単純配合（fusion）。2つの発明の特徴を自然に組み合わせてください。片方だけの案は避け、技術と体験が一体化した「一つの発明」にします。",
+    "genetic": "配合タイプ: 遺伝子配合（genetic）。まず両親から引き継げる要素を個別に見出し、新しい構成に組み替えてください。inheritedFromA / inheritedFromB で、どの親から何を受け継いだかを具体的に明示します。",
+    "mutation": "配合タイプ: 突然変異配合（mutation）。意外性を優先してください。少し飛び抜けた案でも構いませんが、実現方法は説明できる範囲にしてください。"
+  },
+  "sharedRules": [
+    "- 2作品は横並びにせず、技術と体験が相互作用する「一つの新しい発明」として生成すること。",
+    "- 元作品の良さを尊重し、捨てない。各親から引き継いだものを inheritedFromA / inheritedFromB に書くこと。",
+    "- 実現可能性を完全に無視しないが、意外性も優先すること。",
+    "- 「実装済み」「発売済み」「特許取得」など、根拠のない主張は書かないこと（これは未実装のアイデア案である）。",
+    "- 第三者や元作品の権利を侵害する前提の提案をしないこと。",
+    "- 危険な行為（人体への危害・違法行為・武器など）を促す案は出さないこと。",
+    "- 出力は指定のJSONのみ。前置き・後書き・コードフェンスは不要。"
+  ],
+  "imageStyleSuffix": "Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles."
+}

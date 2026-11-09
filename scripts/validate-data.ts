@@ -7,6 +7,7 @@ import { CANDIDATES_PER_SLOT, isCandidatesFile } from '../lib/candidates.ts';
 import { computeGeneration, isAncestorDescendantPair, nextOffspringId } from '../lib/generation.ts';
 import { samePair } from '../lib/issue.ts';
 import { isBreedingState, parseScheduleConfig } from '../lib/schedule.ts';
+import { parsePromptsConfig } from '../lib/prompts.ts';
 import { ELEMENT_KEYS, isWorkElements } from '../lib/elements.ts';
 import { isProcessedIssues } from '../lib/queue.ts';
 import { isBreedingMode, type Offspring, type Workset } from '../lib/types.ts';
@@ -33,6 +34,20 @@ if (!sched.ok) fail(`config/schedule.json が不正です: ${sched.reason}`);
 const scheduleCfg = sched.config;
 console.log(
   `✅ config/schedule.json OK（候補更新 ${scheduleCfg.candidateRotationMinutes}分 / 配合 ${scheduleCfg.breedingIntervalMinutes}分 / 最大${scheduleCfg.maxCandidates}件）`,
+);
+
+// --- config/prompts.json（プロンプト文言設定 / issue #25） -------------------
+const PROMPTS_FILE = new URL('../config/prompts.json', import.meta.url);
+let promptsRaw: unknown;
+try {
+  promptsRaw = JSON.parse(readFileSync(PROMPTS_FILE, 'utf8'));
+} catch (e) {
+  fail(`config/prompts.json を読めません: ${String(e)}`);
+}
+const promptsParsed = parsePromptsConfig(promptsRaw);
+if (!promptsParsed.ok) fail(`config/prompts.json が不正です: ${promptsParsed.reason}`);
+console.log(
+  `✅ config/prompts.json OK（配合タイプ指示${Object.keys(promptsParsed.config.modeInstructions).length}件 / ルール${promptsParsed.config.sharedRules.length}件 / 画像スタイル${promptsParsed.config.imageStyleSuffix.length}字）`,
 );
 
 let data: unknown;

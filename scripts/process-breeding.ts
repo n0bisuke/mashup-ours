@@ -58,6 +58,7 @@ import {
 } from '../lib/elements.ts';
 import { commentIssue, listOpenIssues, type GhOptions } from '../lib/github.ts';
 import { detectLanguageRequest } from '../lib/language.ts';
+import { parsePromptsConfig, type PromptsConfig } from '../lib/prompts.ts';
 import { computeGeneration, nextOffspringId, slotKey } from '../lib/generation.ts';
 import { repoConfigFromEnv } from '../lib/config.ts';
 import {
@@ -111,6 +112,7 @@ const EXTRACT_TEMPERATURE = 0.2;
 
 const PATHS = {
   schedule: fileURLToPath(new URL('../config/schedule.json', import.meta.url)),
+  prompts: fileURLToPath(new URL('../config/prompts.json', import.meta.url)),
   offspring: fileURLToPath(new URL('../data/offspring.json', import.meta.url)),
   prototypes: fileURLToPath(new URL('../data/prototypes.json', import.meta.url)),
   samplePrototypes: fileURLToPath(new URL('../data/sample-prototypes.json', import.meta.url)),
@@ -182,6 +184,22 @@ function loadSchedule(): ScheduleConfig {
 function loadScheduleOrThrow(): ScheduleConfig {
   const parsed = parseScheduleConfig(readJson(PATHS.schedule));
   if (!parsed.ok) throw new Error(`config/schedule.json が不正: ${parsed.reason}`);
+  return parsed.config;
+}
+
+/**
+ * config/prompts.json（プロンプトの文言 / issue #25）。
+ * 読めない・不正なら exit 1 = AIを呼ばない（config/schedule.json と同一の扱い）。
+ */
+function loadPrompts(): PromptsConfig {
+  let raw: unknown;
+  try {
+    raw = readJson(PATHS.prompts);
+  } catch (e) {
+    fail(`config/prompts.json を読めないため処理を停止します: ${e instanceof Error ? e.message : String(e)}`);
+  }
+  const parsed = parsePromptsConfig(raw);
+  if (!parsed.ok) fail(`config/prompts.json が不正なため処理を停止します: ${parsed.reason}`);
   return parsed.config;
 }
 
@@ -288,6 +306,12 @@ async function main(): Promise<void> {
   const cfg = loadSchedule();
   log(
     `ℹ️ 頻度設定: 配合間隔 ${cfg.breedingIntervalMinutes}分 / 日次AI上限 ${cfg.dailyAiCallLimit ?? '（未設定）'}回${dryRun ? ' / DRY-RUN' : ''}`,
+  );
+
+  // プロンプト文言の読み込み（不正ならここで exit 1 = AIを呼ばない / issue #25）
+  const prompts = loadPrompts();
+  log(
+    `ℹ️ プロンプト設定: config/prompts.json（配合タイプ指示${Object.keys(prompts.modeInstructions).length}件 / ルール${prompts.sharedRules.length}件 / 画像スタイル${prompts.imageStyleSuffix.length}字）`,
   );
 
   const repoCfg = repoConfigFromEnv(process.env);
@@ -578,7 +602,7 @@ async function main(): Promise<void> {
       // 言語指定は申請コメント（許可された入力）のみから（issue #23 §4）。
       // 元作品の説明文が英語でも日本語のまま。
       language: detectLanguageRequest(request.comment),
-    });
+    }, prompts); // 文言は config/prompts.json（issue #25）
 
     let lastReason = '不明なエラー';
     let generated: GeneratedIdea | null = null;
@@ -629,7 +653,7 @@ async function main(): Promise<void> {
   // --- 8. Offspring を組み立てる ------------------------------------------------
   const id = nextOffspringId(offspring.map((o) => o.id));
   const generation = computeGeneration([parentA.generation, parentB.generation]);
-  const imagePromptText = buildImagePrompt(idea);
+  const imagePromptText = buildImagePrompt(idea, prompts); // スタイル文言は config/prompts.json
 
   // --- 9. 画像（FLUX）。**失敗してもテキスト先行保存**（最重要事項: 系譜蓄積優先） -
   let imagePath: string | null = null;
