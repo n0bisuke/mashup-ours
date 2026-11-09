@@ -6,6 +6,8 @@
  */
 import { expect, it, vi } from 'vitest';
 import rawCandidates from '../data/current-candidates.json';
+import rawOff from '../data/offspring.json';
+import rawSampleOff from '../data/offspring.sample.json';
 import { isCandidatesFile } from '../lib/candidates.ts';
 import { BLEND_MODE_DESCRIPTIONS } from '../lib/types.ts';
 import { parseBreedingIssue } from '../lib/issue.ts';
@@ -206,16 +208,37 @@ it('Issue作成URLに親ID・元作品URL・slotが含まれる（設定済み�
   spy.mockRestore();
 });
 
-it('系譜図SVGとノードが描画される（サンプル2世代）', async () => {
+it('系譜図SVGとノードが描画される（子とその親が必ず出る / issue #21）', async () => {
   await boot();
   const svg = document.querySelector('.pedigree-scroll svg');
   expect(svg).toBeTruthy();
-  const nodes = document.querySelectorAll('.pedigree-scroll .node');
-  // サンプル系譜に絡むノード: protopedia:9001/9002/9004 + mashup-000001/000002 = 5
-  // （系譜に未接続の protopedia:9003 は系譜図に出さない）
-  expect(nodes.length).toBe(5);
+
+  // ノード数はデータ件数に依存させない（実データが増えても壊れないよう）。
+  // ノード識別は aria-label「タイトル（id）」の末尾idで行う。
+  const nodeIds = () =>
+    Array.from(document.querySelectorAll('.pedigree-scroll .node'))
+      .map((n) => /（([^（）]+)）$/.exec(n.getAttribute('aria-label') ?? '')?.[1] ?? '')
+      .filter((id) => id !== '');
+
+  // 表示中の子作品: 実データ0件の間だけサンプル（main.ts の分岐と同じ）
+  const shown: { id: string; parents: string[] }[] = rawOff.length === 0 ? rawSampleOff : rawOff;
+  expect(shown.length).toBeGreaterThan(0);
+
+  for (const c of shown) {
+    expect(nodeIds()).toContain(c.id); // 子は必ず出る
+    for (const p of c.parents) {
+      // 親が候補ローテで外れても消えないこと（本バグの再発検出）
+      expect(nodeIds(), `親 ${p} が系譜図から消えている`).toContain(p);
+    }
+  }
+
+  // 辺は子ごとに親2本（両端のノードがともに解決しているときだけ描かれる）
   const edges = document.querySelectorAll('.pedigree-scroll .edge');
-  expect(edges.length).toBe(4); // 各子に親2本 × 2子
+  expect(edges.length).toBe(shown.length * 2);
+
+  // 未接続ノードは出さない（サンプルの protopedia:9003 など）
+  const connected = new Set(shown.flatMap((c) => [c.id, ...c.parents]));
+  for (const id of nodeIds()) expect(connected.has(id)).toBe(true);
 });
 
 it('子作品ノードをクリックすると詳細が出る', async () => {

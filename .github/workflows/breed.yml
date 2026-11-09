@@ -15,7 +15,9 @@ on:
   schedule:
     # 起床間隔は15分固定（:09/:24/:39/:54）。rotate-candidates（:04）と+5分ずらし、
     # 正時（:00）の高負荷を避ける。実効的な配合間隔は max(設定値, 起床間隔15分)。
-    - cron: '9/15 * * * *'
+    # 表記は `9/15` ではなく列挙形（ステップ表現の schedule が一度も発火しなかったため、
+    # 等価表現への変更でワークフローを再アクティベートする）。
+    - cron: '9,24,39,54 * * * *'
   workflow_dispatch:
     inputs:
       dry_run:
@@ -37,6 +39,9 @@ jobs:
     permissions:
       contents: write # data/・画像のコミット
       issues: write # 却下/失敗コメント（スクリプト経由）と結果コメント・クローズ
+      # Pages 再ビルドの dispatch 用（公式: GITHUB_TOKEN の push は他の workflow を
+      # 起動しない。例外の workflow_dispatch で deploy.yml を呼ぶため actions: write）。
+      actions: write
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -68,6 +73,7 @@ jobs:
       # 利用量 / キャッシュ）を残さないと、同じ失敗を無限に再処理してしまうため。
       # dry-run はスクリプトが一切書かないため差分自体が出ない。
       - name: Commit results
+        id: commit
         if: ${{ !cancelled() }}
         run: |
           git config user.name "github-actions[bot]"
@@ -75,10 +81,22 @@ jobs:
           git add data/ public/static/assets/inventions/
           if git diff --cached --quiet; then
             echo "変更なし"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           git commit -m "feat(data): 発明の配合結果を追加 $(date -u +%Y-%m-%dT%H:%M:%SZ)"
           git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      # 配合結果の push では Pages が再ビルドされない（GitHub公式:
+      # GITHUB_TOKEN による push は他の workflow をトリガーしない）。
+      # 例外である workflow_dispatch で deploy.yml を明示的に起動する。
+      # コミットが発生したときだけ呼ぶ（=ビルド回数を増やさない）。
+      - name: Trigger Pages rebuild
+        if: ${{ steps.commit.outputs.changed == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy.yml --repo "$GITHUB_REPOSITORY"
 
       # 結果コメント＆クローズは**コミット成功の後**（AGENTS.md: コミット後にIssueへリンク）。
       # 本文はスクリプトが書いたファイルを --body-file で読む = AI出力を shell へ埋め込まない。

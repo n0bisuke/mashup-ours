@@ -1,4 +1,37 @@
 {
   "schemaVersion": 1,
-  "entries": {}
+  "entries": {
+    "protopedia:4": {
+      "id": "protopedia:4",
+      "version": "a8c2dec444ad",
+      "elements": {
+        "technology": "スマートドリンクディスペンサー",
+        "purpose": "人と瞬時に親密な関係を築くこと",
+        "problem": "新しい人と仲良くなるのが難しい",
+        "input": "飲み物の選択とユーザーの操作",
+        "output": "飲み物が注がれ、会話が始まる",
+        "experience": "一瞬で相手と心が通じるような感覚",
+        "feature": "自動注ぎ機能と社交促進設計",
+        "uniqueness": "飲み物を通じて即座に友情を生む斬新なアイデア"
+      },
+      "extractedAt": "2026-11-09T19:07:02.918Z",
+      "model": "@cf/openai/gpt-oss-20b"
+    },
+    "protopedia:22": {
+      "id": "protopedia:22",
+      "version": "d99e78f85814",
+      "elements": {
+        "technology": "クラッピーのコスプレ用に設計された製品",
+        "purpose": "クラッピーの姿を再現し、コスプレイベントや撮影で使用できるようにすること",
+        "problem": "既存のコスプレ衣装ではクラッピーの独特な形状やディテールを正確に表現できないこと",
+        "input": "クラッピーのデザインデータやサイズ情報",
+        "output": "クラッピーのコスプレ衣装（衣装・アクセサリー等）",
+        "experience": "ユーザーがクラッピーの姿を着用し、イベントや撮影で自信を持って演出できる",
+        "feature": "クラッピーの特徴的な形状や色彩を忠実に再現し、軽量で着用しやすい設計",
+        "uniqueness": "クラッピー専用のコスプレアイテムとして、他のキャラクター用製品とは差別化されたデザインと機能を提供"
+      },
+      "extractedAt": "2026-11-09T19:07:02.918Z",
+      "model": "@cf/openai/gpt-oss-20b"
+    }
+  }
 }

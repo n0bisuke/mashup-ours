@@ -1,7 +1,9 @@
 {
   "schemaVersion": 1,
-  "lastSuccessAt": null,
-  "lastAttemptAt": null,
+  "lastSuccessAt": "2026-11-09T19:07:02.918Z",
+  "lastAttemptAt": "2026-11-09T19:07:02.918Z",
   "consecutiveFailures": 0,
-  "aiCalls": {}
+  "aiCalls": {
+    "2026-11-09": 5
+  }
 }

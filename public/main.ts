@@ -27,6 +27,7 @@ import rawSchedule from '../config/schedule.json';
 import rawOffspring from '../data/offspring.json';
 import rawCandidates from '../data/current-candidates.json';
 import sampleWorksJson from '../data/protopedia-sample.json';
+import rawPool from '../data/sample-prototypes.json';
 import rawSampleOffspring from '../data/offspring.sample.json';
 import { createCharacter } from './character.ts';
 import {
@@ -96,10 +97,17 @@ function el<K extends keyof HTMLElementTagNameMap>(
   return node;
 }
 
-// 系譜図の完整性: サンプル子作品の親作品が候補カードに入っていない場合も、
-// 系譜として描けるよう参照だけ追加する（候補カードには表示しない）。
+// 系譜図の完整性: 親作品が候補カードに入っていない場合も、系譜として描けるよう
+// 参照だけ追加する（候補カードには表示しない）。
+// - 実作品は data/sample-prototypes.json（候補プール12件）から。候補6件は15分ごとに入れ替わるため、
+//   ここで外れた親が系譜図から消えないようにする（issue #21）。
+// - 開発用ダミー（protopedia-sample.json 9001〜）はサンプル子作品の親用。
 const candidateIds = new Set(candidates.map((c) => c.id));
-const supportWorks = sampleWorks.filter((w) => !candidateIds.has(w.id));
+const poolWorks = (rawPool as unknown as { works: ProtopediaWork[] }).works;
+const supportWorks = [
+  ...poolWorks.filter((w) => !candidateIds.has(w.id)),
+  ...sampleWorks.filter((w) => !candidateIds.has(w.id)),
+];
 const allNodes: (ProtopediaWork | Offspring)[] = [...candidates, ...supportWorks, ...children];
 const nodeById = new Map<string, ProtopediaWork | Offspring>(allNodes.map((n) => [n.id, n]));
 
