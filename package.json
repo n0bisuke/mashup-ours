@@ -17,6 +17,7 @@
     "breed": "node --experimental-strip-types scripts/process-breeding.ts",
     "breed:dry": "node --experimental-strip-types scripts/process-breeding.ts --dry-run",
     "breed:check-ai": "node --experimental-strip-types scripts/process-breeding.ts --check-ai",
+    "translate:offspring": "node --experimental-strip-types scripts/translate-offspring.ts",
     "screenshot": "node scripts/screenshot.mjs",
     "deploy": "node scripts/deploy.mjs",
     "gitpush": "node scripts/gitpush.mjs"

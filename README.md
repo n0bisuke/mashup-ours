@@ -177,7 +177,12 @@ open Issue の最古1件（ラベル非信用・タイトル/本文で判定）
   画像タイルは下地 `--tile`（白系・両テーマ共通）で `object-fit: contain`・`loading=lazy`・読込失敗時は「画像なし」プレースホルダ（枠は維持）。
   見出しは DotGothic16 + ラテン小見出し、枠・色は研究所トークンのまま — **一般的なSaaSカードUIにしない**。
   選択状態は「タイル枠の色 + バッジ文字（親A選択中）+ 押下ボタン」の三重化で色だけに依存しない。
-- **一覧ページ `/ideas`**: Viteマルチページ（`public/ideas/index.html` + `public/ideas.ts`）。`data/offspring.json` のみを新しい順に列挙し、各項目に 未実装バッジ・世代・親リンク（子作品=トップの `?id=` ディープリンク / ProtoPedia=出典URL）・誕生日時（日本時間）・元Issue（あれば）を表示。0件なら空状態で申請誘導。トップの「最近誕生した発明」見出しからリンクする。
+- **一覧ページ `/ideas`**: Viteマルチページ（`public/ideas/index.html` + `public/ideas.ts`）。`data/offspring.json` のみを新しい順に列挙し、各項目に 未実装バッジ・世代・親リンク（子作品=その個別ページ / ProtoPedia=出典URL）・誕生日時（日本時間）・元Issue（あれば）を表示。0件なら空状態で申請誘導。トップの「最近誕生した発明」見出しからリンクする。**カードのサムネイル・発明名・概要は1つの `<a class="idea-open">` で個別ページへ遷移**（リンク入れ子を避けるため親作品・Issueのリンクはその外侧。実リンクなのでキーボード操作も可能）。
+- **個別詳細ページ `/ideas/<id>/`（issue #24）**: 「一覧は発見の場、個別ページは詳しい情報と誕生の経緯の場」。
+  - **静的ホスティング対応**: ビルド時に `vite.config.ts` の `ideaPages` プラグインが `data/offspring.json` の各IDぶんの `dist/ideas/<id>/index.html` を生成（相対base参照は深さに合わせて `../../` へ読み替え。絶対base指定時は無変更）。開発サーバーは `/ideas/<id>/` を同じテンプレートで返す（本番相当のURLで確認）。
+  - **表示内容**: サムネイル（大）・発明名・概要・配合タイプ・世代・誕生日時（JST）・発明ID / **親A・Bを左右配置**（ProtoPedia=作品名・作品画像・作者・出典リンク、mashup=発明名・サムネイル・個別ページへのリンク）/ AI配合結果（継承・仕組み・技術構成・利用シーン・詳細）/ 子どもへのリンク / 関連リンク（元Issue・系譜図 `?id=`・一覧・配合申請）。親メタデータ不在・画像なし・任意フィールド欠損でも壊れない。
+  - **相互遷移**: 個別 →「系譜図で見る」= `?id=` ディープリンク（選択状態でトップへ）。系譜図の詳細パネル →「この発明の詳細ページを開く」で個別へ。
+  - **404**: 存在しないIDは静的ホスティングだとサーバ404になるため、ルートの `dist/404.html`（自己完結型・`public/404.html`）が返され、「そのIDの発明は見つかりませんでした」+ 一覧/トップへの導線を表示。未知の一般パスも同じ404が使われる（リンクの基点はパス中の `/ideas/` 位置から計算。未知パスでは `/` 仮定 = 既知の制約）。
 - **系譜図の配色は dataviz 手順で検証済み（両テーマ・ノード面でPASS）**:
   | テーマ | 面 | 元作品（実線） | 子作品（破線） |
   |---|---|---|---|
@@ -236,13 +241,16 @@ open Issue の最古1件（ラベル非信用・タイトル/本文で判定）
 - [ ] GitHub Pages 本番での `/ideas` 配信 — ローカル preview では `/`・`/ideas/`・`/ideas` すべて200を確認。Pagesの `/ideas` → `/ideas/` リダイレクト挙動は未検証（自前リンクは末尾 `/` つきなので影響なし）。
 - [ ] ブラウザからの匿名 GitHub API ポーリング（申請確認・実験待ち/生成中/誕生の観測）の実挙動 — ローカルではフェッチ注入の単体テストのみ。実ネットワークでのレート制限・CORS挙動は未検証。
 - [ ] Pages 本番での `dist/data/offspring.json` 配信（誕生のランタイム検知）— ローカル preview/dev では 200 を確認済み。
+- [ ] **個別ページ `/ideas/<id>/` とカスタム404の本番配信**（issue #24）— ローカルでは GH Pages 相当サーバ（未知パス→`404.html`・末尾スラッシュ301）で全検証済みだが、本番カスタムドメインでの実配信は push → deploy 後。カスタム404のリンク基点は `/ideas/` 位置から計算（一般未知パスでは `/` 仮定）。
 
 ## 開発コマンド
 
 ```bash
-npm run dev             # 開発サーバー
+npm run dev             # 開発サーバー（/ideas/<id>/ も本番相当のURLで開ける）
 npm test                # パーサー・世代計算・候補選出・フロントのスモークテスト
-npm run build           # 型チェック + 本番ビルド
+npm run build           # 型チェック + 本番ビルド（各IDの個別ページと 404.html も生成）
+npm run translate:offspring -- --id=<id>        # 既存データの日本語化: 対象確認（AI呼び出しなし）
+npm run translate:offspring -- --id=<id> --write # 翻訳して書き込み（AI呼び出し・issue #23）
 npm run validate-data   # config/schedule + offspring / prototypes / sample-prototypes / current-candidates /
                         # breeding-state / element-cache / processed-issues / ai-usage の検証
 npm run fetch:sample    # ProtoPediaから少数だけ取得 → data/sample-prototypes.json（トークン要）
@@ -268,6 +276,9 @@ npm run screenshot      # 両テーマ×デスクトップ/詳細/モバイル +
 │   ├── github-watch.ts  # 匿名GitHub APIポーリング（上限・停止条件つき）
 │   ├── ideas.ts         # /ideas 一覧ページのUI
 │   ├── ideas/           # /ideas アイデア一覧（マルチページエントリ）
+│   ├── idea.ts          # /ideas/<id>/ 個別詳細ページのUI（issue #24）
+│   ├── idea/            # 個別ページのテンプレート（ビルド時に各IDへコピー）
+│   ├── 404.html         # カスタム404（未知パス・存在しない発明ID / issue #24）
 │   ├── style.css        # 16bit 配合研究所テーマ
 │   ├── assets/          # ビルド取り込み対象（博士スプライト8枚 透過PNG 135×268）
 │   └── static/          # そのまま配信する生ファイル（dist直下へコピー）

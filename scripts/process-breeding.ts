@@ -57,6 +57,7 @@ import {
   type WorkElements,
 } from '../lib/elements.ts';
 import { commentIssue, listOpenIssues, type GhOptions } from '../lib/github.ts';
+import { detectLanguageRequest } from '../lib/language.ts';
 import { computeGeneration, nextOffspringId, slotKey } from '../lib/generation.ts';
 import { repoConfigFromEnv } from '../lib/config.ts';
 import {
@@ -574,6 +575,9 @@ async function main(): Promise<void> {
       parentA: { id: parentA.id, title: parentA.title, elements: elementsA },
       parentB: { id: parentB.id, title: parentB.title, elements: elementsB },
       comment: request.comment,
+      // 言語指定は申請コメント（許可された入力）のみから（issue #23 §4）。
+      // 元作品の説明文が英語でも日本語のまま。
+      language: detectLanguageRequest(request.comment),
     });
 
     let lastReason = '不明なエラー';
@@ -597,7 +601,11 @@ async function main(): Promise<void> {
         });
         aiCallsMade += 1;
         recordText(result);
-        const parsed = parseBlendResponse(extractChatText(result), request.mode);
+        const parsed = parseBlendResponse(
+          extractChatText(result),
+          request.mode,
+          detectLanguageRequest(request.comment) ?? 'ja',
+        );
         if (parsed.ok) {
           generated = parsed.idea;
         } else {

@@ -85,7 +85,8 @@ function parentRef(
       external: true,
     };
   }
-  return { text, href: `${base}?id=${encodeURIComponent(id)}`, external: false };
+  // 子作品の親リンクは個別ページへ（issue #24: 個別ページを中心に親作品・子孫を行き来する）
+  return { text, href: `${base}ideas/${encodeURIComponent(id)}/`, external: false };
 }
 
 function buildIdeaItem(
@@ -117,14 +118,11 @@ function buildIdeaItem(
     `${c.id} ・ 誕生日時: ${formatDateTimeJSTWithNote(c.createdAt)}`,
   );
 
+  // 個別詳細ページ（issue #24）: 一覧は発見の場 → 詳細は /ideas/<id>/ へ。
+  const detailUrl = `${ctx.base}ideas/${encodeURIComponent(c.id)}/`;
+
   const foot = el('div', { class: 'idea-foot' });
-  foot.append(
-    el(
-      'a',
-      { class: 'idea-detail', href: `${ctx.base}?id=${encodeURIComponent(c.id)}` },
-      '系譜図で詳細を見る →',
-    ),
-  );
+  foot.append(el('a', { class: 'idea-detail', href: detailUrl }, 'この発明の詳細を見る →'));
   if (ctx.repoCfg && c.sourceIssue > 0) {
     foot.append(
       el(
@@ -156,11 +154,19 @@ function buildIdeaItem(
     thumb = el('div', { class: 'idea-thumb' }, el('span', { class: 'thumb-miss' }, '画像なし'));
   }
 
-  li.append(
-    ...(thumb ? [thumb] : []),
+  // サムネイル・バッジ・発明名・概要を1つの <a> で包む = 個別ページへの遷移領域。
+  // カード全体を <a> にしないのは**リンクの入れ子を避けるため**（親作品・Issueのリンクは
+  // この <a> の外に置く）。実リンクなのでキーボード（Tab/Enter）でも操作できる。
+  const open = el('a', { class: 'idea-open', href: detailUrl });
+  if (thumb) open.append(thumb);
+  open.append(
     badges,
     el('h3', { class: 'idea-title' }, c.title),
     el('p', { class: 'idea-summary' }, c.summary || '（概要なし）'),
+  );
+
+  li.append(
+    open,
     el(
       'div',
       { class: 'idea-parents' },

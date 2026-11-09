@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Google Tag Manager (GTM-NLGLRR3T) -->
+    <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-NLGLRR3T"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+    </script>
+    <!-- End Google Tag Manager -->
+    <meta name="theme-color" content="#202735" />
+    <meta
+      name="description"
+      content="Mashup Oursで生まれた、AIが考えた未実装の発明アイデアの個別ページ。誕生日時・親作品・継承した特徴・仕組み・生成Issueへのリンクつき。"
+    />
+    <!-- OGP: URL（og:url/og:image）は絶対URLが必要なため、ドメイン確定後に追加する -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Mashup Ours" />
+    <meta property="og:title" content="発明の詳細 — Mashup Ours" />
+    <meta
+      property="og:description"
+      content="AIが考えた未実装の発明アイデアの詳細。親作品・継承した特徴・仕組み・誕生の経緯。"
+    />
+    <meta name="twitter:card" content="summary" />
+    <title>発明の詳細 — Mashup Ours</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Noto+Sans+JP:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      // テーマの早期適用（白/黒フラッシュ防止）。トップの index.html と同じ規則。
+      (function () {
+        try {
+          var t = localStorage.getItem('mashup-theme');
+          if (t !== 'dark' && t !== 'light') {
+            t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          var el = document.documentElement;
+          el.dataset.theme = t;
+          el.style.background = t === 'dark' ? '#202735' : '#FFF5DE';
+          var m = document.querySelector('meta[name="theme-color"]');
+          if (m) m.setAttribute('content', t === 'dark' ? '#202735' : '#FFF5DE');
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <!-- Google Tag Manager (noscript は公式推奨: JS無効時の代替) -->
+    <noscript
+      ><iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-NLGLRR3T"
+        height="0"
+        width="0"
+        style="display: none; visibility: hidden"
+        title="Google Tag Manager"
+      ></iframe
+    ></noscript>
+    <!-- End Google Tag Manager -->
+    <!--
+      個別詳細ページのテンプレート（issue #24）。
+      本番ではビルド時に data/offspring.json の各IDへ
+      dist/ideas/<id>/index.html としてコピーされる（vite.config.ts の ideaPages プラグイン）。
+      このファイル自体は dist/idea/index.html としても出力される（開発用の元板）。
+    -->
+    <div id="idea-app"></div>
+    <script type="module" src="/idea.ts"></script>
+  </body>
+</html>

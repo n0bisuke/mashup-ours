@@ -1297,6 +1297,16 @@ function renderDetail(id: string): void {
     }
     const birthTxt = formatDateTimeJST(node.createdAt);
     add('誕生日時', `${birthTxt}${jstNote(birthTxt)} ・ モデル: ${node.model}`);
+    // 系譜図ノード → 個別詳細ページへの相互遷移（issue #24 §5）。
+    // 相対baseのため './' 基点。このページはサイトルートにある。
+    add(
+      '個別ページ',
+      el(
+        'a',
+        { href: `${import.meta.env.BASE_URL}ideas/${encodeURIComponent(node.id)}/` },
+        'この発明の詳細ページを開く →',
+      ),
+    );
   } else {
     add('世代', '第0世代（ProtoPedia作品）');
     if (node.authors && node.authors.length > 0) add('作者', node.authors.join(' / '));

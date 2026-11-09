@@ -1989,3 +1989,235 @@ ul.offspring li.empty {
     width: 100%;
   }
 }
+
+/* =========================================================================
+ * 個別詳細ページ /ideas/<id>/（issue #24）
+ * 一覧カードの遷移領域 + 詳細本体（サムネイル大・親左右・配合結果・関連リンク）
+ * ========================================================================= */
+
+/* 一覧カード: サムネイル・バッジ・発明名・概要をまとめた遷移リンク。
+   カッド全体を <a> にしない（親作品・Issueのリンクと入れ子になるため）。
+   マイナスマージンでカードの上・左右の余白までクリック領域に含める。 */
+a.idea-open {
+  display: block;
+  margin: -13px -15px 0;
+  padding: 13px 15px 2px;
+  color: inherit;
+  text-decoration: none;
+}
+
+a.idea-open:hover .idea-title,
+a.idea-open:focus-visible .idea-title {
+  text-decoration: underline;
+}
+
+a.idea-open:focus-visible {
+  outline: 3px solid var(--lab-yellow, #F4C95D);
+  outline-offset: -3px;
+}
+
+a.idea-open .idea-thumb {
+  margin-bottom: 2px;
+}
+
+/* --- 詳細ヒーロー（サムネイル大・発明名と概要が主役） --------------------- */
+.det-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 240px) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+  padding: 4px;
+}
+
+.det-thumb {
+  aspect-ratio: 1 / 1;
+  border: 2px solid var(--line);
+  background: var(--window);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.det-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.det-thumb .thumb-miss {
+  padding: 12px;
+  font-size: 0.9rem;
+  color: var(--text-dim);
+}
+
+.det-hero-main {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.det-title {
+  margin: 0;
+  font-size: clamp(1.3rem, 3.4vw, 1.9rem);
+  font-weight: 700;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.det-summary {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.det-meta {
+  font-size: 0.82rem;
+  overflow-wrap: anywhere;
+}
+
+/* --- 詳細セクション ------------------------------------------------------- */
+.det-panel {
+  margin-top: 16px;
+}
+
+.det-section + .det-section {
+  margin-top: 16px;
+  border-top: 1px solid var(--inner);
+  padding-top: 14px;
+}
+
+.det-h {
+  margin: 0 0 8px;
+  font-family: var(--font-dot);
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+}
+
+.det-section p {
+  margin: 0;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+.det-list {
+  margin: 0;
+  padding-left: 1.3em;
+  display: grid;
+  gap: 6px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+/* --- 親A・B（左右配置） --------------------------------------------------- */
+.det-parents {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.det-parent {
+  background: var(--window-2);
+  border: 2px solid var(--line);
+  padding: 12px;
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  min-width: 0;
+}
+
+.det-parent-role {
+  justify-self: start;
+  font-family: var(--font-dot);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  background: var(--lab-yellow, #F4C95D);
+  border: 2px solid var(--line);
+  color: var(--lab-ink, #202735);
+  padding: 2px 8px;
+}
+
+.det-parent-media {
+  width: 100%;
+  max-width: 220px;
+  aspect-ratio: 1 / 1;
+  border: 2px solid var(--inner);
+  background: var(--window);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.det-parent-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.det-parent-media .thumb-miss {
+  padding: 8px;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+
+.det-parent h3 {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.det-parent h3 a {
+  color: inherit;
+}
+
+.det-parent-kind,
+.det-parent-authors {
+  margin: 0;
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}
+
+/* --- 関連リンク ------------------------------------------------------------ */
+.det-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.det-links a {
+  display: inline-block;
+}
+
+/* --- 404相当 ------------------------------------------------------------- */
+.det-missing .empty-title {
+  margin: 0 0 8px;
+  font-weight: 700;
+}
+
+@media (max-width: 760px) {
+  .det-hero {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .det-thumb {
+    max-width: 320px;
+  }
+
+  .det-parents {
+    grid-template-columns: 1fr;
+  }
+
+  .det-parent-media {
+    max-width: 180px;
+  }
+}

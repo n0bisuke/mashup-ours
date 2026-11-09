@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Google Tag Manager (GTM-NLGLRR3T) -->
+    <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-NLGLRR3T"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+    </script>
+    <!-- End Google Tag Manager -->
+    <meta name="theme-color" content="#202735" />
+    <meta name="robots" content="noindex" />
+    <meta name="description" content="Mashup Ours — ページが見つかりません。" />
+    <title>ページが見つかりません — Mashup Ours</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Noto+Sans+JP:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      // テーマの早期適用（他のページと同じ規則）
+      (function () {
+        try {
+          var t = localStorage.getItem('mashup-theme');
+          if (t !== 'dark' && t !== 'light') {
+            t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          var el = document.documentElement;
+          el.dataset.theme = t;
+          el.style.background = t === 'dark' ? '#202735' : '#FFF5DE';
+          var m = document.querySelector('meta[name="theme-color"]');
+          if (m) m.setAttribute('content', t === 'dark' ? '#202735' : '#FFF5DE');
+        } catch (e) {}
+      })();
+    </script>
+    <!--
+      カスタム404（issue #24 §7）: GitHub Pages は静的ホスティングのため、
+      存在しないID /ideas/<id>/ はサーバ側404になり、このファイルが返される。
+      バンドルに依存しない自己完結型（CSS/リンク解決をインラインで行う）。
+      リンクのサイトルート基点はパス中の '/ideas/' 位置から計算する
+      （現在のカスタムドメイン（ルート配信）で正確。未知パスでは '/' を仮定する = 既知の制約）。
+    -->
+    <style>
+      :root {
+        --lab-ink: #202735;
+        --lab-paper: #f7e9c9;
+        --lab-cream: #fff5de;
+        --lab-yellow: #f4c95d;
+        --bg: var(--lab-cream);
+        --window: var(--lab-paper);
+        --window-2: #f4ecd8;
+        --line: var(--lab-ink);
+        --inner: #d9cba8;
+        --text: var(--lab-ink);
+        --text-dim: #4a5468;
+      }
+      :root[data-theme='dark'] {
+        --bg: #202735;
+        --window: #303c51;
+        --window-2: #26314a;
+        --line: #141a26;
+        --inner: #46546f;
+        --text: #f2ecd9;
+        --text-dim: #c4bca2;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'Noto Sans JP', system-ui, sans-serif;
+        line-height: 1.7;
+      }
+      .wrap {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 24px 16px 48px;
+      }
+      .hero h1 {
+        font-family: 'DotGothic16', 'Noto Sans JP', sans-serif;
+        font-size: clamp(1.4rem, 4vw, 2rem);
+        margin: 0 0 6px;
+      }
+      .copy {
+        margin: 0 0 6px;
+        color: var(--text-dim);
+      }
+      .window {
+        background: var(--window);
+        border: 3px solid var(--line);
+        box-shadow: inset 0 0 0 2px var(--inner);
+        padding: 16px;
+        margin-top: 18px;
+      }
+      .empty-title {
+        margin: 0 0 8px;
+        font-weight: 700;
+        font-size: 1.05rem;
+      }
+      #missing-id {
+        font-family: ui-monospace, monospace;
+        background: var(--window-2);
+        border: 1px solid var(--inner);
+        padding: 1px 6px;
+        overflow-wrap: anywhere;
+      }
+      nav {
+        margin-top: 14px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      nav a {
+        color: var(--text);
+        background: var(--window-2);
+        border: 2px solid var(--line);
+        padding: 8px 12px;
+        text-decoration: none;
+        font-weight: 700;
+      }
+      nav a:hover,
+      nav a:focus-visible {
+        background: var(--lab-yellow);
+        color: #202735;
+        outline: none;
+      }
+      footer {
+        margin-top: 26px;
+        font-size: 0.82rem;
+        color: var(--text-dim);
+      }
+      footer div + div {
+        margin-top: 6px;
+      }
+      a {
+        color: var(--text);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Google Tag Manager (noscript は公式推奨) -->
+    <noscript
+      ><iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-NLGLRR3T"
+        height="0"
+        width="0"
+        style="display: none; visibility: hidden"
+        title="Google Tag Manager"
+      ></iframe
+    ></noscript>
+    <!-- End Google Tag Manager -->
+    <div class="wrap">
+      <header class="hero">
+        <h1 id="page-title">ページが見つかりません</h1>
+        <p class="copy" id="page-copy">URLが違うか、まだ生まれていない発明のようです。</p>
+      </header>
+
+      <div class="window" id="msg">
+        <p class="empty-title" id="msg-title">お探しのページは見つかりませんでした</p>
+        <p id="msg-body"></p>
+        <noscript>
+          <p>アイデア一覧: <a href="/ideas/">/ideas/</a> / サイトトップ: <a href="/">/</a></p>
+        </noscript>
+      </div>
+
+      <nav id="nav" aria-label="サイト内リンク"></nav>
+
+      <footer>
+        <div>Mashup Ours — 20年分の発明を、もう一度マッシュアップ。</div>
+        <div>
+          Mashup Oursは個人制作の非公式プロジェクトです。ProtoPediaおよびヒーローズ・リーグの公式サービスではありません。
+        </div>
+      </footer>
+    </div>
+
+    <script>
+      (function () {
+        var path = location.pathname;
+        var marker = '/ideas/';
+        var at = path.indexOf(marker);
+        // サイトルートへの基点: '/repo/ideas/x/' → '/repo/'、'/ideas/x/' → '/'
+        var base = at >= 0 ? path.slice(0, at + 1) : '/';
+        var id = '';
+        if (at >= 0) {
+          var rest = path.slice(at + marker.length).replace(/\/+$/, '');
+          var seg = rest.split('/')[0] || '';
+          try {
+            id = decodeURIComponent(seg);
+          } catch (e) {
+            id = seg;
+          }
+          if (id.indexOf('mashup-') !== 0) id = '';
+        }
+
+        function link(href, text) {
+          var a = document.createElement('a');
+          a.setAttribute('href', href);
+          a.appendChild(document.createTextNode(text));
+          return a;
+        }
+        function para(text) {
+          var p = document.createElement('p');
+          p.appendChild(document.createTextNode(text));
+          return p;
+        }
+
+        var nav = document.getElementById('nav');
+        var msgBody = document.getElementById('msg-body');
+
+        if (id) {
+          // 存在しない発明ID（issue #24 §7）: 一覧・トップへの導線を出す
+          document.title = '発明が見つかりません — Mashup Ours';
+          document.getElementById('page-title').textContent = '発明が見つかりません';
+          document.getElementById('page-copy').textContent =
+            'この発明は、見つからないかまだ生まれていないようです。';
+          document.getElementById('msg-title').textContent =
+            'そのIDの発明は見つかりませんでした';
+          var span = document.createElement('span');
+          span.setAttribute('id', 'missing-id');
+          span.appendChild(document.createTextNode(id));
+          msgBody.appendChild(document.createTextNode('ID「'));
+          msgBody.appendChild(span);
+          msgBody.appendChild(document.createTextNode('」は存在しないか、まだ生まれていません。'));
+          nav.appendChild(link(base + 'ideas/', 'アイデア一覧へ →'));
+          nav.appendChild(link(base, '研究所トップへ →'));
+        } else {
+          msgBody.appendChild(
+            document.createTextNode(
+              'アドレスをご確認いただくか、下のリンクから探してみてください。',
+            ),
+          );
+          nav.appendChild(link(base, '研究所トップへ →'));
+          nav.appendChild(link(base + 'ideas/', 'アイデア一覧へ →'));
+        }
+      })();
+    </script>
+  </body>
+</html>

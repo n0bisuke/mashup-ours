@@ -48,18 +48,37 @@ it('一覧は新しい順に件数どおり並び、世代・未実装バッジ�
   // 日時は日本時間（issue #18）: 「誕生日時: 2026/11/08 20:05（日本時間）」
   expect(host.textContent).toMatch(/誕生日時: \d{4}\/\d{2}\/\d{2} \d{2}:\d{2}（日本時間）/);
   expect(host.textContent).not.toContain('UTC'); // UTCの生データは画面に出さない
-  // 詳細リンクはトップの ?id= ディープリンク
+  // 詳細リンクは個別ページ /ideas/<id>/（issue #24）
   const detail = items[0].querySelector<HTMLAnchorElement>('a.idea-detail');
-  expect(detail?.getAttribute('href')).toBe('/?id=mashup-000002');
+  expect(detail?.getAttribute('href')).toBe('/ideas/mashup-000002/');
 });
 
-it('親はタイトルでリンクする（子=トップ詳細 / ProtoPedia=出典URL）', () => {
+it('サムネイル・発明名・概要が個別ページへの1つのリンクに入り、入れ子リンクがない（issue #24）', () => {
+  const host = build(fixtures);
+  const first = host.querySelector<HTMLElement>('.idea-item');
+  const open = first?.querySelector<HTMLAnchorElement>('a.idea-open');
+  expect(open).toBeTruthy();
+  expect(open?.getAttribute('href')).toBe('/ideas/mashup-000002/');
+  // 遷移領域にカードの余白・サムネイル・タイトル・概要が入る
+  expect(open?.querySelector('.idea-thumb')).toBeTruthy();
+  expect(open?.querySelector('.idea-title')).toBeTruthy();
+  expect(open?.querySelector('.idea-summary')).toBeTruthy();
+  // 実リンクなのでキーボード（Tab/Enter）で操作できる
+  expect(open?.tagName).toBe('A');
+  // リンクの入れ子なし（親作品・Issueのリンクは遷移領域の外）
+  expect(open?.querySelector('a')).toBeNull();
+  const outside = first?.querySelectorAll('.idea-parents a, .idea-foot a');
+  expect(outside?.length).toBeGreaterThan(0);
+  for (const a of Array.from(outside ?? [])) expect(open?.contains(a)).toBe(false);
+});
+
+it('親はタイトルでリンクする（子=その個別ページ / ProtoPedia=出典URL）', () => {
   const host = build(fixtures); // 先頭は mashup-000002（親: mashup-000001 × protopedia:9002）
   const first = host.querySelector<HTMLElement>('.idea-item');
   expect(first).toBeTruthy();
   const links = Array.from(first!.querySelectorAll('.idea-parents a'));
   expect(links.length).toBe(2);
-  expect(links[0].getAttribute('href')).toBe('/?id=mashup-000001');
+  expect(links[0].getAttribute('href')).toBe('/ideas/mashup-000001/'); // 個別ページ中心（issue #24）
   expect(links[0].textContent).toContain('光る歴史散歩デバイス'); // 読み込み済みのタイトル
   expect(links[1].getAttribute('href')).toBe('https://protopedia.net/prototype/9002');
   expect(links[1].getAttribute('target')).toBe('_blank');
