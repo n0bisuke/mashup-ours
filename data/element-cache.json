@@ -64,6 +64,38 @@
       },
       "extractedAt": "2026-11-10T02:18:28.990Z",
       "model": "@cf/openai/gpt-oss-20b"
+    },
+    "protopedia:6": {
+      "id": "protopedia:6",
+      "version": "65acdd697f4f",
+      "elements": {
+        "technology": "LINE BeaconとBOTを組み合わせた位置情報連携システム",
+        "purpose": "スキー場での友人・家族との再会をスムーズに実現すること",
+        "problem": "雪山内での移動距離や時間帯の不一致により、予定通りに会えない状況が頻発する",
+        "input": "ユーザーの位置情報、LINE Beaconの検知データ、チャットメッセージ",
+        "output": "リアルタイムでの近隣ユーザーの位置共有、会合場所の提案、到着通知",
+        "experience": "LINEアプリ内で手軽に位置共有・会合調整ができ、雪山でもストレスなく再会を楽しめる",
+        "feature": "Beaconを利用した正確な位置検知とBOTによる自動スケジュール調整機能",
+        "uniqueness": "スキー場という特殊環境でLINE Beaconを活用し、会えない問題を解決する唯一のサービス"
+      },
+      "extractedAt": "2026-11-10T14:46:51.534Z",
+      "model": "@cf/openai/gpt-oss-20b"
+    },
+    "protopedia:12": {
+      "id": "protopedia:12",
+      "version": "22ac1db5c61b",
+      "elements": {
+        "technology": "ゲーム",
+        "purpose": "お酒の場を楽しくすること",
+        "problem": "飲み会での退屈さや参加者の交流不足",
+        "input": "飲酒量・酔いレベル",
+        "output": "ゲームの進行・スコア・勝敗",
+        "experience": "酔っている状態でのゲームプレイを通じて、参加者同士のコミュニケーションが活発化し、飲み会が盛り上がる",
+        "feature": "酔っていないとゲームが開始できないというユニークな条件",
+        "uniqueness": "酔いをゲームの必須条件にすることで、飲み会を一層楽しく、参加者の交流を促進する独自性"
+      },
+      "extractedAt": "2026-11-10T14:46:51.534Z",
+      "model": "@cf/openai/gpt-oss-20b"
     }
   }
 }
