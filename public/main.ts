@@ -40,6 +40,13 @@ import {
   type ObservePhase,
 } from './breeding-state.ts';
 import { fetchSeenIssues, watchApplyConfirmation } from './github-watch.ts';
+import {
+  PICKS_KEY,
+  floatCountLabel,
+  parsePicks,
+  serializePicks,
+  shouldShowFloating,
+} from './floating.ts';
 
 // ---------------------------------------------------------------------------
 // データ読み込み
@@ -519,6 +526,7 @@ function togglePick(slot: 'a' | 'b', id: string): void {
     pickB = pickB === id ? null : id;
     if (pickB && pickA === id) pickA = null;
   }
+  savePicks(); // 再読み込み後も選択を保持（issue #26 §2）
   updateSelectionUI();
 }
 
@@ -602,7 +610,8 @@ wrap.append(candSection);
 // ② 配合マシン（選択状態・申請・稼働状況・配合待ち）
 // ---------------------------------------------------------------------------
 
-const machineSection = el('section', {}, el('h2', {}, '発明配合マシン'));
+// id="machine": フローティング小型版の「配合へ進む」が移動する先（issue #26）
+const machineSection = el('section', { id: 'machine' }, el('h2', {}, '発明配合マシン'));
 
 const statusA = el('span', { class: 'status-val empty' }, '（未選択）');
 const statusB = el('span', { class: 'status-val empty' }, '（未選択）');
@@ -749,6 +758,146 @@ const machine = el(
 machineSection.append(machine);
 wrap.append(machineSection);
 
+// --- フローティング配合マシン（issue #26） -----------------------------------
+// FVの大きな配合マシン（fvScene）が画面外に出たら、右下に小型版を表示する。
+// - 表示判定は IntersectionObserver のみ（スクロールイベントの高頻度監視はしない）
+// - 選択状態は pickA / pickB をそのまま映すだけ（二重管理しない = 単一データソース）
+// - 小型版からAI生成やIssue投稿は行わない。「配合へ進む」は既存の申請フローへ移動するだけ
+// - 非表示時は inert + aria-hidden でキーボード・読み上げの対象外にする
+
+const floatViewA = el('div', { class: 'float-thumb' }, el('span', { class: 'capsule-q' }, '？'));
+const floatViewB = el('div', { class: 'float-thumb' }, el('span', { class: 'capsule-q' }, '？'));
+const floatNameA = el('div', { class: 'float-name' }, '親A 未選択');
+const floatNameB = el('div', { class: 'float-name' }, '親B 未選択');
+const floatCount = el('span', { class: 'float-count' }, '0/2');
+const floatDevice = el('div', { class: 'float-device', 'aria-hidden': 'true' }, '×');
+const floatGoBtn = el('button', { class: 'float-go', type: 'button' }, '配合へ進む ▶') as HTMLButtonElement;
+
+const floatMachine = el(
+  'aside',
+  { class: 'float-machine', 'aria-label': '配合マシン（選択状況）', 'aria-hidden': 'true', inert: '' },
+  el(
+    'div',
+    { class: 'float-head' },
+    el('span', { class: 'float-title' }, '配合マシン'),
+    floatCount,
+  ),
+  el(
+    'div',
+    { class: 'float-body' },
+    el('div', { class: 'float-slot' }, floatViewA, floatNameA),
+    floatDevice,
+    el('div', { class: 'float-slot' }, floatViewB, floatNameB),
+  ),
+  floatGoBtn,
+);
+document.body.append(floatMachine);
+
+let floatVisible = false;
+
+/** 小型版の表示/非表示。非表示は inert + aria-hidden（フォーカス・読み上げの対象外）。 */
+function setFloatVisible(visible: boolean): void {
+  if (visible === floatVisible) return;
+  floatVisible = visible;
+  floatMachine.classList.toggle('is-visible', visible);
+  floatMachine.toggleAttribute('inert', !visible);
+  if (visible) floatMachine.removeAttribute('aria-hidden');
+  else floatMachine.setAttribute('aria-hidden', 'true');
+  document.documentElement.classList.toggle('has-float', visible);
+}
+
+const prefersReducedMotion = (): boolean =>
+  window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches === true;
+
+/** アニメを同じ要素で再実行する（class を外してから reflow）。 */
+function replayAnimation(node: HTMLElement, cls: string): void {
+  if (prefersReducedMotion()) return;
+  node.classList.remove(cls);
+  void node.offsetWidth; // reflow
+  node.classList.add(cls);
+}
+
+let floatPrevCount = 0;
+
+/** 選択状態（pickA/pickB）を小型版へ反映する。updateSelectionUI から毎回呼ばれる。 */
+function updateFloatMachine(): void {
+  renderFvCapsule(floatViewA, floatNameA, pickA, '親A 未選択');
+  renderFvCapsule(floatViewB, floatNameB, pickB, '親B 未選択');
+  floatNameA.title = floatNameA.textContent ?? '';
+  floatNameB.title = floatNameB.textContent ?? '';
+  const selected = (pickA ? 1 : 0) + (pickB ? 1 : 0);
+  floatCount.textContent = floatCountLabel(selected); // 色だけに依存しない「1/2」「2/2」
+  floatCount.classList.toggle('is-full', selected === 2);
+
+  const pair = currentPair();
+  floatGoBtn.disabled = !pair || !repoCfg;
+  floatDevice.classList.toggle('is-ready', pair !== null);
+  floatDevice.textContent = pair ? '▶' : '×';
+
+  // 選択が増えたときだけ一度光らせる（連打で点滅させない）
+  if (selected > floatPrevCount) {
+    replayAnimation(floatViewA.parentElement as HTMLElement, 'is-flash');
+    replayAnimation(floatViewB.parentElement as HTMLElement, 'is-flash');
+    if (selected === 2) replayAnimation(floatDevice, 'is-blink');
+  }
+  floatPrevCount = selected;
+}
+
+// 「配合へ進む」= 既存の申請フロー（配合タイプ・研究員コメント・Issue作成画面）へ移動するだけ。
+// 小型版単独でIssueを作ったり、開いただけを成功にしない（issue #26 §5）。
+floatGoBtn.addEventListener('click', () => {
+  machineSection.scrollIntoView?.({
+    behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+    block: 'center',
+  });
+  breedBtn.focus({ preventScroll: true });
+});
+
+/** FVの lab-scene（カプセルA+B+中央装置）が画面外に出たら小型版を出す。 */
+function setupFloatObserver(): void {
+  if (typeof IntersectionObserver !== 'function') return; // 非対応環境は通常版のみ
+  const io = new IntersectionObserver(
+    (entries) => {
+      const e = entries[entries.length - 1];
+      if (!e) return;
+      setFloatVisible(
+        shouldShowFloating(floatVisible, {
+          isIntersecting: e.isIntersecting,
+          intersectionRatio: e.intersectionRatio,
+        }),
+      );
+    },
+    { threshold: [0, 0.1, 0.2, 0.3, 0.5, 0.9, 1] },
+  );
+  io.observe(fvScene);
+}
+
+/** 選択を localStorage へ保存（再読み込み・スクロールで選択を失わない / issue #26 §2）。 */
+function savePicks(): void {
+  try {
+    const s = serializePicks(pickA, pickB);
+    if (s === null) localStorage.removeItem(PICKS_KEY);
+    else localStorage.setItem(PICKS_KEY, s);
+  } catch {
+    /* プライベートモード等では保存できないが選択は画面上で維持される */
+  }
+}
+
+/** 保存した選択を復元する。存在しない・選択できないIDは捨て、単一データソースに読み込むだけ。 */
+function restorePicks(): void {
+  let raw: string | null = null;
+  try {
+    raw = localStorage.getItem(PICKS_KEY);
+  } catch {
+    return;
+  }
+  if (raw === null) return;
+  const picks = parsePicks(raw, (id) => pickRegistry.has(id));
+  pickA = picks.a;
+  pickB = picks.b;
+  savePicks(); // 検証を通らなかったIDは保存からも消える（古い候補IDの残骸を残さない）
+}
+
 function pickText(id: string | null): string {
   if (!id) return '（未選択）';
   const n = nodeById.get(id);
@@ -856,6 +1005,7 @@ function updateSelectionUI(): void {
   bannoGuide.setMessage(SELECT_MSGS[selected]);
   refreshBreedButton();
   updateFvLab(); // FVカプセルへ選択を反映（issue #14 §6）
+  updateFloatMachine(); // 右下の小型版も同じ選択を映すだけ（issue #26）
 }
 
 // ライブ観測のガード（追加指示 §10 / 最重要事項）:
@@ -1336,8 +1486,10 @@ function selectNode(id: string): void {
   detailBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
+restorePicks(); // 保存済みの選択を復元（issue #26 §2）。ID検証は floating.ts が行う
 renderPedigree();
 updateSelectionUI();
+setupFloatObserver(); // FVの大きな配合マシンが画面外のときだけ小型版を表示（issue #26 §6）
 
 // --- 公開状態の観測開始（issue #10〜 §10: 実際の処理状態とキャラを連動） -----
 // 匿名API 60req/h のため OBSERVE_INTERVAL_MS（3分、最大40req/h）。

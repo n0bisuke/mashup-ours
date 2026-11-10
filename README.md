@@ -226,6 +226,15 @@ open Issue の最古1件（ラベル非信用・タイトル/本文で判定）
   - カタカナは英語より**目立たない**: h1（`clamp(1.6rem〜2.6rem)` DotGothic16）に対し `clamp(0.72rem〜0.95rem)`・`--text-dim`・本文フォント **Noto Sans JP（日本語の可読性優先でドットフォントにしない）**。
   - **760px以下はロゴの下に配置**（`.hero-logo` を縦積み）。デスクトップ/モバイルとも横スクロール0pxを実測。
   - キャッチコピー「20年分の発明を、もう一度マッシュアップ。」は変更なし。
+- **フローティング配合マシン（issue #26）**: FVの大きな配合マシン（`.lab-scene`）が画面外に出たら、右下に**小型の配合マシン**を表示し、一覧を見ているあいだも選択状態が分かるようにする。
+  - **通常版と小型版は同時に表示しない**: `IntersectionObserver`（threshold `0〜1` の9段階）だけで判定し、**スクロールイベントの監視はしない**。完全画面外→表示 / 20%以上画面内→非表示 / その間（0〜20%）は前状態のまま（**ヒステリシス = 境界でちらつかせない**）。判定と保存書式は純関数 `public/floating.ts`。
+  - **選択状態は単一データソース**: `pickA` / `pickB` を映すだけ（`updateSelectionUI()` から更新）。小型版に選択ロジックは持たない。表示 = 親A/Bサムネイル（無画像は既存の「？」）+ 中央装置（`×` / 2選択で `▶`）+ **選択数（0/2・1/2・2/2 = 色だけに依存しない文字）** + 「配合へ進む ▶」。
+  - **選択の永続化**: `localStorage['mashup-picks']`（`{v:1,a,b}`）。再読み込み・スクロールで失わない。復元は**現在の候補/子作品に存在するIDのみ**（`pickRegistry` で検証）。同一作品のA/B同時指定・型違い・壊れたJSON・長すぎるIDは捨て、検証後に保存し直して残骸を残さない。
+  - **「配合へ進む」は既存の申請フローへ移動するだけ**: `#machine` へスクロール + 「配合を申し込む」へフォーカス。**小型からIssueを作ったりAIを呼ばない**。Issue作成画面を開いただけを成功にしない既存の `opening ≠ success` を維持。
+  - **a11y**: 非表示は `inert` + `aria-hidden`（内部要素がキーボード・読み上げの対象外、フォーカスは奪わない）。表示中はキーボードで操作可能。
+  - **配置**: デスクトップは右下固定（幅200px・余白20px・`z-index: 30` = 将来のモーダル想定40より下）。**760px以下は画面下の横長バー**（左右8px・`env(safe-area-inset-bottom)` 対応・`html.has-float` で body の下padding 72px = 背後の候補カードボタンを操作できる）。切替200ms・選択フラッシュ240ms、`prefers-reduced-motion` で全停止。
+  - **既知のトレードオフ**: デスクトップでコンテンツ幅（1100px）が画面幅に近いと、右下200pxがカード上に重なることがある。固定パネルの性質上スクロールで回避でき、主要CTA（「配合を申し込む」）には当たらない。
+  - 検証: `tests/float-machine.test.ts`（28件）+ Playwright 47項目（`tmp/float-machine-check.mjs` / GH Pages相当サーバ・デスクトップ/モバイル/ダーク/reduced-motion）。
 - **スクリーンショット確認**: `npm run build && npx vite preview --port 4173` を起動してから `npm run screenshot`（**ライト/ダーク両テーマ** × デスクトップ/詳細/モバイルを `tmp/` に出力。初回のみ `npx playwright install chromium` と `install-deps` が必要）。
 
 ## ID名前空間の決定事項
@@ -298,6 +307,7 @@ npm run screenshot      # 両テーマ×デスクトップ/詳細/モバイル +
 │   ├── character.ts     # 博士キャラクター表示（状態・スプライト・読み上げ制御）
 │   ├── breeding-state.ts # 配合状態判定（申請確認/実験待ち/生成中/誕生の純関数）
 │   ├── github-watch.ts  # 匿名GitHub APIポーリング（上限・停止条件つき）
+│   ├── floating.ts      # フローティング配合マシンの判定・永続化（純関数 / issue #26）
 │   ├── ideas.ts         # /ideas 一覧ページのUI
 │   ├── ideas/           # /ideas アイデア一覧（マルチページエントリ）
 │   ├── idea.ts          # /ideas/<id>/ 個別詳細ページのUI（issue #24）
@@ -319,7 +329,7 @@ npm run screenshot      # 両テーマ×デスクトップ/詳細/モバイル +
 ├── logs/                # 開発ログ（public公開のため秘密情報は書かない / 書式は logs/README.md）
 ├── scripts/             # process-breeding（配合ワーカー）/ fetch-sample / rotate-candidates / sync /
                          # validate-data / screenshot / gh / load-env / slice-characters（博士スプライト切り出し）
-├── tests/
+├── tests/               # 単体（lib/パーサー/設定）+ UI（happy-dom。helpers/ はvitest対象外の補助）
 └── .github/workflows/   # deploy.yml / sync-prototypes.yml（dispatchのみ） /
                          # rotate-candidates.yml（起床15分固定・間隔はconfig判定） / breed.yml（配合ワーカー）
 ```

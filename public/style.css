@@ -2221,3 +2221,281 @@ a.idea-open .idea-thumb {
     max-width: 180px;
   }
 }
+
+/* --- フローティング配合マシン（issue #26） --------------------------------
+   FVの大きな配合マシン（.lab-scene）が画面外に出たときだけ、右下に現れる小型版。
+   単なる固定ツールバーではなく「配合マシンが小さくなってついてくる」UI。
+
+   - 表示/非表示は JS 側が .is-visible を付ける（IntersectionObserver 判定 + ヒステリシス）
+   - 非表示は inert + aria-hidden（main.ts）でキーボード・読み上げの対象外
+   - 表示/非表示の切替 200ms、選択時のフラッシュ 240ms（§7: 150〜250ms）
+   - 常時動く装飾は作らない。prefers-reduced-motion は既存の全体ルール
+     （`* { transition/animation: none }` / §6）で停止する
+   - z-index は 30。将来のモーダル等（40以上）より下に置く */
+
+.float-machine {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 30;
+  width: 200px;
+  background: var(--window);
+  border: 3px solid var(--line);
+  box-shadow:
+    inset 0 0 0 2px var(--inner),
+    5px 5px 0 var(--shadow);
+  font-family: var(--font-dot);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px) scale(0.96);
+  transform-origin: bottom right;
+  transition:
+    opacity 200ms ease,
+    transform 200ms ease,
+    visibility 200ms;
+  pointer-events: none; /* 非表示のあいだ背後の操作を邪魔しない */
+}
+
+.float-machine.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  pointer-events: auto;
+}
+
+.float-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 8px;
+  background: var(--line);
+  color: var(--lab-paper);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+}
+
+/* 選択数は色ではなく文字で示す（1/2・2/2 / §9: 色だけに依存しない） */
+.float-count {
+  flex: none;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  background: var(--lab-yellow);
+  color: var(--lab-ink);
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  padding: 1px 8px;
+  white-space: nowrap;
+}
+
+.float-count.is-full {
+  background: var(--lab-mint);
+}
+
+.float-body {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+}
+
+.float-slot {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.float-thumb {
+  width: 100%;
+  max-width: 72px;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--tile);
+  border: 2px solid var(--line);
+}
+
+/* 作品画像はドット化しない（§5.2）。届かないときは .capsule-q の「？」のまま。 */
+.float-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.float-name {
+  max-width: 100%;
+  font-family: var(--font-body);
+  font-size: 0.66rem;
+  line-height: 1.3;
+  color: var(--text);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 中央の配合装置（小さな × → 2選択で ▶ に変わる） */
+.float-device {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  background: var(--window-2);
+  border: 2px solid var(--line);
+}
+
+.float-device.is-ready {
+  background: var(--lab-mint);
+  color: var(--lab-ink);
+}
+
+.float-go {
+  display: block;
+  width: calc(100% - 16px);
+  margin: 0 8px 8px;
+  font-family: var(--font-dot);
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  padding: 8px 10px;
+  background: var(--action);
+  color: var(--action-ink);
+  border: 3px solid var(--line);
+  box-shadow:
+    inset 0 0 0 2px var(--inner),
+    3px 3px 0 var(--shadow);
+  cursor: pointer;
+}
+
+.float-go:hover:not(:disabled) {
+  filter: brightness(1.07);
+}
+
+.float-go:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow:
+    inset 0 0 0 2px var(--inner),
+    1px 1px 0 var(--shadow);
+}
+
+.float-go:disabled {
+  background: var(--window-2);
+  color: var(--text-dim);
+  cursor: not-allowed;
+  opacity: 0.75;
+}
+
+/* 選択が増えたときの一度きりのフラッシュ（main.ts が is-flash / is-blink を付ける） */
+@keyframes float-capsule-flash {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 var(--lab-yellow);
+  }
+  50% {
+    transform: scale(1.06);
+    box-shadow: 0 0 0 2px var(--lab-yellow);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+@keyframes float-device-flash {
+  0%,
+  100% {
+    background: var(--lab-mint);
+  }
+  50% {
+    background: var(--lab-yellow);
+  }
+}
+
+.float-slot.is-flash {
+  animation: float-capsule-flash 240ms ease 1;
+}
+
+.float-device.is-blink {
+  animation: float-device-flash 240ms steps(1, end) 2; /* 2選択で2回だけ点滅（常時点滅はしない） */
+}
+
+/* --- スマホ: 下部の横長バー ---------------------------------------------- */
+@media (max-width: 760px) {
+  .float-machine {
+    left: 8px;
+    right: 8px;
+    bottom: 0;
+    width: auto;
+    transform-origin: bottom center;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
+    box-shadow:
+      inset 0 0 0 2px var(--inner),
+      0 -4px 0 var(--shadow);
+  }
+
+  .float-head {
+    flex: none;
+    padding: 3px 8px;
+  }
+
+  /* 幅が足りないため見出し文字は隠す。選択数のチップは残す */
+  .float-title {
+    display: none;
+  }
+
+  .float-body {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 0;
+    gap: 4px;
+  }
+
+  .float-slot {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 4px;
+  }
+
+  .float-thumb {
+    width: 40px;
+    max-width: 40px;
+    flex: none;
+  }
+
+  /* 名前はバー幅を圧迫しないよう視覚的に隠す。読み上げ・title には全文残す */
+  .float-name {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .float-go {
+    flex: none;
+    width: auto;
+    margin: 0;
+    padding: 8px 10px;
+    font-size: 0.8rem;
+  }
+
+  /* バーに隠れないよう本文の下余白を確保（バー高さ + safe-area 相当） */
+  html.has-float body {
+    padding-bottom: calc(72px + env(safe-area-inset-bottom));
+  }
+}

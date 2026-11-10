@@ -11,6 +11,7 @@ import rawSampleOff from '../data/offspring.sample.json';
 import { isCandidatesFile } from '../lib/candidates.ts';
 import { BLEND_MODE_DESCRIPTIONS } from '../lib/types.ts';
 import { parseBreedingIssue } from '../lib/issue.ts';
+import { installMemoryStorage } from './helpers/memory-storage.ts';
 
 const candFileValid = isCandidatesFile(rawCandidates);
 /** 候補JSONが有効なら6件（実データ）、無効なら開発用サンプル4件がカードになる。 */
@@ -18,6 +19,9 @@ const expectedCards = candFileValid ? rawCandidates.candidates.length : 4;
 
 async function boot() {
   vi.resetModules(); // main.ts を毎回再実行する
+  // 選択の永続化（issue #26）が前のテストの選択を引き継がないようにする
+  installMemoryStorage();
+  document.documentElement.classList.remove('has-float');
   document.body.innerHTML = '<div id="app"></div>';
   await import('../public/main.ts');
   const cards = () => Array.from(document.querySelectorAll<HTMLElement>('.candidate'));
