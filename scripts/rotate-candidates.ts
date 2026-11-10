@@ -28,12 +28,13 @@ import { existsSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildCandidatesFile, candidateSlotKey, nextSlotKey } from '../lib/candidates.ts';
+import { readDeletedOffspringIds } from '../lib/deleted-offspring.ts';
 import {
   intervalLabel,
   parseScheduleConfig,
   type ScheduleConfig,
 } from '../lib/schedule.ts';
-import type { ProtopediaWork } from '../lib/types.ts';
+import type { Offspring, ProtopediaWork } from '../lib/types.ts';
 
 const REPO_ROOT = fileURLToPath(new URL('../', import.meta.url));
 const OUT_PATH = fileURLToPath(new URL('../data/current-candidates.json', import.meta.url));
@@ -43,6 +44,44 @@ const POOL_FILES = [
   fileURLToPath(new URL('../data/prototypes.json', import.meta.url)),
   fileURLToPath(new URL('../data/sample-prototypes.json', import.meta.url)),
 ];
+/** AI生成アイデアの候補元（issue #36）。読み込み失敗・不正は「候補なし」として扱う。 */
+const OFFSPRING_FILE = fileURLToPath(new URL('../data/offspring.json', import.meta.url));
+
+/**
+ * 候補にできるAI生成アイデアのID。
+ * - 削除済み（data/deleted-offspring.json の台帳）は除外 = 削除済み発明が候補に復活しない
+ * - 開発用サンプル（sample）は除外（本番の候補と混同させない）
+ * - `status: 'idea'` 以外（公開していない状態）は除外
+ * - 読めない・形が不正なら空（= ProtoPedia候補で埋まる）にして続行する
+ */
+function readEligibleOffspringIds(): string[] {
+  if (!existsSync(OFFSPRING_FILE)) return [];
+  let retired: string[] = [];
+  try {
+    retired = readDeletedOffspringIds();
+  } catch {
+    console.error('⚠️ data/deleted-offspring.json を読めないため、削除済みIDの除外ができません（候補のAI生成アイデアを0件にします）');
+    return [];
+  }
+  const retiredSet = new Set(retired);
+  let raw: unknown;
+  try {
+    raw = JSON.parse(readFileSync(OFFSPRING_FILE, 'utf8'));
+  } catch {
+    return [];
+  }
+  if (!Array.isArray(raw)) return [];
+  const ids: string[] = [];
+  for (const item of raw as Partial<Offspring>[]) {
+    if (!item || typeof item !== 'object') continue;
+    if (typeof item.id !== 'string' || !/^mashup-\d{1,9}$/.test(item.id)) continue;
+    if (retiredSet.has(item.id)) continue; // 削除済みは再登場させない（issue #32 / #36）
+    if (item.sample === true) continue; // 開発用サンプルは本番候補に混ぜない
+    if (item.status !== 'idea') continue; // 未公開・失敗などは候補にしない
+    ids.push(item.id);
+  }
+  return ids;
+}
 
 /**
  * config/schedule.json を読み込み検証する。
@@ -144,18 +183,26 @@ function main(): void {
     process.exit(1);
   }
 
+  // AI生成アイデアの候補（issue #36）。0件なら ProtoPedia 候補だけで埋まる。
+  const offspringIds = readEligibleOffspringIds();
+
   // buildCandidatesFile はプール0件で例外（= ここに来るのは1件以上）。
   const file = buildCandidatesFile(pool, slot, repoRelative(source), new Date(), {
     slotMinutes: cfg.candidateRotationMinutes,
     maxCandidates: cfg.maxCandidates,
+    offspringIds,
   });
 
   console.log(
-    `✅ slot=${file.slot} 候補${file.candidates.length}件（プール${pool.length}件 / source=${source}）`,
+    `✅ slot=${file.slot} 候補${file.candidates.length + (file.offspringCandidates?.length ?? 0)}件` +
+      `（ProtoPedia ${file.candidates.length}件 + AI生成 ${file.offspringCandidates?.length ?? 0}件 / プール${pool.length}件 / source=${source}）`,
   );
   for (const c of file.candidates) {
     const by = c.authors && c.authors.length > 0 ? ` / ${c.authors[0]}` : '';
     console.log(`   - ${c.id} ${c.title}${by}`);
+  }
+  for (const id of file.offspringCandidates ?? []) {
+    console.log(`   - ${id}（AI生成アイデア・候補元 ${offspringIds.length}件から選出）`);
   }
   console.log(
     `   次回更新予定: ${file.nextSlot}（UTCの${cfg.candidateRotationMinutes}分間隔の境界で切り替わり）`,

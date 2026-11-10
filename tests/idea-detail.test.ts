@@ -8,7 +8,7 @@
  * - 存在しないID → 404相当、画像なし → プレースホルダ、欠損でも壊さない、XSS安全
  */
 import { beforeEach, expect, it } from 'vitest';
-import type { Offspring, ProtopediaWork } from '../lib/types.ts';
+import { BLEND_MODE_DESCRIPTIONS, type Offspring, type ProtopediaWork } from '../lib/types.ts';
 import sampleOffspring from '../data/offspring.sample.json';
 import {
   buildIdeaDetail,
@@ -227,4 +227,35 @@ it('フッターにGitHubリポジトリへのリンク（issue #30 / 未設定�
   expect(link?.getAttribute('target')).toBe('_blank');
   const host2 = build('mashup-000001', fixtures, { ...ctx, repoCfg: null });
   expect(host2.querySelector('.ideas-foot .foot-links')).toBeNull();
+});
+
+it('上部に配合タイプのバッジと配合方法の説明を表示する（issue #31）', () => {
+  const host = build('mashup-000001');
+  const badge = host.querySelector('.det-hero .idea-badges .badge.mode');
+  expect(badge?.textContent).toBe('単純配合'); // 実データ mode: fusion の表示名
+  const note = host.querySelector('.det-mode-note');
+  expect(note?.textContent).toContain('配合方法:');
+  expect(note?.textContent).toContain(BLEND_MODE_DESCRIPTIONS.fusion);
+  // 発明名・世代・誕生日時の並び（バッジはこの上部領域にある）
+  expect(host.querySelector('.det-title')?.textContent).toBeTruthy();
+  expect(host.querySelector('.idea-badges .badge.gen')?.textContent).toMatch(/第\d+世代/);
+  expect(host.querySelector('.det-meta')?.textContent).toContain('誕生日時');
+});
+
+it('mode 未記録・未知の値は「配合タイプ不明」で、説明も undefined も出さない（issue #31）', () => {
+  // 過去データに配合タイプが無いケース
+  const noMode = [{ ...fixtures[0], mode: undefined }] as unknown as Offspring[];
+  const h1 = build('mashup-000001', noMode);
+  expect(h1.querySelector('.det-hero .badge.mode')?.textContent).toBe('配合タイプ不明');
+  const note1 = h1.querySelector('.det-mode-note');
+  expect(note1?.textContent).not.toContain('配合方法:'); // 説明を当てはめない
+  expect(note1?.textContent).not.toContain('2つの発明'); // 単純配合の説明を勝手に足さない
+  expect(h1.textContent).not.toContain('undefined'); // 「undefined」表示の防止
+  expect(h1.textContent).not.toContain('fusion'); // 生値も出さない
+
+  // 未知の値（実在しない配合タイプ名）
+  const unknown = [{ ...fixtures[0], mode: 'simple' }] as unknown as Offspring[];
+  const h2 = build('mashup-000001', unknown);
+  expect(h2.querySelector('.det-hero .badge.mode')?.textContent).toBe('配合タイプ不明');
+  expect(h2.querySelector('.det-mode-note')?.textContent).not.toContain('配合方法:');
 });

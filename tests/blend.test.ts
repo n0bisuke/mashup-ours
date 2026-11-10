@@ -14,7 +14,12 @@ import {
   type BlendInput,
   type GeneratedIdea,
 } from '../lib/blend.ts';
-import type { BreedingMode } from '../lib/types.ts';
+import {
+  BLEND_MODE_DESCRIPTIONS,
+  blendModeDescription,
+  blendModeLabel,
+  type BreedingMode,
+} from '../lib/types.ts';
 
 const elements = {
   technology: '位置センサーとLED',
@@ -94,6 +99,10 @@ function validIdea(overrides: Partial<GeneratedIdea> = {}): GeneratedIdea {
     inheritedFromB: '手紙の声で場面を伝える体験',
     blendType: 'fusion',
     imagePrompt: 'a small handheld device glowing along a historic street',
+    // 検索用メタデータ（issue #38）
+    technologies: [],
+    domains: [],
+    keywords: [],
     ...overrides,
   };
 }
@@ -196,5 +205,23 @@ describe('buildImagePrompt（issue #16 §8）', () => {
   it('超長の imagePrompt でも上限を超えない', () => {
     const huge = validIdea({ imagePrompt: 'x'.repeat(3000) });
     expect(buildImagePrompt(huge).length).toBeLessThanOrEqual(2048);
+  });
+});
+
+describe('blendModeLabel / blendModeDescription（配合タイプの表示 / issue #31）', () => {
+  it('実データの mode（申請時に指定された値）だけで表示名を返す', () => {
+    expect(blendModeLabel('fusion')).toBe('単純配合');
+    expect(blendModeLabel('genetic')).toBe('遺伝子配合');
+    expect(blendModeLabel('mutation')).toBe('突然変異配合');
+    expect(blendModeDescription('fusion')).toBe(BLEND_MODE_DESCRIPTIONS.fusion);
+    expect(blendModeDescription('genetic')).toBe(BLEND_MODE_DESCRIPTIONS.genetic);
+    expect(blendModeDescription('mutation')).toBe(BLEND_MODE_DESCRIPTIONS.mutation);
+  });
+
+  it('未記録・未知の値は「配合タイプ不明」（単純配合と見なさない / 推測しない）', () => {
+    for (const bad of [undefined, null, '', 'simple', 'SIMPLE', 'fusion ', 1, {}, []]) {
+      expect(blendModeLabel(bad), `mode=${JSON.stringify(bad)}`).toBe('配合タイプ不明');
+      expect(blendModeDescription(bad), `mode=${JSON.stringify(bad)}`).toBe(''); // 説明も出さない
+    }
   });
 });

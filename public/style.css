@@ -257,6 +257,18 @@ header.hero h1 {
   min-width: 0;
 }
 
+/* 研究所の肩書き（issue #38 §2）: ロゴより一回り小さく、レトロ調の添え書き。
+   肩書き → ロゴ（h1）→ コピー の順に読ませるため、h1 より控えめな字面と色にする。 */
+.hero-katagi {
+  margin: 0 0 4px;
+  font-family: var(--font-dot);
+  font-weight: normal;
+  font-size: clamp(0.78rem, 2vw, 1rem);
+  letter-spacing: 0.16em;
+  line-height: 1.4;
+  color: var(--text-dim);
+}
+
 .logo-yomi {
   font-family: var(--font-body);
   font-weight: 400;
@@ -627,6 +639,13 @@ button.breed:disabled {
 }
 
 .candidate.is-b .thumb {
+  border-color: var(--series-2);
+}
+
+/* AI生成アイデアの候補カード（issue #36）: 破線枠で ProtoPedia（実線）と区別。
+   色だけに依存させないため、カード内に「AI生成アイデア・未実装」のラベルも出す。 */
+.candidate.child-card .thumb {
+  border-style: dashed;
   border-color: var(--series-2);
 }
 
@@ -1078,6 +1097,11 @@ button.linkish:hover {
 @media (max-width: 760px) {
   .hero-top {
     flex-direction: column;
+  }
+
+  /* 狭い画面では肩書きも字間を詰めてはみ出さない */
+  .hero-katagi {
+    letter-spacing: 0.1em;
   }
 
   /* 狭い画面では読み仮名をロゴの下に小さく（横にはみ出さない） */
@@ -2118,6 +2142,17 @@ a.idea-open .idea-thumb {
   overflow-wrap: anywhere;
 }
 
+/* 配合方法の説明（issue #31）。配合タイプバッジと同じ --lab-mint の左線で関連づける。
+   テキスト色は --text-dim（AA）= ライト/ダーク両テーマ対応。 */
+.det-mode-note {
+  margin: 8px 0 0;
+  padding-left: 10px;
+  border-left: 3px solid var(--lab-mint);
+  font-size: 0.88rem;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
 .det-meta {
   font-size: 0.82rem;
   overflow-wrap: anywhere;
@@ -2542,4 +2577,421 @@ a.idea-open .idea-thumb {
   html.has-float body {
     padding-bottom: calc(72px + env(safe-area-inset-bottom));
   }
+}
+
+/* =========================================================================
+   配合申請前の案内ダイアログ（issue #35）
+   既存の .window（太枠+インセット+ハードシャドウ）と博士スプライトを再利用。
+   「GitHubにログインして緑色のボタンを押すだけ」を、吹き出しで案内する。
+   ========================================================================= */
+
+body.guide-locked {
+  /* ダイアログ表示中の背景スクロールを止める */
+  overflow: hidden;
+}
+
+.guide-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(16, 21, 31, 0.55);
+}
+
+.guide-overlay[hidden] {
+  display: none;
+}
+
+.guide {
+  width: min(660px, 100%);
+  max-height: calc(100dvh - 32px);
+  overflow: auto;
+  outline: none;
+}
+
+.guide .titlebar #guide-title {
+  overflow-wrap: anywhere;
+}
+
+.guide-x {
+  font-family: var(--font-dot);
+  font-size: 1rem;
+  line-height: 1;
+  padding: 3px 8px;
+  color: var(--lab-paper);
+  background: transparent;
+  border: 2px solid var(--lab-paper);
+  border-radius: 0;
+  cursor: pointer;
+}
+
+.guide-x:hover {
+  background: rgba(247, 233, 201, 0.22);
+}
+
+.guide-body {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 16px 18px 4px;
+}
+
+.guide-char {
+  flex: none;
+}
+
+.guide-char .char {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.guide-char .char-img {
+  width: clamp(76px, 18vw, 104px);
+}
+
+/* レトロゲームの会話ウィンドウ（左に博士、右に吹き出し） */
+.guide-bubble {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  background: var(--window);
+  border: 3px solid var(--line);
+  box-shadow:
+    inset 0 0 0 2px var(--inner),
+    4px 4px 0 var(--shadow);
+  padding: 12px 14px;
+}
+
+.guide-bubble::before {
+  content: '';
+  position: absolute;
+  left: -9px;
+  top: 24px;
+  width: 14px;
+  height: 14px;
+  background: var(--window);
+  border-left: 3px solid var(--line);
+  border-bottom: 3px solid var(--line);
+  transform: rotate(45deg);
+}
+
+.guide-line {
+  margin: 0 0 6px;
+  font-size: clamp(0.95rem, 2.4vw, 1.05rem);
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.guide-line:first-child {
+  font-family: var(--font-dot);
+  font-size: clamp(1rem, 2.6vw, 1.15rem);
+  letter-spacing: 0.04em;
+}
+
+.guide-note {
+  margin: 8px 0 10px;
+  padding: 8px 10px;
+  background: var(--window-2);
+  border: 2px dashed var(--line);
+  font-size: 0.9rem;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+.guide-steps {
+  margin: 0 0 6px;
+  padding-left: 1.5em;
+  font-size: 0.95rem;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+.guide-steps li::marker {
+  font-family: var(--font-dot);
+  color: var(--link);
+}
+
+.guide-stepnote {
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.guide-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: flex-end;
+  padding: 12px 18px 16px;
+}
+
+.guide-back,
+.guide-open {
+  font-family: var(--font-dot);
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  padding: 10px 16px;
+  border: 3px solid var(--line);
+  border-radius: 0;
+  box-shadow:
+    inset 0 0 0 2px var(--inner),
+    3px 3px 0 var(--shadow);
+  cursor: pointer;
+  transition:
+    transform 0.08s ease,
+    filter 0.12s ease;
+}
+
+.guide-back {
+  background: var(--window-2);
+  color: var(--text);
+}
+
+.guide-open {
+  background: var(--action);
+  color: var(--action-ink);
+}
+
+.guide-open:hover,
+.guide-back:hover {
+  filter: brightness(1.07);
+}
+
+.guide-open:active,
+.guide-back:active {
+  transform: translate(2px, 2px);
+  box-shadow:
+    inset 0 0 0 2px var(--inner),
+    1px 1px 0 var(--shadow);
+}
+
+@media (max-width: 560px) {
+  .guide-body {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 14px 14px 4px;
+  }
+
+  .guide-char .char-img {
+    width: clamp(72px, 24vw, 96px);
+  }
+
+  /* 吹き出しの尻尾は縦組みでは意味を持たないため出さない */
+  .guide-bubble::before {
+    display: none;
+  }
+
+  .guide-actions {
+    flex-direction: column-reverse;
+    padding: 12px 14px 14px;
+  }
+
+  .guide-actions button {
+    width: 100%;
+  }
+}
+
+/* --- アイデア検索（issue #38: 技術 × 分野の掛け合わせ検索） ---------------- */
+
+.section.idea-search {
+  margin-top: 4px;
+}
+
+.idea-search h3 {
+  margin: 0;
+  font-family: var(--font-dot);
+  font-weight: normal;
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  color: var(--text);
+}
+
+.search-hint {
+  margin: 6px 0 12px;
+  font-size: 0.85rem;
+  line-height: 1.7;
+}
+
+/* 入力（横並び → 狭い画面では縦積み。指でも押しやすい高さを保つ） */
+.search-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.search-input {
+  flex: 1 1 220px;
+  min-width: 0;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--text);
+  background: var(--window-2);
+  border: 2px solid var(--line);
+  box-shadow: inset 0 0 0 2px var(--inner);
+  border-radius: 0;
+  padding: 9px 12px;
+}
+
+.search-input::placeholder {
+  color: var(--text-dim);
+}
+
+.search-input:focus-visible,
+.search-select:focus-visible,
+.search-btn:focus-visible,
+.search-clear:focus-visible,
+button.tag-chip:focus-visible {
+  outline: 3px solid var(--series-1);
+  outline-offset: 2px;
+}
+
+.search-select {
+  flex: 0 1 auto;
+  min-width: 8.5em;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--text);
+  background: var(--window-2);
+  border: 2px solid var(--line);
+  border-radius: 0;
+  padding: 9px 8px;
+  cursor: pointer;
+}
+
+.search-btn,
+.search-clear {
+  font-family: var(--font-dot);
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  border: 2px solid var(--line);
+  border-radius: 0;
+  padding: 9px 14px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.search-btn {
+  color: var(--lab-paper);
+  background: var(--line);
+  box-shadow: 3px 3px 0 var(--shadow);
+}
+
+.search-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--shadow);
+}
+
+.search-clear {
+  color: var(--text);
+  background: var(--window-2);
+}
+
+.search-clear:hover {
+  background: var(--window);
+}
+
+/* 絞り込み中であることは「チップの色」だけに頼らず文言でも示す */
+.chip.is-filtered {
+  background: var(--series-1);
+  border-color: var(--line);
+  color: var(--text);
+}
+
+/* カードのタグ（ボタン = 絞り込みの入口 / span = 表示のみ） */
+.idea-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+button.tag-chip {
+  font: inherit;
+  font-family: var(--font-dot);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+  color: var(--text-dim);
+  background: var(--window-2);
+  border: 2px solid var(--inner);
+  border-radius: 999px;
+  padding: 1px 9px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+button.tag-chip:hover {
+  color: var(--text);
+  border-color: var(--line);
+}
+
+button.tag-chip.is-active {
+  color: var(--text);
+  background: var(--series-1);
+  border-color: var(--line);
+  /* 色だけに頼らない: 押下済みは下線でも示す */
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* キーワード検索で一致した項目（どの項目に一致したか） */
+.idea-match {
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+}
+
+/* 検索0件（一覧なしのときの空状態） */
+.ideas-empty.search-empty {
+  margin-top: 16px;
+}
+
+@media (max-width: 560px) {
+  .search-row {
+    flex-direction: column;
+  }
+
+  .search-select,
+  .search-btn,
+  .search-clear {
+    width: 100%;
+  }
+}
+
+/* --- 個別ページの技術・分野タグ（issue #38 §8） --------------------------- */
+
+.det-tags {
+  display: grid;
+  gap: 8px;
+}
+
+.det-tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+}
+
+.det-tag-row .lbl {
+  font-family: var(--font-dot);
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  margin-right: 2px;
+}
+
+a.tag-chip {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+a.tag-chip:hover {
+  color: var(--text);
+  border-color: var(--line);
 }

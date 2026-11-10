@@ -31,8 +31,15 @@ export interface CandidatesFile {
   nextSlot: string;
   /** 候補元のデータファイル（例: "data/sample-prototypes.json"）。 */
   source: string;
-  /** このスロットの候補（最大6件・ID重複なし）。 */
+  /** このスロットのProtoPedia候補（最大6件・ID重複なし）。 */
   candidates: ProtopediaWork[];
+  /**
+   * このスロットの候補に含まれるAI生成アイデア（issue #36）。
+   * 0件 = AI生成アイデアが無いときは ProtoPedia 候補だけで埋まる。
+   * 既存ファイルに無くても良い（未定義 = AI生成候補なし）。
+   * 中身はIDだけ。実体は data/offspring.json 側にあり、UIはIDで解決する。
+   */
+  offspringCandidates?: string[];
 }
 
 const SLOT_RE = /^\d{4}-\d{2}-\d{2}T\d{4}$/;
@@ -94,6 +101,41 @@ export function selectCandidates(
   return uniq.slice(0, Math.min(count, uniq.length));
 }
 
+/**
+ * AI生成アイデアから候補を1件だけ選ぶ（issue #36）。
+ * - ProtoPedia候補と区別して1枠に1件（原則）。0件なら `null`（= ProtoPedia 6件で埋める）。
+ * - 同じ（プール, スロット）なら常に同じ結果（15分枠内で不変 = 全ユーザー共通）。
+ * - 削除済み・非公開・不正IDの除外は呼び出し側で行い、ここでは重複排除と選出だけをする。
+ */
+export function selectOffspringCandidate(
+  offspringIds: readonly string[],
+  slot: string,
+): string | null {
+  const seen = new Set<string>();
+  const uniq: string[] = [];
+  for (const id of offspringIds) {
+    if (typeof id !== 'string' || !/^mashup-\d{1,9}$/.test(id) || seen.has(id)) continue;
+    seen.add(id);
+    uniq.push(id);
+  }
+  if (uniq.length === 0) return null;
+  // ID昇順で安定ソートしてからシャッフル（入力ファイルの並び順に依存しない）
+  const digits = (id: string): number => {
+    const m = /(\d+)$/.exec(id);
+    return m ? Number(m[1]) : Number.MAX_SAFE_INTEGER;
+  };
+  uniq.sort((a, b) => digits(a) - digits(b));
+  // 決定的なシャッフル（selectCandidates と同じシード = 同じスロットなら同じ結果）
+  const rnd = mulberry32(hashSlot(`${slot}|offspring`));
+  for (let i = uniq.length - 1; i > 0; i--) {
+    const j = Math.floor(rnd() * (i + 1));
+    const tmp = uniq[i];
+    uniq[i] = uniq[j];
+    uniq[j] = tmp;
+  }
+  return uniq[0];
+}
+
 /** 間隔（分）の形式検証（不正は例外）。config/schedule.json の検証とは独立に呼べる。 */
 function assertSlotMinutes(slotMinutes: number): void {
   if (!Number.isInteger(slotMinutes) || slotMinutes < 1) {
@@ -137,17 +179,22 @@ export function nextSlotKey(slot: string, slotMinutes: number = CANDIDATE_SLOT_M
 /**
  * 候補JSONを組み立てる。プール0件は例外（= 既存ファイルを更新しない）。
  * opts: 間隔（分）と候補件数の上限（config/schedule.json から渡す / issue #15）。
+ * opts.offspringIds: 候補にできるAI生成アイデア（issue #36）。1件選出したら
+ * **合計が maxCandidates を超えないよう ProtoPedia 候補を1件減らす**。
+ * 0件なら従来どおり ProtoPedia だけで maxCandidates 件。
  */
 export function buildCandidatesFile(
   pool: readonly ProtopediaWork[],
   slot: string,
   source: string,
   now: Date = new Date(),
-  opts: { slotMinutes?: number; maxCandidates?: number } = {},
+  opts: { slotMinutes?: number; maxCandidates?: number; offspringIds?: readonly string[] } = {},
 ): CandidatesFile {
   const slotMinutes = opts.slotMinutes ?? CANDIDATE_SLOT_MINUTES;
   const maxCandidates = opts.maxCandidates ?? CANDIDATES_PER_SLOT;
-  const candidates = selectCandidates(pool, slot, maxCandidates);
+  const offspringId = selectOffspringCandidate(opts.offspringIds ?? [], slot);
+  const protoCount = Math.max(1, maxCandidates - (offspringId !== null ? 1 : 0));
+  const candidates = selectCandidates(pool, slot, protoCount);
   if (candidates.length === 0) {
     throw new Error('選出できる作品がありません（プールが空のため候補を更新しません）');
   }
@@ -158,6 +205,7 @@ export function buildCandidatesFile(
     nextSlot: nextSlotKey(slot, slotMinutes),
     source,
     candidates,
+    ...(offspringId !== null ? { offspringCandidates: [offspringId] } : {}),
   };
 }
 
@@ -180,6 +228,20 @@ export function isCandidatesFile(
   if (typeof f.source !== 'string' || f.source.length === 0) return false;
   if (!Array.isArray(f.candidates)) return false;
   if (f.candidates.length === 0 || f.candidates.length > maxCandidates) return false;
+
+  // AI生成アイデアの候補（issue #36）。未定義（旧ファイル）は「なし」として受理する。
+  let offspringCount = 0;
+  if (f.offspringCandidates !== undefined) {
+    if (!Array.isArray(f.offspringCandidates)) return false;
+    const offIds = new Set<string>();
+    for (const id of f.offspringCandidates) {
+      if (typeof id !== 'string' || !/^mashup-\d{1,9}$/.test(id) || offIds.has(id)) return false;
+      offIds.add(id);
+    }
+    offspringCount = f.offspringCandidates.length;
+  }
+  // 合計は maxCandidates 件以下（ProtoPedia 6件 + AI 1件 = 7件にはならない）
+  if (f.candidates.length + offspringCount > maxCandidates) return false;
 
   const ids = new Set<string>();
   for (const c of f.candidates) {

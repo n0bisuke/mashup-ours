@@ -154,6 +154,21 @@ export async function listRecentIssues(
   return out;
 }
 
+/**
+ * 1件の Issue を取得する（state 不問・PR除外 / issue #37）。
+ * 既存の発明が `requestHash` を持たない場合に、**元の申請Issue本文から**
+ * 配合条件を復元するために使う（復元できないときは推測しない）。
+ */
+export async function getIssue(issueNumber: number, opts: GhOptions): Promise<IssueRecord> {
+  if (!Number.isInteger(issueNumber) || issueNumber <= 0) {
+    throw new GitHubApiError('Issue番号が不正です');
+  }
+  const row = (await ghGet(`/repos/${opts.repo}/issues/${issueNumber}`, opts)) as RawIssue | null;
+  const rec = row ? toIssueRecord(row) : null;
+  if (!rec) throw new GitHubApiError('Issueとして読めないレスポンス');
+  return rec;
+}
+
 /** Issueへコメント（本文は文字列のままJSONで送る = shell を介さない）。 */
 export async function commentIssue(
   issueNumber: number,

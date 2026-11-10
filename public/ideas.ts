@@ -1,10 +1,23 @@
 import './style.css';
 import type { Offspring, ParentId, ProtopediaWork } from '../lib/types.ts';
-import { BLEND_MODE_LABELS } from '../lib/types.ts';
+import { blendModeLabel } from '../lib/types.ts';
 import { repoConfigFromEnv } from '../lib/config.ts';
 import { formatDateTimeJSTWithNote } from '../lib/datetime.ts';
 import { CANDIDATES_PER_SLOT, isCandidatesFile } from '../lib/candidates.ts';
 import { intervalLabel, resolveSchedule } from '../lib/schedule.ts';
+import {
+  EMPTY_QUERY,
+  MATCH_FIELD_LABELS,
+  buildSearchIndex,
+  facetOptions,
+  isEmptyQuery,
+  parseSearchQuery,
+  searchIdeas,
+  searchQueryString,
+  type MatchField,
+  type SearchHit,
+  type SearchQuery,
+} from '../lib/search.ts';
 import rawOffspring from '../data/offspring.json';
 import rawCandidates from '../data/current-candidates.json';
 import sampleWorksJson from '../data/protopedia-sample.json';
@@ -89,16 +102,28 @@ function parentRef(
   return { text, href: `${base}ideas/${encodeURIComponent(id)}/`, external: false };
 }
 
+/** カードに追加する検索まわりの表示（issue #38）。 */
+interface IdeaItemExtras {
+  /** キーワード検索で一致した項目（「どこに一致したか」を示す）。 */
+  matched?: MatchField[];
+  /** 技術・分野タグのクリック（絞り込みへ）。未指定ならタグは表示のみ。 */
+  onTag?: (kind: 'tech' | 'domain', value: string) => void;
+  /** いま選択中の絞り込み（選択中のタグを目立たせる）。 */
+  active?: { tech: string; domain: string };
+}
+
 function buildIdeaItem(
   c: Offspring,
   ctx: IdeasContext,
   titleOf: Map<string, string>,
+  extras: IdeaItemExtras = {},
 ): HTMLElement {
   const li = el('li', { class: 'idea-item', 'data-id': c.id });
 
   const badges = el('div', { class: 'idea-badges' }, el('span', { class: 'badge idea' }, '未実装のアイデア'));
   badges.append(el('span', { class: 'badge gen' }, `第${c.generation}世代`));
-  badges.append(el('span', { class: 'badge mode' }, BLEND_MODE_LABELS[c.mode] ?? c.mode));
+  // 表示名は個別ページと同じ blendModeLabel（統一 / 未記録は「配合タイプ不明」）
+  badges.append(el('span', { class: 'badge mode' }, blendModeLabel(c.mode)));
   if (c.sample) badges.append(el('span', { class: 'badge sample' }, 'SAMPLE'));
 
   const pa = parentRef(c.parents[0], ctx.base, titleOf);
@@ -165,8 +190,58 @@ function buildIdeaItem(
     el('p', { class: 'idea-summary' }, c.summary || '（概要なし）'),
   );
 
+  // 技術・分野タグ（issue #38）。タグ自体が絞り込みの入口になる。
+  // <a> の内側に置かない（リンクの入れ子を避けるためボタンで作る）。
+  const tagEntries: { kind: 'tech' | 'domain'; value: string }[] = [
+    ...(c.technologies ?? []).map((value) => ({ kind: 'tech' as const, value })),
+    ...(c.domains ?? []).map((value) => ({ kind: 'domain' as const, value })),
+  ];
+  let tagRow: HTMLElement | null = null;
+  if (tagEntries.length > 0) {
+    const row = el('div', { class: 'idea-tags' });
+    for (const { kind, value } of tagEntries) {
+      const selected =
+        extras.active !== undefined &&
+        (kind === 'tech' ? extras.active.tech : extras.active.domain) === value;
+      if (extras.onTag) {
+        const onTag = extras.onTag;
+        const btn = el(
+          'button',
+          {
+            class: `tag-chip${selected ? ' is-active' : ''}`,
+            type: 'button',
+            'data-kind': kind,
+            'data-value': value,
+            'aria-pressed': selected ? 'true' : 'false',
+          },
+          value,
+        );
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          onTag(kind, value);
+        });
+        row.append(btn);
+      } else {
+        row.append(el('span', { class: 'tag-chip' }, value));
+      }
+    }
+    tagRow = row;
+  }
+
+  // キーワード検索の一致項目（issue #38 §6: どの項目に一致したか判別できる構造）。
+  const matchHint =
+    extras.matched && extras.matched.length > 0
+      ? el(
+          'div',
+          { class: 'idea-match hint' },
+          `${extras.matched.map((f) => MATCH_FIELD_LABELS[f]).join('・')} に一致`,
+        )
+      : null;
+
   li.append(
     open,
+    ...(tagRow ? [tagRow] : []),
+    ...(matchHint ? [matchHint] : []),
     el(
       'div',
       { class: 'idea-parents' },
@@ -181,11 +256,20 @@ function buildIdeaItem(
   return li;
 }
 
+/** /ideas ページ本体の構築オプション（issue #38）。 */
+export interface IdeasOptions {
+  /** 初期の検索クエリ（テスト用。本番は URL の ?q=&tech=&domain= から読み込む）。 */
+  initialQuery?: SearchQuery;
+  /** URL との同期（既定 true）。 false なら履歴操作をしない（テストで履歴を汚さない）。 */
+  syncUrl?: boolean;
+}
+
 /** /ideas ページ本体を host に構築する（テストから直接呼けるよう純関数寄りに）。 */
 export function buildIdeasPage(
   host: HTMLElement,
   list: Offspring[],
   ctx: IdeasContext,
+  opts: IdeasOptions = {},
 ): void {
   host.replaceChildren();
 
@@ -264,6 +348,7 @@ export function buildIdeasPage(
 
   // --- 一覧パネル -----------------------------------------------------------
   const sorted = [...list].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  const countChip = el('span', { class: 'chip' }, `全${sorted.length}件`);
   const panel = el(
     'div',
     { class: 'lab-panel' },
@@ -276,7 +361,7 @@ export function buildIdeasPage(
         el('h2', {}, 'アイデア一覧'),
         el('p', { class: 'lab-sub' }, 'ALL GENERATED IDEAS'),
       ),
-      el('span', { class: 'chip' }, `全${sorted.length}件`),
+      countChip,
     ),
   );
 
@@ -295,9 +380,145 @@ export function buildIdeasPage(
       ),
     );
   } else {
-    const ul = el('ul', { class: 'ideas-list' });
-    for (const c of sorted) ul.append(buildIdeaItem(c, ctx, titleOf));
-    panel.append(ul);
+    // --- 検索（issue #38）: ブラウザだけで完結する「技術 × 分野」の掛け合わせ検索 ------
+    // インデックスはビルド時に取り込まれた data/offspring.json から作る
+    // （追加のリクエスト・AI呼び出し・DB/検索サーバは一切ない）。
+    const syncUrl = opts.syncUrl !== false;
+    const index = buildSearchIndex(sorted);
+    const facets = facetOptions(index);
+    const byId = new Map(sorted.map((c) => [c.id, c] as const));
+    let query: SearchQuery = opts.initialQuery
+      ? { ...opts.initialQuery }
+      : typeof location !== 'undefined'
+        ? parseSearchQuery(new URLSearchParams(location.search))
+        : { ...EMPTY_QUERY };
+
+    const input = el('input', {
+      type: 'search',
+      id: 'idea-search-input',
+      class: 'search-input',
+      placeholder: 'キーワード（空白でAND・例: Dify 業務）',
+      'aria-label': '発明をキーワードで探す',
+      maxlength: String(100),
+      value: query.q,
+    }) as HTMLInputElement;
+
+    const makeSelect = (
+      id: string,
+      label: string,
+      values: string[],
+      current: string,
+    ): HTMLSelectElement => {
+      const sel = el('select', { id, class: 'search-select', 'aria-label': label });
+      sel.append(el('option', { value: '' }, 'すべて'));
+      for (const v of values) sel.append(el('option', { value: v }, v));
+      const s = sel as HTMLSelectElement;
+      s.value = current;
+      return s;
+    };
+    const techSel = makeSelect('search-tech', '技術で絞り込み', facets.technologies, query.tech);
+    const domainSel = makeSelect('search-domain', '分野で絞り込み', facets.domains, query.domain);
+
+    const searchBtn = el('button', { class: 'search-btn', type: 'submit' }, '検索 🔍');
+    const clearBtn = el('button', { class: 'search-clear', type: 'button' }, '条件をクリア');
+    const form = el('form', { class: 'search-row' }, input, searchBtn, techSel, domainSel, clearBtn);
+
+    const listEl = el('ul', { class: 'ideas-list' });
+    const emptyMsg = el(
+      'li',
+      { class: 'ideas-empty search-empty' },
+      el('p', { class: 'empty-title' }, '条件に合う発明はまだ見つからないようです。'),
+      el('p', {}, 'キーワードを減らすか、技術・分野の絞り込みを「すべて」に戻してみてね。'),
+    );
+
+    /** 履歴へ記録（共有できるURLにする）。mode: 入力中は replace、選択は push。 */
+    const updateUrl = (mode: 'push' | 'replace'): void => {
+      if (!syncUrl || typeof history === 'undefined') return;
+      const qs = searchQueryString(query);
+      const url = qs ? `${location.pathname}?${qs}` : location.pathname;
+      try {
+        if (mode === 'push') history.pushState({}, '', url);
+        else history.replaceState({}, '', url);
+      } catch {
+        /* 履歴操作できない環境でも検索自体は動く */
+      }
+    };
+
+    const apply = (next: SearchQuery, mode: 'push' | 'replace'): void => {
+      query = next;
+      updateUrl(mode);
+      render();
+    };
+
+    /** タグクリック = その技術/分野で絞り込み（同じタグをもう一度押すと解除）。 */
+    const onTag = (kind: 'tech' | 'domain', value: string): void => {
+      const key = kind === 'tech' ? 'tech' : 'domain';
+      const next: SearchQuery = { ...query, [key]: query[key] === value ? '' : value };
+      apply(next, 'push');
+    };
+
+    function render(): void {
+      const hits = searchIdeas(index, query);
+      const filtering = !isEmptyQuery(query);
+      countChip.textContent = filtering ? `検索結果: ${hits.length}件` : `全${sorted.length}件`;
+      countChip.classList.toggle('is-filtered', filtering);
+      if (input.value !== query.q) input.value = query.q;
+      if (techSel.value !== query.tech) techSel.value = query.tech;
+      if (domainSel.value !== query.domain) domainSel.value = query.domain;
+      clearBtn.hidden = !filtering;
+
+      listEl.replaceChildren();
+      if (filtering && hits.length === 0) {
+        listEl.append(emptyMsg);
+        return;
+      }
+      const active = { tech: query.tech, domain: query.domain };
+      if (!filtering) {
+        for (const c of sorted) listEl.append(buildIdeaItem(c, ctx, titleOf, { onTag, active }));
+        return;
+      }
+      for (const hit of hits) {
+        const c = byId.get(hit.doc.id);
+        if (c) listEl.append(buildIdeaItem(c, ctx, titleOf, { matched: hit.fields, onTag, active }));
+      }
+    }
+
+    // キーワード送信: URL を積む（共有・戻る進むで復元できるように）。
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      apply({ ...query, q: input.value.replace(/\s+/g, ' ').trim().slice(0, 100) }, 'push');
+    });
+    // 入力中は履歴を積まず replace（打鍵で履歴が埋まらない）。結果は入力ごとに絞る。
+    input.addEventListener('input', () => {
+      apply({ ...query, q: input.value.replace(/\s+/g, ' ').trim().slice(0, 100) }, 'replace');
+    });
+    techSel.addEventListener('change', () => apply({ ...query, tech: techSel.value }, 'push'));
+    domainSel.addEventListener('change', () => apply({ ...query, domain: domainSel.value }, 'push'));
+    clearBtn.addEventListener('click', () => apply({ ...EMPTY_QUERY }, 'push'));
+
+    // 戻る・進む（popstate）で URL の条件を復元する（issue #38 §7）。
+    if (syncUrl && typeof window !== 'undefined') {
+      window.addEventListener('popstate', () => {
+        query = parseSearchQuery(new URLSearchParams(location.search));
+        render();
+      });
+    }
+
+    panel.append(
+      el(
+        'section',
+        { class: 'idea-search', 'aria-label': 'アイデアを探す' },
+        el('h3', {}, 'アイデアを探す'),
+        el(
+          'p',
+          { class: 'search-hint hint' },
+          '発明名・概要・仕組み・利用シーンの言葉で探せます。技術と分野は掛け合わせで絞り込めます（授業・ワークショップ向け）。',
+        ),
+        form,
+      ),
+      listEl,
+    );
+    render();
   }
 
   wrap.append(el('section', {}, panel));

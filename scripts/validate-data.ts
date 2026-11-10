@@ -5,13 +5,14 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { CANDIDATES_PER_SLOT, isCandidatesFile } from '../lib/candidates.ts';
 import { computeGeneration, isAncestorDescendantPair, nextOffspringId } from '../lib/generation.ts';
-import { samePair } from '../lib/issue.ts';
+import { isRequestHash } from '../lib/breed-key.ts';
 import {
   DEFAULT_AUTO_REQUEST_IDLE_HOURS,
   isBreedingState,
   parseScheduleConfig,
 } from '../lib/schedule.ts';
 import { parsePromptsConfig } from '../lib/prompts.ts';
+import { parseSearchTaxonomy } from '../lib/search.ts';
 import { ELEMENT_KEYS, isWorkElements } from '../lib/elements.ts';
 import { isProcessedIssues } from '../lib/queue.ts';
 import { isBreedingMode, statusLabel, type Offspring, type Workset } from '../lib/types.ts';
@@ -53,6 +54,24 @@ const promptsParsed = parsePromptsConfig(promptsRaw);
 if (!promptsParsed.ok) fail(`config/prompts.json が不正です: ${promptsParsed.reason}`);
 console.log(
   `✅ config/prompts.json OK（配合タイプ指示${Object.keys(promptsParsed.config.modeInstructions).length}件 / ルール${promptsParsed.config.sharedRules.length}件 / 画像スタイル${promptsParsed.config.imageStyleSuffix.length}字）`,
+);
+
+// --- config/search-taxonomy.json（検索の分類 / issue #38） ---------------------
+// 技術×分野の絞り込み・表記揺れの吸収・既存データのルール補完で共有する固定候補。
+const TAXONOMY_FILE = new URL('../config/search-taxonomy.json', import.meta.url);
+let taxRaw: unknown;
+try {
+  taxRaw = JSON.parse(readFileSync(TAXONOMY_FILE, 'utf8'));
+} catch (e) {
+  fail(`config/search-taxonomy.json を読めません: ${String(e)}`);
+}
+const taxParsed = parseSearchTaxonomy(taxRaw);
+if (!taxParsed.ok) fail(`config/search-taxonomy.json が不正です: ${taxParsed.reason}`);
+const aliasCount =
+  Object.keys(taxParsed.config.domainAliases).length +
+  Object.keys(taxParsed.config.technologyAliases).length;
+console.log(
+  `✅ config/search-taxonomy.json OK（分野${taxParsed.config.domains.length}件 / 技術${taxParsed.config.technologies.length}件 / 表記揺れ${aliasCount}件）`,
 );
 
 let data: unknown;
@@ -107,6 +126,17 @@ for (const item of items) {
       'useCases は文字列の配列である必要があります',
     );
   }
+  // 検索用メタデータ（issue #38）: 任意（無くてもテキストから検索できる）。付いていれば形式を検証。
+  for (const key of ['technologies', 'domains', 'keywords'] as const) {
+    const v = item[key];
+    if (v === undefined) continue;
+    at(
+      Array.isArray(v) &&
+        v.length <= 12 &&
+        v.every((t) => typeof t === 'string' && t.length > 0 && t.length <= 50),
+      `${key} は50字以下の文字列を12件以下で持つ必要があります`,
+    );
+  }
 
   for (const p of item.parents) {
     if (p.startsWith('mashup-') && !ids.has(p)) {
@@ -131,13 +161,19 @@ for (const item of items) {
   genOf.set(item.id, item.generation);
 }
 
-// 循環参照・重複ペア
-for (let i = 0; i < items.length; i++) {
-  for (let j = i + 1; j < items.length; j++) {
-    if (samePair(items[i].parents, items[j].parents)) {
-      fail(`同じ親の組み合わせが重複: ${items[i].id} / ${items[j].id}`);
-    }
+// 循環参照。※同じ親の組の重複はエラーにしない（配合タイプ・コメントが違えば
+// 別の発明として生成できる / issue #37）。代わりに配合条件ハッシュの一意性を検証する。
+const seenRequestHash = new Map<string, string>();
+for (const item of items) {
+  if (item.requestHash === undefined) continue; // 復元できない既存データは明示的に対象外
+  if (!isRequestHash(item.requestHash)) {
+    fail(`${item.id}: requestHash がSHA-256の16進64文字ではありません`);
   }
+  const prev = seenRequestHash.get(item.requestHash);
+  if (prev !== undefined) {
+    fail(`${item.id}: 配合条件ハッシュが重複（同じ条件で2件生成されています: ${prev}）`);
+  }
+  seenRequestHash.set(item.requestHash, item.id);
 }
 for (const item of items) {
   const others = edges.filter(([, c]) => c !== item.id);
@@ -146,8 +182,41 @@ for (const item of items) {
   }
 }
 
-const next = nextOffspringId(expectedNextId);
-console.log(`✅ ${items.length}件の子作品が検証OK（次のID: ${next}）`);
+// --- data/deleted-offspring.json（削除済みID台帳 / issue #32） ---------------
+// 削除したIDは採番で再利用しない。台帳が不正ならID再利用の恐れがあるため停止する。
+const DELETED_FILE = new URL('../data/deleted-offspring.json', import.meta.url);
+let retiredIds: string[] = [];
+if (existsSync(DELETED_FILE)) {
+  let dRaw: unknown;
+  try {
+    dRaw = JSON.parse(readFileSync(DELETED_FILE, 'utf8'));
+  } catch (e) {
+    fail(`data/deleted-offspring.json を読めません: ${String(e)}`);
+  }
+  if (typeof dRaw !== 'object' || dRaw === null || Array.isArray(dRaw)) {
+    fail('deleted-offspring.json はオブジェクトである必要があります');
+  }
+  const ledger = dRaw as { schemaVersion?: unknown; deletedIds?: unknown };
+  if (ledger.schemaVersion !== 1) fail('deleted-offspring.json: schemaVersion が 1 ではありません');
+  if (!Array.isArray(ledger.deletedIds)) fail('deleted-offspring.json: deletedIds は配列である必要があります');
+  const seen = new Set<string>();
+  for (const v of ledger.deletedIds) {
+    if (typeof v !== 'string' || !/^mashup-\d{6}$/.test(v)) {
+      fail(`deleted-offspring.json: 削除済みIDの形式が不正です: ${String(v)}`);
+    }
+    if (seen.has(v)) fail(`deleted-offspring.json: 削除済みIDが重複しています: ${v}`);
+    if (ids.has(v)) fail(`deleted-offspring.json: 削除済みIDが生存データに存在します: ${v}`);
+    seen.add(v);
+  }
+  retiredIds = [...seen];
+}
+
+const next = nextOffspringId(expectedNextId, retiredIds);
+console.log(
+  `✅ ${items.length}件の子作品が検証OK（次のID: ${next} / 削除済みID: ${retiredIds.length}件${
+    retiredIds.length > 0 ? ` = ${retiredIds.join(', ')}` : ''
+  } / 配合条件ハッシュ ${seenRequestHash.size}件）`,
+);
 
 // --- data/prototypes.json（ProtoPedia同期データ） --------------------------
 // 未同期（works: []）は正常状態。壊れた形だけを検出する。
@@ -289,8 +358,27 @@ for (const c of cand.candidates) {
 }
 const statusSummary =
   [...statusByLabel.entries()].map(([lb, n]) => `${lb}${n}`).join(' / ') || '状態バッジなし';
+
+// AI生成アイデアの候補（issue #36）。実体は offspring.json 側にあり、候補JSONにはIDだけ。
+// 削除済み・開発用サンプル・停止中のものが候補に復活しないことを確認する。
+const childCandIds = cand.offspringCandidates ?? [];
+{
+  const byId = new Map(items.map((o) => [o.id, o]));
+  const seenChild = new Set<string>();
+  for (const id of childCandIds) {
+    if (seenChild.has(id)) fail(`current-candidates.json: AI生成候補が重複しています: ${id}`);
+    seenChild.add(id);
+    const o = byId.get(id);
+    if (!o) fail(`current-candidates.json: AI生成候補 ${id} が offspring.json に存在しません`);
+    else if (o.sample === true) fail(`current-candidates.json: AI生成候補 ${id} は開発用サンプルです`);
+    else if (o.status !== 'idea') fail(`current-candidates.json: AI生成候補 ${id} は status=${String(o.status)}（idea のみ候補にできる）`);
+    if (retiredIds.includes(id)) fail(`current-candidates.json: AI生成候補 ${id} は削除済みIDです`);
+  }
+}
 console.log(
-  `✅ current-candidates.json slot=${cand.slot} 候補${cand.candidates.length}件 OK（次回: ${cand.nextSlot} / source: ${cand.source} / 制作状態: ${statusSummary}）`,
+  `✅ current-candidates.json slot=${cand.slot} 候補${cand.candidates.length}件${
+    childCandIds.length > 0 ? ` + AI生成${childCandIds.length}件（${childCandIds.join(', ')}）` : ''
+  } OK（次回: ${cand.nextSlot} / source: ${cand.source} / 制作状態: ${statusSummary}）`,
 );
 
 // --- data/breeding-state.json（配合ワーカーの実行状態 / issue #15） ----------
@@ -325,6 +413,7 @@ if (existsSync(SAMPLE_OFFSPRING_FILE)) {
   }
   if (!Array.isArray(sraw)) fail('offspring.sample.json は配列である必要があります');
   const sampleIds = new Set<string>();
+  const missingSampleImages: string[] = [];
   for (const s of sraw as Offspring[]) {
     const sfail = (msg: string): never => fail(`offspring.sample.json ${s?.id ?? '(不明)'}: ${msg}`);
     if (typeof s?.id !== 'string' || !/^mashup-\d{6}$/.test(s.id)) sfail('id 形式が不正');
@@ -333,12 +422,19 @@ if (existsSync(SAMPLE_OFFSPRING_FILE)) {
     if (!isBreedingMode(s.mode)) sfail(`mode が未対応の値です: ${String(s.mode)}`);
     if (s.imagePath !== undefined && s.imagePath !== null) {
       if (!/^assets\/inventions\/mashup-\d{6}\.png$/.test(s.imagePath)) sfail('imagePath 形式が不正');
+      // 画像が無くても開発全体は止めない（本番 data/offspring.json は必須のまま）。
+      // サンプルが削除した発明の画像を参照していても、UIはプレースホルダーで表示する（issue #32）。
       if (!existsSync(new URL(`../public/static/${s.imagePath}`, import.meta.url))) {
-        sfail(`imagePath の画像ファイルが存在しません: public/static/${s.imagePath}`);
+        missingSampleImages.push(s.imagePath);
       }
     }
   }
-  console.log(`✅ offspring.sample.json ${sampleIds.size}件 OK（開発用サンプル）`);
+  console.log(
+    `✅ offspring.sample.json ${sampleIds.size}件 OK（開発用サンプル）` +
+      (missingSampleImages.length > 0
+        ? ` ⚠️ 画像ファイル未在: ${missingSampleImages.join(', ')}（画面はプレースホルダー表示）`
+        : ''),
+  );
 }
 
 // --- data/element-cache.json（要素抽出キャッシュ / issue #16） ----------------

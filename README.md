@@ -17,13 +17,15 @@ ProtoPediaに公開された実在の作品を2つ「親」として選び、生
 | 配合ワーカー | GitHub Actions（起床は一定間隔、実行可否は設定間隔で判定 + 手動 `workflow_dispatch`） |
 | 頻度設定 | `config/schedule.json`（候補更新間隔・配合間隔・候補件数をファイルで変更 / issue #15） |
 | プロンプト文言 | `config/prompts.json`（配合タイプ指示・共通ルール・画像スタイルをファイルで変更 / issue #25。**出力JSONスキーマと言語ルールはコード固定**） |
-| 永続データ | リポジトリ内の `data/offspring.json` / `data/breeding-state.json` / `data/element-cache.json` / `data/processed-issues.json` / `data/ai-usage.json` |
+| 永続データ | リポジトリ内の `data/offspring.json`（各子作品に配合条件ハッシュ `requestHash` / issue #37） / `data/breeding-state.json` / `data/element-cache.json` / `data/processed-issues.json` / `data/ai-usage.json` / `data/deleted-offspring.json`（削除済みID台帳 / issue #32） |
 | AI | **Cloudflare Workers AI**（Actionsサーバー側から呼ぶ。テキスト `@cf/openai/gpt-oss-20b`・画像 `@cf/black-forest-labs/flux-1-schnell` / issue #16） |
 | サムネイル | 生成成功時 `public/static/assets/inventions/<子ID>.png`（ViteのpublicDirから `dist/assets/inventions/` へ配信）（512×512）。**失敗してもテキストは保存**（`imagePath: null`） |
 
 **AI配合は設定間隔（既定60分=1時間）を空けて最大1件です（全ユーザー共有）。** 閲覧・選択・系譜図表示にAIは使いません。
 
 **候補は設定間隔（既定15分）ごとに最大6件が全ユーザー共通**です。「本日の発明研究所」に並ぶ候補はスロット（UTC `YYYY-MM-DDTHHMM`・設定間隔の刻み）ごとに決定的に選ばれ、**ページを再読み込みしても変わりません**。自由検索はなく、候補から2作品（AとB）を選んで申請します。
+
+**候補6件のうち原則1件はAI生成アイデア（生成済みの子作品）**です（issue #36）。ProtoPedia 5件 + AI生成 1件の並びで、AI生成カードは**破線のサムネイル枠**と「AI生成アイデア・未実装」ラベルで区別し、操作（Aにする / Bにする）は ProtoPediaカードと同一なので、そのまま次の配合の親にできます。AI生成アイデアが無い（0件）枠は ProtoPedia 6件で埋まります。候補JSONに持つのは**IDだけ**で実体は `data/offspring.json` です。
 
 ## セットアップ（ローカル開発）
 
@@ -146,6 +148,7 @@ ProtoPedia API v2 ──(Bearer)──> npm run fetch:sample（少数・手動 /
 - **制作状態とタグの一覧表示（issue #29）**: 配合候補カードに**状態バッジ**（開発中/完成/供養）と**タグチップ**（最大6件）、系譜図の詳細パネルに「制作状態」行を表示。
   供養/開発中は**タグではなく `status` 数値**（`tagNm=供養` では0件）。ラベル対応は `lib/types.ts` の `PROTOPEDIA_STATUS_LABELS`（**2026-11-10 実測マッピング・公式ドキュメント未検証**）。状態バッジなし(1)・未知コードは表示しません。
 - **候補ローテ**: `npm run rotate:candidates` は保存済みプールからスロット（UTC `YYYY-MM-DDTHHMM`・設定間隔の刻み）に**決定的に** `maxCandidates` 件を選出。
+  あわせて **AI生成アイデアを1件だけ**加える（合計が `maxCandidates` を超えないよう ProtoPedia は `maxCandidates - 1` 件。`selectOffspringCandidate()` がスロット決定的に1件選び、0件なら ProtoPedia のみ / issue #36）。削除済み・開発用サンプル・`status !== 'idea'` の子作品は候補プールから除外。
   同じスロットなら常に同じ候補（枠内のActionsの再実行・ローカル実行でも不変）。APIもトークンも使わない。**前回と同一枠ならスキップ**（頻度制限。`--force` で解除）。
   `-- --slot=2026-11-09T1415` で任意の枠を検証、`-- --dry-run` で書き込まず確認。
 - **起床は15分固定・実行可否はスクリプト判定**: `.github/workflows/rotate-candidates.yml`（cron `4,19,34,49 * * * *` = 列挙形 + dispatch）が一定間隔で起動し、スクリプトが `config/schedule.json` の間隔と前回生成の `slot` から実行可否を判断して `data/current-candidates.json` をコミット（issue #15）。
@@ -181,7 +184,7 @@ slot: 2026-11-09T1715                                ← 申請時の候補ス�
 
 - **発動条件（すべて満たす）**: 直近8時間以内に**配合申請に見えるIssueが1件もない**（open/closed・自動/人手を問わず。機能追加などのIssueは数えない）／未処理のopen申請が残っていない／`autoRequestIdleHours` が1以上。
 - **自己制御**: 自動で作ったIssue自身が次の判定で「直近の申請」になるため、**最大でも待機時間に1件**。
-- **親の選出は生成AIを使わない**（この経路にAI呼び出しは存在しない）: 現行の配合候補（`data/current-candidates.json`）+ すでに生まれた子作品を Fisher–Yates でシャッフルし、最初に見つかる**有効なペア**を選ぶ。有効条件はワーカーの却下条件と同一（別ID / 生成済みペアでない / 系譜上 祖先×子孫でない）。候補2件未満・有効ペア0件なら作らない。
+- **親の選出は生成AIを使わない**（この経路にAI呼び出しは存在しない）: 現行の配合候補（`data/current-candidates.json`）+ すでに生まれた子作品を Fisher–Yates でシャッフルし、最初に見つかる**有効なペア**を選ぶ。有効条件は別ID / 系譜上 祖先×子孫でない（ワーカーの却下条件と同一）＋ **すでに生成済みのペアは避ける**（同じ組の自動申請で機会を消費しないための選出上の好み。ワーカーの却下条件ではない / issue #37）。候補2件未満・有効ペア0件なら作らない。
 - **フォーマットは人手の申請と完全同一**（`lib/config.ts` の `buildIssueForm()` を UI と共有）。区別は本文末尾のマーカー `<!-- mashup-ours: auto-request -->` と `source: auto-random`、冒頭の説明1行だけ（パーサーは `key: value` 行しか読まないため処理は変わらない）。
 - **ラベル**: `GITHUB_TOKEN` が作るIssueは `issues: opened` ワークフローを起動しないため `label-issues.yml` が走らず、スクリプト側で `breeding-request` をベストエフォート付与（付与に失敗しても申請は成立）。
 - **権限は `issues: write` のみ**。データ・画像のコミット、生成AI、外部APIはこのワークフローでは使わない。Secrets追加も不要（`github.token`）。
@@ -194,7 +197,9 @@ slot: 2026-11-09T1715                                ← 申請時の候補ス�
 
 ```text
 open Issue の最古1件（ラベル非信用・タイトル/本文で判定）
-  → パース・ID検証・重複/近親交配チェック（不正はAI前に却下コメント）
+  → パース・ID検証・近親交配チェック（不正はAI前に却下コメント）
+  → 配合条件ハッシュ照合（親A/親B/配合タイプ/コメントの4項目が一致したら
+      既存の発明を案内して完了 = AI呼び出し0回。1つでも違えば新規生成 / issue #37）
   → 親の要素抽出8項目（使用技術/目的/解決する課題/入力/出力/体験/特徴/面白さ）
       └ 作品ID + 内容ハッシュで data/element-cache.json にキャッシュ（同じ親は再抽出しない）
   → gpt-oss-20b で配合生成（配合タイプ・研究員のひとこと反映 / JSON構造化出力）
@@ -206,6 +211,16 @@ open Issue の最古1件（ラベル非信用・タイトル/本文で判定）
 
 - **ローカル実行**: `npm run breed:dry`（AI呼び出し・データ書き込み・Issue操作を一切しない安全確認）/ `npm run breed`（本番と同じ処理）/ `npm run breed:check-ai`（認証情報の接続確認のみ1回）。
 - **二重処理防止**: `data/processed-issues.json`（`resolved` / `rejected` は永却下、`failed` は3回まで再試行）。`concurrency` は固定グループで直列実行。
+- **重複判定と生成結果キャッシュ（issue #37）**: 配合条件 `親A × 親B × 配合タイプ × コメント` から
+  `SHA-256(canonicalJSON(...))` のキー（`Offspring.requestHash`）を算出し、**4項目がすべて一致**した申請が来たときは
+  生成AI・ID採番・画像生成をすべて省いて、既存の発明へのリンクをIssueへコメントしてクローズします
+  （**却下ではなく正常な処理**）。親の順序は区別（`A × B` と `B × A` は別物）、コメントは前後の空白と改行コードを正規化して比較し
+  （コメントなしと空白だけは同一）、**配合タイプかコメントが1つでも違えば同じ親でも新規生成**します。
+  - キーにIssue番号・申請日時（スロット）は含めません。
+  - `requestHash` の無い既存データは**元の申請Issue本文から配合条件を復元**してインデックスを構築します（通常の生成時に復元分を保存）。
+    復元できない場合は推測せず、実行ログに「重複判定できない既存データ」として明示します（その件は重複判定の対象外）。
+  - キャッシュヒット時は**間隔ゲートも消費しません**（生成を行わないため）。
+  - 祖先×子孫の近親交配禁止は、条件が一致しても維持します。
 - **利用量とコスト**: `data/ai-usage.json` に**実行回数とトークン数は実測**で記録し、Neurons は公開料金表からの**試算**として記録します（**試算を実測値として扱わない**）。Cloudflareの利用量APIは公式ドキュメントに存在しない（**未検証**）ため、上限判定は実呼び出し回数（`dailyAiCallLimit`）で行います。**「1時間に1回なら無料枠内」とは断定しません**（無料枠・料金は変動するため、使う前に公式情報を確認してください）。
 - **失敗時**: 認証失敗・予算超過・一時障害を分類してログに残し、自動の無限リトライはしません（テキスト生成2回・画像再試行1回まで）。エラーにトークンを含めません。
 - **権限**: ワークフローは `permissions: {}` から始まり、該当ジョブだけ `contents: write`（JSONコミット）と `issues: write`（コメント・クローズ）を付与。**AI出力はshellへ埋め込まず `tmp/breed-report.md` 経由**でコメントします。
@@ -220,12 +235,17 @@ open Issue の最古1件（ラベル非信用・タイトル/本文で判定）
 - **アクセス解析**: **Google Tag Manager（`GTM-NLGLRR3T`）** をトップと `/ideas` の両方の `<head>` に配置し、`<body>` 直後に公式推奨の `noscript` iframe を配置（**外部接続先: `googletagmanager.com`**）。タグ本体はGTMコンテナ側で管理し、サイトにはIDだけを置く。ローカルの `npm run dev` / preview からもヒットが送信される（解析値に開発データが混ざる点に注意。除外はGTMコンテナ側のトリガー条件で行う）。
 - **ウィンドウ**: 太い外枠3px + 内側の細い線（inset）+ 右下ハードシャドウのRPG風。ガラス調・ネオンは不使用。
 - **候補パネル「本日の発明研究所」**: 画面完成イメージ準拠の角丸パネル + 3列画像カード（900pxで2列 / 560pxで1列）。
+  - **AI生成アイデアの候補カード（issue #36）**: ProtoPediaカードの後に `.candidate.child-card` として並ぶ。表示は 発明名・サムネイル（**破線枠**）・概要・`AI生成アイデア・未実装` / `第N世代` / 配合タイプのバッジ・**個別ページへのリンク「この発明を見る →」**。No.表記は `作品 No.06 / AI生成`。制作状態バッジ・タグチップは出さない（ProtoPedia固有）。
+    - **同一IDの複数表示は同期する**: `pickRegistry` はIDごとの配列で、候補カードと「最近誕生した発明」の行のどちらで選んでも状態・申請内容が一致する（`registerPick()`）。
+    - `data/current-candidates.json` の `offspringCandidates`（ID配列）が無い旧ファイルは「AI生成候補なし」としてそのまま受理する。削除済み・サンプル・`status !== 'idea'` のものはローテ時に候補へ入れず、`npm run validate-data` でも検出する。
   画像タイルは下地 `--tile`（白系・両テーマ共通）で `object-fit: contain`・`loading=lazy`・読込失敗時は「画像なし」プレースホルダ（枠は維持）。
   見出しは DotGothic16 + ラテン小見出し、枠・色は研究所トークンのまま — **一般的なSaaSカードUIにしない**。
   選択状態は「タイル枠の色 + バッジ文字（親A選択中）+ 押下ボタン」の三重化で色だけに依存しない。
 - **一覧ページ `/ideas`**: Viteマルチページ（`public/ideas/index.html` + `public/ideas.ts`）。`data/offspring.json` のみを新しい順に列挙し、各項目に 未実装バッジ・世代・親リンク（子作品=その個別ページ / ProtoPedia=出典URL）・誕生日時（日本時間）・元Issue（あれば）を表示。0件なら空状態で申請誘導。トップの「最近誕生した発明」見出しからリンクする。**カードのサムネイル・発明名・概要は1つの `<a class="idea-open">` で個別ページへ遷移**（リンク入れ子を避けるため親作品・Issueのリンクはその外侧。実リンクなのでキーボード操作も可能）。
 - **個別詳細ページ `/ideas/<id>/`（issue #24）**: 「一覧は発見の場、個別ページは詳しい情報と誕生の経緯の場」。
   - **静的ホスティング対応**: ビルド時に `vite.config.ts` の `ideaPages` プラグインが `data/offspring.json` の各IDぶんの `dist/ideas/<id>/index.html` を生成（相対base参照は深さに合わせて `../../` へ読み替え。絶対base指定時は無変更）。開発サーバーは `/ideas/<id>/` を同じテンプレートで返す（本番相当のURLで確認）。
+  - **配合タイプ表示（issue #31)**: 上部バッジに実データ `mode` の表示名（`fusion`→**単純配合** / `genetic`→**遺伝子配合** / `mutation`→**突然変異配合**）を出し、その下に「配合方法: …」の短い説明を併記（`lib/types.ts` の `blendModeLabel()` / `blendModeDescription()`。一覧 `/ideas` のバッジも同じ関数で表示名を統一）。
+    - **`mode` が無い・未知の値（例 `simple`）は「配合タイプ不明」**とし、説明も単純配合扱いもしない（AI生成文から推測しない）。実データの値は `simple` ではなく **`fusion`**。
   - **表示内容**: サムネイル（大）・発明名・概要・配合タイプ・世代・誕生日時（JST）・発明ID / **親A・Bを左右配置**（ProtoPedia=作品名・作品画像・作者・出典リンク、mashup=発明名・サムネイル・個別ページへのリンク）/ AI配合結果（継承・仕組み・技術構成・利用シーン・詳細）/ 子どもへのリンク / 関連リンク（元Issue・系譜図 `?id=`・一覧・配合申請）。親メタデータ不在・画像なし・任意フィールド欠損でも壊れない。
   - **相互遷移**: 個別 →「系譜図で見る」= `?id=` ディープリンク（選択状態でトップへ）。系譜図の詳細パネル →「この発明の詳細ページを開く」で個別へ。
   - **404**: 存在しないIDは静的ホスティングだとサーバ404になるため、ルートの `dist/404.html`（自己完結型・`public/404.html`）が返され、「そのIDの発明は見つかりませんでした」+ 一覧/トップへの導線を表示。未知の一般パスも同じ404が使われる（リンクの基点はパス中の `/ideas/` 位置から計算。未知パスでは `/` 仮定 = 既知の制約）。
@@ -265,8 +285,11 @@ open Issue の最古1件（ラベル非信用・タイトル/本文で判定）
 
 - ProtoPedia作品: `protopedia:<数字>`（第0世代）
 - 生成された子作品: `mashup-<数字6桁>`（例 `mashup-000001`）。**Issue本文の `parent_a` / `parent_b` にもこのid文字列をそのまま使う。**
+  - **内部では `lib/parent-ref.ts` の `{ source: 'protopedia' | 'mashup-ours', id }` として種類を区別する**（issue #36）。`parseParentRef()` が形式を判定し、読めない形式は「未知のID名前空間」として却下。**文字列ID形式そのものは変更していない**ため、過去のIssue・既存JSON・系譜図はそのまま扱える。ProtoPedia親だけが出典URL・API参照を持ち、AI生成親は `data/offspring.json` から読む（AI生成親にProtoPedia APIは呼ばない）。
   - AGENTS.mdのIssue例は `mashup:<生成ID>`（コロン）だが、データモデル例は `mashup-000001`（ハイフン）。**誤導入を避けるためデータモデル例のハイフン形式に統一**した。
 - 先祖と子孫の組み合わせ（近親交配）は拒否する。共通の子を持つだけのダイヤモンド形状は許可。
+- **削除した子作品IDは再利用しない**（issue #32）。`data/deleted-offspring.json`（`schemaVersion: 1` + `deletedIds`）に削除済みIDを記録し、`nextOffspringId(existing, retired)` が**既存IDと削除済みIDの最大値**から次IDを決める（採番は連番の続き = 過去の最大ID基準）。台帳が壊れているとワーカーと `validate-data` は停止する（無視するとIDが再利用されるため）。現状の削除済みID: `mashup-000001`（初期テストデータ）。
+  - なお開発用サンプル `data/offspring.sample.json` の `mashup-000001` は**別のサンプルレコード**で残している（本番データとは無関係。参照している同名画像は削除済みのため画面は「画像なし」プレースホルダ。`validate-data` は本番のみ画像実在を必須とし、サンプルは警告）。
 
 ## ステータス / 検証済みと未検証
 

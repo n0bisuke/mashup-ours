@@ -146,3 +146,15 @@ it('フッターにGitHubリポジトリへのリンク（issue #30 / 未設定�
   // 非公式の注記は残る
   expect(host2.querySelector('.ideas-foot .foot-note')?.textContent).toContain('非公式プロジェクト');
 });
+
+it('一覧と個別ページの配合タイプ表示名を統一する（issue #31）', () => {
+  const host = build(fixtures);
+  const badge = host.querySelector('.idea-item .badge.mode');
+  expect(badge?.textContent).toBe('単純配合'); // 個別ページ（idea.ts）と同じ blendModeLabel 由来
+
+  // 未記録・未知の値は一覧も「配合タイプ不明」（単純配合と見なさない）
+  const broken = [{ ...fixtures[0], mode: 'simple' }] as unknown as Offspring[];
+  const h2 = build(broken);
+  expect(h2.querySelector('.idea-item .badge.mode')?.textContent).toBe('配合タイプ不明');
+  expect(h2.textContent).not.toContain('undefined');
+});

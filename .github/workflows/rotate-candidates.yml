@@ -27,8 +27,11 @@ on:
         required: false
 
 # data/current-candidates.json のコミットに必要な最小権限のみ。
+# actions: write は Pages 再ビルドの dispatch 用（GitHub公式: GITHUB_TOKEN の push は
+# 他のワークフローを起動しない。例外の workflow_dispatch で deploy.yml を呼ぶ）。
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: rotate-candidates
@@ -60,13 +63,28 @@ jobs:
           fi
 
       - name: Commit updated candidates
+        id: commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/current-candidates.json
           if git diff --cached --quiet; then
             echo "変更なし"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           git commit -m "chore(data): 配合候補を更新 $(date -u +%Y-%m-%dT%H:%M:%SZ)"
           git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      # 候補データの push では Pages が再ビルドされない（GitHub公式:
+      # GITHUB_TOKEN による push は他のワークフローをトリガーしない。
+      # 例外である workflow_dispatch で deploy.yml を明示的に起動する / issue #40）。
+      # コミットが発生したときだけ呼ぶ（Pages のデプロイ回数制限を消費しない）。
+      - name: Trigger Pages rebuild
+        if: ${{ steps.commit.outputs.changed == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "::notice::候補データを更新したため deploy.yml を起動します"
+          gh workflow run deploy.yml --repo "$GITHUB_REPOSITORY" --ref "$GITHUB_REF_NAME"

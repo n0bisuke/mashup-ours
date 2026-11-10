@@ -11,12 +11,16 @@ import rawSampleOff from '../data/offspring.sample.json';
 import rawPool from '../data/sample-prototypes.json';
 import { isCandidatesFile } from '../lib/candidates.ts';
 import { BLEND_MODE_DESCRIPTIONS, statusLabel, type ProtopediaWork } from '../lib/types.ts';
+import { repoConfigFromEnv } from '../lib/config.ts';
 import { parseBreedingIssue } from '../lib/issue.ts';
 import { installMemoryStorage } from './helpers/memory-storage.ts';
 
 const candFileValid = isCandidatesFile(rawCandidates);
-/** 候補JSONが有効なら6件（実データ）、無効なら開発用サンプル4件がカードになる。 */
-const expectedCards = candFileValid ? rawCandidates.candidates.length : 4;
+const candFile = rawCandidates as unknown as import('../lib/candidates.ts').CandidatesFile;
+/** 候補JSONが有効ならその件数（ProtoPedia + AI生成 / issue #36）、無効なら開発用サンプル4件がカードになる。 */
+const expectedCards = candFileValid
+  ? candFile.candidates.length + (candFile.offspringCandidates?.length ?? 0)
+  : 4;
 
 async function boot() {
   vi.resetModules(); // main.ts を毎回再実行する
@@ -59,13 +63,15 @@ it('自由検索は廃止され、候補カードだけが並ぶ', async () => {
   expect(cards().length).toBe(expectedCards);
 
   const ids = cards().map((c) => c.dataset.id ?? 'ID欠落');
-  expect(ids.every((id) => /^protopedia:\d{1,9}$/.test(id))).toBe(true);
+  // ProtoPedia作品に加え、AI生成アイデアも親として並ぶ（issue #36）
+  expect(ids.every((id) => /^(protopedia:\d{1,9}|mashup-\d{1,9})$/.test(id))).toBe(true);
   expect(new Set(ids).size).toBe(ids.length); // 重複カードは出ない
 
-  // カードごとのNo.キャプション（完成イメージ準拠）
+  // カードごとのNo.キャプション（完成イメージ準拠）。AI生成カードは末尾に「/ AI生成」。
   cards().forEach((c, i) => {
+    const suffix = c.classList.contains('child-card') ? ' / AI生成' : '';
     expect(c.querySelector('.card-index')?.textContent).toBe(
-      `作品 No.${String(i + 1).padStart(2, '0')}`,
+      `作品 No.${String(i + 1).padStart(2, '0')}${suffix}`,
     );
   });
 });
@@ -89,7 +95,8 @@ it('画像はlazy読込・alt付き。画像が無いカードはプレースホ
       expect((img.alt ?? '').length).toBeGreaterThan(0);
       boxes += 1;
     } else {
-      expect(ph).toBeTruthy(); // 画像が無くても thumb 枠は維持される
+      // ProtoPediaカードは .thumb-ph、AI生成カードは .thumb-miss（issue #36）
+      expect(ph ?? c.querySelector('.thumb .thumb-miss')).toBeTruthy(); // 枠は維持される
       boxes += 1;
     }
   }
@@ -122,7 +129,7 @@ it('頻度の文言が config/schedule.json から生成される（固定文言
   const text = document.body.textContent ?? '';
   expect(text).toContain(candidateNotice(parsed.config)); // 「◯ごとに新しい発明候補が届くよ！」
   expect(text).toContain(breedingNotice(parsed.config)); // 「◯に最大1つ、新しい発明が誕生します！」
-  expect(text).toContain('配合の間隔（設定値）');
+  expect(text).toContain('新しい発明は約1時間ごとに誕生します。'); // 内部用語を排した文言（issue #33）
   // 「1時間に1回」「毎時」などの固定文言はサイトから消えている
   expect(text).not.toContain('毎時');
   expect(text).not.toContain('1時間に1回');
@@ -192,7 +199,7 @@ it('もう一度押すと選択が解除される', async () => {
   expect(statusVals()[0].textContent).toContain('未選択');
 });
 
-it('Issue作成URLに親ID・元作品URL・slotが含まれる（設定済み環境）', async () => {
+it('Issue作成URLに親ID・元作品URL・slotが含まれる（設定済み環境 / 案内ダイアログ経由）', async () => {
   const { pickBtn, breedButton } = await boot();
   const spy = vi.spyOn(window, 'open').mockReturnValue(null);
   pickBtn(0, 'a').click();
@@ -201,6 +208,10 @@ it('Issue作成URLに親ID・元作品URL・slotが含まれる（設定済み�
   // owner/repo未設定のビルドでは無効のままなので、設定済みの場合のみクリックを検証する
   if (!breedButton().disabled) {
     breedButton().click();
+    // 押した直後は GitHub へ移動しない（案内ダイアログが開くだけ / issue #35）
+    expect(spy).not.toHaveBeenCalled();
+    expect(document.querySelector('.guide[role="dialog"]')).toBeTruthy();
+    document.querySelector<HTMLElement>('.guide-open')?.click();
     expect(spy).toHaveBeenCalledTimes(1);
     const url = new URL(String(spy.mock.calls[0][0]));
     expect(url.pathname).toContain('/issues/new');
@@ -278,7 +289,11 @@ it('HTMLとして未エスケープの外部入力が挿入されない（XSS）
 });
 
 it('?id= ディープリンクで詳細を開く（/ideasからの復帰 / issue #8）', async () => {
-  window.history.replaceState({}, '', '/?id=mashup-000001');
+  // 実データのIDを使う（削除でIDが変わる / issue #32）。0件ならこの検証はスキップ。
+  const list = rawOff as unknown as { id: string; inheritedTraits?: unknown[] }[];
+  const target = list.find((c) => Array.isArray(c.inheritedTraits) && c.inheritedTraits.length > 0);
+  if (!target) return;
+  window.history.replaceState({}, '', `/?id=${target.id}`);
   await boot();
   const detail = document.querySelector('.detail')?.textContent ?? '';
   expect(detail).toContain('継承した特徴'); // 子ノードの詳細が初期表示される
@@ -400,6 +415,10 @@ it('Issue作成画面を開いた直後はFV装置も「申請手続き中」（
     const status = () => document.querySelector('.fv-status')?.textContent ?? '';
     expect(status()).toContain('配合準備完了');
     breedButton().click();
+    // 案内ダイアログが開いただけでは申請手続き中にならない（まだGitHubへ行っていない / issue #35）
+    expect(document.querySelector('.guide[role="dialog"]')).toBeTruthy();
+    expect(status()).toContain('配合準備完了');
+    document.querySelector<HTMLElement>('.guide-open')?.click();
     expect(status()).toContain('申請手続き中');
     expect(status()).not.toContain('誕生');
     // 申請手続き中は「準備完了」点滅を止める
@@ -426,6 +445,9 @@ it('Issue作成画面を開いただけでは実験担当の博士は success �
   pickBtn(1, 'b').click();
   if (!breedButton().disabled) {
     breedButton().click();
+    // 案内ダイアログの段階ではまだ何も開いていない（success にもしない / issue #35）
+    expect(spy).not.toHaveBeenCalled();
+    document.querySelector<HTMLElement>('.guide-open')?.click();
     const machineChar = document.querySelector('.machine-char .char') as HTMLElement;
     expect(machineChar.dataset.state).not.toBe('success');
     expect(machineChar.dataset.state).toBe('idle'); // 開いただけ = 未完了のまま
@@ -507,6 +529,10 @@ it('Issue本文に mode: と comment: が行として入る（設定済み環境
     modeSelect().dispatchEvent(new Event('change', { bubbles: true }));
     commentInput().value = '子どもが遊べる発明にしてほしい！';
     breedButton().click();
+    // 案内ダイアログを経てから Issue作成URLが生成される（issue #35）。入力内容は維持される。
+    expect(document.querySelector('.guide[role="dialog"]')).toBeTruthy();
+    document.querySelector<HTMLElement>('.guide-open')?.click();
+    expect(spy).toHaveBeenCalledTimes(1);
 
     const body = new URL(String(spy.mock.calls[0][0])).searchParams.get('body') ?? '';
     expect(body).toContain('mode: genetic');
@@ -550,9 +576,11 @@ it('詳細パネルにも配合タイプと利用場面が出る（原作品とA
 it('候補カードに制作状態バッジとタグチップが出る', async () => {
   const { cards } = await boot();
   const list = candFileValid ? (rawCandidates.candidates as unknown as ProtopediaWork[]) : [];
-  expect(cards().length).toBe(list.length);
+  // 制作状態バッジはProtoPediaカードだけの話（AI生成カードには出さない / issue #36）
+  const protoCards = cards().filter((c) => !c.classList.contains('child-card'));
+  expect(protoCards.length).toBe(list.length);
   list.forEach((w, i) => {
-    const card = cards()[i];
+    const card = protoCards[i];
     const label = statusLabel(w.status);
     const badge = card.querySelector('.card-meta .badge.work-status');
     if (label) {
@@ -578,15 +606,202 @@ it('候補プールに供養・開発中の実作品とタグがある（一覧�
 
 it('フッターにGitHubリポジトリへのリンク（owner/repo 未設定なら出さない）', async () => {
   await boot();
-  const owner = import.meta.env.VITE_GITHUB_OWNER;
-  const repo = import.meta.env.VITE_GITHUB_REPO;
+  // 期待値は main.ts と同じ repoConfigFromEnv から導出する（issue #40:
+  // Actions では GITHUB_REPOSITORY が注入されるため、VITE_GITHUB_OWNER だけを見ると
+  // CI で必ず失敗していた。ローカル .env と CI の差を吸収し、ハードコードもしない）。
+  const cfg = repoConfigFromEnv({
+    VITE_GITHUB_OWNER: import.meta.env.VITE_GITHUB_OWNER,
+    VITE_GITHUB_REPO: import.meta.env.VITE_GITHUB_REPO,
+    GITHUB_REPOSITORY: typeof __GITHUB_REPOSITORY__ !== 'undefined' ? __GITHUB_REPOSITORY__ : '',
+  });
   const link = document.querySelector<HTMLAnchorElement>('.site-foot .foot-links a');
-  if (owner && repo) {
-    expect(link?.getAttribute('href')).toBe(`https://github.com/${owner}/${repo}`);
+  if (cfg) {
+    expect(link?.getAttribute('href')).toBe(`https://github.com/${cfg.owner}/${cfg.repo}`);
     expect(link?.getAttribute('target')).toBe('_blank');
   } else {
     expect(link).toBeNull(); // リポジトリ名はハードコードしない
   }
   // 非公式プロジェクトの注記は設定に関わらず残る
   expect(document.querySelector('.site-foot')?.textContent).toContain('非公式プロジェクト');
+});
+
+// --- 生成アイデアの再配合（issue #36） ---------------------------------------
+
+/** 現在の候補JSONに含まれるAI生成アイデアのID（0件の枠では検証をスキップ）。 */
+const childCandIds = candFileValid ? (candFile.offspringCandidates ?? []) : [];
+const rawOffList = rawOff as unknown as { id: string; generation: number; parents: string[] }[];
+const childCards = () => Array.from(document.querySelectorAll<HTMLElement>('.candidate.child-card'));
+
+it('候補にAI生成アイデアが並び、ラベル・世代・個別ページリンクがある（issue #36）', async () => {
+  await boot();
+  const cards = childCards();
+  expect(cards.length).toBe(childCandIds.length);
+  cards.forEach((card, i) => {
+    const id = childCandIds[i];
+    const data = rawOffList.find((o) => o.id === id);
+    expect(card.dataset.id).toBe(id);
+    // AI生成＝未実装のアイデアであることがカード上で分かる（実在作品と誤認させない）
+    expect(card.querySelector('.badge.idea')?.textContent).toBe('AI生成アイデア・未実装');
+    expect(card.querySelector('.badge.gen')?.textContent).toBe(`第${data?.generation}世代`);
+    expect(card.querySelector('.badge.mode')?.textContent).toBeTruthy();
+    expect(card.textContent).toContain('AI生成');
+    // ProtoPediaへの導線ではなくサイト内の個別ページへ
+    expect(card.textContent).not.toContain('ProtoPediaで見る');
+    const link = card.querySelector<HTMLAnchorElement>('a[href*="ideas/"]');
+    expect(link?.getAttribute('href')).toContain(`ideas/${id}`);
+    // 操作は ProtoPediaカードと同一（Aにする / Bにする）
+    const picks = card.querySelectorAll('button.pick');
+    expect(picks.length).toBe(2);
+    expect(picks[0].textContent).toBe('Aにする');
+    expect(picks[1].textContent).toBe('Bにする');
+    // サムネイル枠は維持（破線で ProtoPedia と見分ける / CSSは検証対象外）
+    expect(card.querySelector('.thumb')).toBeTruthy();
+  });
+});
+
+it('AI生成カードと「最近誕生した発明」の行が選択状態を共有する（issue #36）', async () => {
+  const { statusVals } = await boot();
+  const card = childCards()[0];
+  if (!card) return; // 候補にAI生成が無い枠
+  const id = card.dataset.id ?? '';
+  const li = Array.from(document.querySelectorAll<HTMLElement>('ul.offspring li')).find((n) =>
+    (n.textContent ?? '').includes(id),
+  );
+  expect(li, '最近一覧に行が無い').toBeTruthy();
+
+  card.querySelectorAll<HTMLButtonElement>('button.pick')[0].click();
+  expect(card.classList.contains('is-a')).toBe(true);
+  expect(li?.classList.contains('is-a')).toBe(true); // 同じIDの複数表示が同期する
+  expect(statusVals()[0].textContent).toContain(id);
+
+  // 一覧の行側で解除しても、カード側も解除される
+  li!.querySelectorAll<HTMLButtonElement>('button.pick')[0].click();
+  expect(card.classList.contains('is-a')).toBe(false);
+  expect(li?.classList.contains('is-a')).toBe(false);
+});
+
+it('AI生成アイデアを親Aにした申請URLが生成され、ワーカーのパーサーを通る（issue #36）', async () => {
+  const { breedButton } = await boot();
+  const cardsEl = Array.from(document.querySelectorAll<HTMLElement>('.candidate'));
+  const childIdx = cardsEl.findIndex((c) => c.classList.contains('child-card'));
+  if (childIdx < 0) return; // 候補にAI生成が無い枠
+  const childId = cardsEl[childIdx].dataset.id ?? '';
+
+  cardsEl[childIdx].querySelectorAll<HTMLButtonElement>('button.pick')[0].click(); // 親A = AI生成
+  const protoIdx = cardsEl.findIndex((c, i) => i !== childIdx && !c.classList.contains('child-card'));
+  cardsEl[protoIdx].querySelectorAll<HTMLButtonElement>('button.pick')[1].click(); // 親B = ProtoPedia
+
+  const spy = vi.spyOn(window, 'open').mockReturnValue(null);
+  if (!breedButton().disabled) {
+    breedButton().click();
+    expect(document.querySelector('.guide[role="dialog"]')).toBeTruthy(); // 案内ダイアログを経る（issue #35）
+    document.querySelector<HTMLElement>('.guide-open')?.click();
+    expect(spy).toHaveBeenCalledTimes(1);
+
+    const body = new URL(String(spy.mock.calls[0][0])).searchParams.get('body') ?? '';
+    expect(body).toContain(`parent_a: ${childId}`); // 文字列形式は従来どおり（互換維持）
+    expect(body).toContain('parent_b: protopedia:');
+    expect(body).not.toContain('parent_a_url'); // AI生成にProtoPediaの出典URLは付けない
+    const r = parseBreedingIssue(body);
+    expect(r.ok).toBe(true);
+    if (r.ok) {
+      expect(r.request.parentA).toBe(childId);
+      expect(r.request.parentB.startsWith('protopedia:')).toBe(true);
+    }
+  }
+  spy.mockRestore();
+});
+
+// --- 選択した親の画像をカプセルと小型配合マシンに表示（issue #39） -------------
+
+/** ProtoPedia候補のうち作品画像を持つ1件（無ければ null = テストを省略）。 */
+function protoWithImage(): ProtopediaWork | undefined {
+  return candFileValid ? candFile.candidates.find((w) => Boolean(w.mainUrl)) : undefined;
+}
+
+/** 生成画像を持つ子作品のID（無ければ null）。 */
+function childWithImage(): string | undefined {
+  const kids: string[] = candFileValid ? (candFile.offspringCandidates ?? []) : [];
+  const list = rawOff as unknown as { id: string; imagePath?: string | null }[];
+  for (const id of kids) {
+    const full = list.find((x) => x.id === id);
+    if (full?.imagePath) return full.id;
+  }
+  return undefined;
+}
+
+/** FVカプセル / 小型配合マシンの画像URL（無いときは null）。属性値のまま比較する。 */
+function capsuleImg(slot: 'a' | 'b'): string | null {
+  const fv = document.querySelector<HTMLImageElement>(`.capsule-${slot} .capsule-view img`);
+  const slots = document.querySelectorAll<HTMLImageElement>('.float-slot .float-thumb img');
+  const fl = slots[slot === 'a' ? 0 : 1] ?? null;
+  // FVと小型版は常に同じURLでなければならない（片方だけ変わらないこと）
+  const a = fv?.getAttribute('src') ?? null;
+  const b = fl?.getAttribute('src') ?? null;
+  if (a && b) expect(b).toBe(a);
+  return a;
+}
+
+it('ProtoPediaとAI生成をA/Bに選ぶとカプセルと小型配合マシンにそれぞれの画像が出る（issue #39）', async () => {
+  const { cards, pickBtn } = await boot();
+  const proto = protoWithImage();
+  const childId = childWithImage();
+  if (!proto || !childId) return; // 画像付き候補が揃わない枠は検証省略（データ依存）
+
+  const protoIdx = cards().findIndex((c) => c.dataset.id === proto.id);
+  const childIdx = cards().findIndex((c) => c.dataset.id === childId);
+  expect(protoIdx).toBeGreaterThanOrEqual(0);
+  expect(childIdx).toBeGreaterThanOrEqual(0);
+
+  pickBtn(protoIdx, 'a').click();
+  pickBtn(childIdx, 'b').click();
+
+  // ProtoPedia = 作品画像 / AI生成 = 生成画像（サイトルート相対 + BASE_URL）
+  expect(capsuleImg('a')).toBe(proto.mainUrl);
+  const imagePath = (rawOff as unknown as { id: string; imagePath?: string | null }[]).find(
+    (x) => x.id === childId,
+  )?.imagePath;
+  expect(capsuleImg('b')).toBe(`${import.meta.env.BASE_URL}${imagePath}`);
+  // 発明名と選択状態は画像に関係なく出ている
+  expect(document.querySelector('.capsule-b .capsule-name')?.textContent).not.toBe(
+    '発明Bをえらんでね',
+  );
+});
+
+it('画像の読み込みに失敗したら「？」に戻り、発明名と選択は保つ（issue #39）', async () => {
+  const { cards, pickBtn } = await boot();
+  const childId = childWithImage();
+  if (!childId) return;
+  const childIdx = cards().findIndex((c) => c.dataset.id === childId);
+  pickBtn(childIdx, 'a').click();
+
+  const img = document.querySelector('.capsule-a .capsule-view img');
+  expect(img).not.toBeNull();
+  img?.dispatchEvent(new Event('error')); // 読み込み失敗
+  expect(document.querySelector('.capsule-a .capsule-view')?.textContent).toContain('？');
+  expect(document.querySelector('.capsule-a .capsule-name')?.textContent).not.toBe(
+    '発明Aをえらんでね',
+  );
+});
+
+it('nodeImageUrl は ProtoPedia=mainUrl / AI生成=imagePath / 画像なしなら null（issue #39）', async () => {
+  await boot();
+  const { nodeImageUrl } = await import('../public/main.ts'); // boot直後 = 同一モジュール
+  const proto = protoWithImage();
+  if (proto) expect(nodeImageUrl(proto, '/base/')).toBe(proto.mainUrl);
+  // imagePath === null（画像生成に失敗してテキストのみ保存）→ 「？」側が選ばれる
+  const noImage = {
+    id: 'mashup-000001',
+    sourceIssue: 1,
+    imagePath: null,
+  } as unknown as Parameters<typeof nodeImageUrl>[0];
+  expect(nodeImageUrl(noImage, '/base/')).toBeNull();
+  expect(nodeImageUrl(undefined, '/base/')).toBeNull();
+  // サイトルート相対パスは base を前につける（カスタムドメイン・サブパス配信でも一致）
+  const withImage = {
+    id: 'mashup-000002',
+    sourceIssue: 2,
+    imagePath: 'assets/inventions/x.png',
+  } as unknown as Parameters<typeof nodeImageUrl>[0];
+  expect(nodeImageUrl(withImage, '/repo/')).toBe('/repo/assets/inventions/x.png');
 });

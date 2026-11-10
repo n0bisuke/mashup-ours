@@ -1,0 +1,5 @@
+{
+  "schemaVersion": 1,
+  "deletedIds": ["mashup-000001"],
+  "note": "初期テストデータ mashup-000001（Clappy Sipster）を 2026-11-10 に削除。採番で再利用しないためIDを記録して残す（issue #32）。"
+}

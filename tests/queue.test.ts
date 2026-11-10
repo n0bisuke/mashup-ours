@@ -3,7 +3,9 @@
  * - 作成日時昇順で最古の妥当な申請を1件だけ選ぶ
  * - ラベルを信用しない（タイトル/本文の形式で判定）
  * - 処理済みIssue（resolved/rejected は永却下、failed は上限まで再試行）を再処理しない
- * - 存在しないID・同一親・重複ペア・祖先×子孫は AI呼び出し前に却下
+ * - 存在しないID・祖先×子孫は AI呼び出し前に却下
+ * - 同じ配合条件（親A/親B/配合タイプ/コメント）は reuse（再利用・AIなし）。
+ *   親が同じでも条件が1つでも違えば新規生成（issue #37）
  */
 import { describe, expect, it } from 'vitest';
 import {
@@ -14,6 +16,7 @@ import {
   type IssueRecord,
   type ProcessedIssues,
 } from '../lib/queue.ts';
+import { requestHashOf } from '../lib/breed-key.ts';
 
 const proto = new Set(['protopedia:1', 'protopedia:2', 'protopedia:3']);
 const kids = new Set(['mashup-000001']);
@@ -35,7 +38,7 @@ const baseOpts = (
   processed,
   knownProtopediaIds: proto,
   knownOffspringIds: kids,
-  offspringPairs: [] as ReadonlyArray<readonly [string, string]>,
+  existingByRequestHash: new Map<string, string>(),
   edges: [] as ReadonlyArray<readonly [string, string]>,
   ...extra,
 });
@@ -137,16 +140,79 @@ describe('selectBreedingIssue', () => {
     if (r.action === 'process') expect(r.issue.number).toBe(2);
   });
 
-  it('すでに生成された同じペア（順不同）は重複却下', () => {
+  it('同じ配合条件の発明がすでにあれば reuse（AI呼び出しなし・既存IDを返す）', () => {
+    const body = `parent_a: protopedia:2\nparent_b: protopedia:1\nmode: fusion`;
+    const hash = requestHashOf({
+      parentA: 'protopedia:2',
+      parentB: 'protopedia:1',
+      mode: 'fusion',
+    });
     const r = selectBreedingIssue(
-      [issue(3, '2026-11-01T00:00:00Z', validBody('protopedia:2', 'protopedia:1'))],
-      baseOpts({}, { offspringPairs: [['protopedia:1', 'protopedia:2']] }),
+      [issue(3, '2026-11-01T00:00:00Z', body)],
+      baseOpts({}, { existingByRequestHash: new Map([[hash, 'mashup-000001']]) }),
     );
-    expect(r.action).toBe('reject');
-    if (r.action === 'reject') expect(r.reason).toContain('すでに生成されています');
+    expect(r.action).toBe('reuse');
+    if (r.action === 'reuse') expect(r.existingId).toBe('mashup-000001');
   });
 
-  it('祖先×子孫の組み合わせ（近親交配）は却下する', () => {
+  it('親が同じでもコメントが違えば新規生成する', () => {
+    const hash = requestHashOf({
+      parentA: 'protopedia:1',
+      parentB: 'protopedia:2',
+      mode: 'fusion',
+      comment: '公園で',
+    });
+    const body = 'parent_a: protopedia:1\nparent_b: protopedia:2\nmode: fusion\ncomment: 公園で遊びたい';
+    const r = selectBreedingIssue(
+      [issue(3, '2026-11-10T00:00:00Z', body)],
+      baseOpts({}, { existingByRequestHash: new Map([[hash, 'mashup-000001']]) }),
+    );
+    expect(r.action).toBe('process');
+  });
+
+  it('コメントなしと空白だけのコメントは同じ配合として reuse される', () => {
+    const hash = requestHashOf({
+      parentA: 'protopedia:1',
+      parentB: 'protopedia:2',
+      mode: 'fusion',
+    });
+    const body = 'parent_a: protopedia:1\nparent_b: protopedia:2\nmode: fusion\ncomment:    ';
+    const r = selectBreedingIssue(
+      [issue(3, '2026-11-10T00:00:00Z', body)],
+      baseOpts({}, { existingByRequestHash: new Map([[hash, 'mashup-000001']]) }),
+    );
+    expect(r.action).toBe('reuse');
+  });
+
+  it('親が同じでも配合タイプが違えば新規生成する', () => {
+    const hash = requestHashOf({
+      parentA: 'protopedia:1',
+      parentB: 'protopedia:2',
+      mode: 'fusion',
+    });
+    const body = 'parent_a: protopedia:1\nparent_b: protopedia:2\nmode: mutation';
+    const r = selectBreedingIssue(
+      [issue(3, '2026-11-10T00:00:00Z', body)],
+      baseOpts({}, { existingByRequestHash: new Map([[hash, 'mashup-000001']]) }),
+    );
+    expect(r.action).toBe('process');
+  });
+
+  it('親の順序が違う申請（B×A）は同じキーに一致しない', () => {
+    const hash = requestHashOf({
+      parentA: 'protopedia:1',
+      parentB: 'protopedia:2',
+      mode: 'fusion',
+    });
+    const body = 'parent_a: protopedia:2\nparent_b: protopedia:1\nmode: fusion';
+    const r = selectBreedingIssue(
+      [issue(3, '2026-11-10T00:00:00Z', body)],
+      baseOpts({}, { existingByRequestHash: new Map([[hash, 'mashup-000001']]) }),
+    );
+    expect(r.action).toBe('process');
+  });
+
+  it('祖先×子孫の組み合わせ（近親交配）は却下する（キャッシュヒットでも）', () => {
     // protopedia:1 -> mashup-000001 の系譜で、その両端を親に指定
     const r = selectBreedingIssue(
       [issue(3, '2026-11-01T00:00:00Z', validBody('protopedia:1', 'mashup-000001'))],

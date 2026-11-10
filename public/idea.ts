@@ -1,8 +1,9 @@
 import './style.css';
 import type { Offspring, ParentId, ProtopediaWork } from '../lib/types.ts';
-import { BLEND_MODE_LABELS } from '../lib/types.ts';
+import { blendModeDescription, blendModeLabel } from '../lib/types.ts';
 import { repoConfigFromEnv } from '../lib/config.ts';
 import { formatDateTimeJSTWithNote } from '../lib/datetime.ts';
+import { searchHref, type SearchQuery } from '../lib/search.ts';
 import rawOffspring from '../data/offspring.json';
 import rawPool from '../data/sample-prototypes.json';
 import rawSampleWorks from '../data/protopedia-sample.json';
@@ -314,10 +315,15 @@ export function buildIdeaDetail(
   }
 
   // --- 基本情報（サムネイル大・発明名・概要を最も目立たせる） ----------------
+  // 配合タイプ（issue #31）: 実データの mode（申請時に指定された値）だけを見る。
+  // 欠損・未知の値は「配合タイプ不明」で、説明文も出さない（推測しない）。
+  const modeLabel = blendModeLabel(c.mode);
+  const modeDesc = blendModeDescription(c.mode);
+
   const badges = el('div', { class: 'idea-badges' },
     el('span', { class: 'badge idea' }, '未実装のアイデア'),
     el('span', { class: 'badge gen' }, `第${c.generation}世代`),
-    el('span', { class: 'badge mode' }, BLEND_MODE_LABELS[c.mode] ?? c.mode),
+    el('span', { class: 'badge mode' }, modeLabel),
   );
   if (c.sample) badges.append(el('span', { class: 'badge sample' }, 'SAMPLE'));
 
@@ -331,6 +337,14 @@ export function buildIdeaDetail(
       badges,
       el('h2', { class: 'det-title' }, c.title),
       el('p', { class: 'det-summary' }, c.summary || '（概要なし）'),
+      // 配合方法の説明（issue #31）。配合タイプが分からないときは説明も出さない。
+      el(
+        'p',
+        { class: 'det-mode-note hint' },
+        modeDesc
+          ? `配合方法: ${modeDesc}`
+          : '配合タイプが記録されていないため、配合方法の説明は表示しません（推測での補完はしません）。',
+      ),
       el(
         'div',
         { class: 'det-meta hint' },
@@ -359,6 +373,35 @@ export function buildIdeaDetail(
 
   // --- AIによる配合結果（継承・仕組み・利用シーン・技術構成） -----------------
   const result = el('div', { class: 'det-result' });
+
+  // 技術・分野タグ（issue #38 §8）: クリックで一覧の該当条件の検索へ移動する。
+  // メタデータが無い既存データはこのセクションごと出さない（空の見出しを作らない）。
+  const techs = c.technologies ?? [];
+  const domains = c.domains ?? [];
+  if (techs.length > 0 || domains.length > 0) {
+    const tagRow = (label: string, kind: 'tech' | 'domain', values: string[]): HTMLElement => {
+      const row = el('div', { class: 'det-tag-row' });
+      row.append(el('span', { class: 'lbl' }, label));
+      for (const v of values) {
+        const q: SearchQuery = {
+          q: '',
+          tech: kind === 'tech' ? v : '',
+          domain: kind === 'domain' ? v : '',
+        };
+        row.append(
+          el('a', { class: 'tag-chip', href: searchHref(ctx.base, q), 'data-kind': kind }, v),
+        );
+      }
+      return row;
+    };
+    const tags = el('div', { class: 'det-tags' });
+    if (techs.length > 0) tags.append(tagRow('技術: ', 'tech', techs));
+    if (domains.length > 0) tags.append(tagRow('分野: ', 'domain', domains));
+    tags.append(
+      el('p', { class: 'hint' }, 'タグを押すと、その条件でアイデア一覧を検索します。'),
+    );
+    result.append(section('技術・分野タグ', tags));
+  }
 
   const traitItems = (c.inheritedTraits ?? []).filter((t) => t && t.trait);
   if (traitItems.length > 0) {

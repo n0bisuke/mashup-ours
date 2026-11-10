@@ -24,6 +24,7 @@ import {
   type OutputLanguage,
 } from './language.ts';
 import { DEFAULT_PROMPTS, type PromptsConfig } from './prompts.ts';
+import { DEFAULT_SEARCH_TAXONOMY, normalizeText, type SearchTaxonomy } from './search.ts';
 
 /** 生成対象の親（ワーカーがローカルデータから組み立てて渡す）。 */
 export interface BlendParent {
@@ -56,6 +57,14 @@ export interface GeneratedIdea {
   inheritedFromB: string;
   blendType: BreedingMode;
   imagePrompt: string;
+  /**
+   * 検索用メタデータ（issue #38）。**この出力と一緒に返させる** =
+   * 検索のためだけに追加のAIリクエストは発生させない。
+   * 判断できなければ空配列（無理に分類しない）。親の技術をそのまま引き継ぐ必要はない。
+   */
+  technologies: string[];
+  domains: string[];
+  keywords: string[];
 }
 
 const CAP_NAME = 60;
@@ -65,6 +74,10 @@ const CAP_TRAIT = 300;
 const CAP_IMAGE_PROMPT = 1500;
 const MAX_USE_CASES = 6;
 const CAP_USE_CASE = 200;
+/** 検索用メタデータの上限（issue #38）。 */
+const MAX_TAGS = 6;
+const CAP_TAG = 50;
+const MAX_KEYWORDS = 8;
 
 // 各配合タイプの指示（追加開発指示 §4）と共通ルールは config/prompts.json で調整できる
 // （issue #25）。既定値は lib/prompts.ts の DEFAULT_PROMPTS。
@@ -96,6 +109,7 @@ function elementsBlock(label: string, parent: BlendParent): string {
 export function buildBlendPrompt(
   input: BlendInput,
   prompts: PromptsConfig = DEFAULT_PROMPTS,
+  taxonomy: SearchTaxonomy = DEFAULT_SEARCH_TAXONOMY,
 ): { system: string; user: string } {
   const { mode, parentA, parentB, comment, language } = input;
 
@@ -113,10 +127,18 @@ export function buildBlendPrompt(
     '',
     ['ルール:', ...prompts.sharedRules].join('\n'),
     '',
+    // 検索用メタデータ（issue #38）: この出力に含めさせる = 検索のためだけの追加AIリクエストは無い。
+    '検索用メタデータ（technologies / domains / keywords）も同じJSONに含めてください:',
+    '- technologies: この発明で**実際に使う**技術名のみ（例 "Dify", "LINE", "IoT", "生成AI"）。' +
+      '親作品で使われていても、この発明で使わない技術は書かない。判断できなければ空の配列。',
+    `- domains: この発明の利用分野。次の候補から内容に合うものを選ぶ: ${taxonomy.domains.join(' / ')}。` +
+      '当てはまらなければ空の配列（無理に分類しない）。',
+    '- keywords: 特徴的な語を0〜8個（例 "チャットボット", "問い合わせ対応", "業務効率化"）。',
+    '',
     '出力JSONの形:',
     '{"name": 発明名(60字以内), "summary": 一文の概要(300字以内), "description": 利用場面と誰がどう楽しむか(1200字以内), "mechanism": 想定技術と仕組み(1200字以内), "useCases": [利用例1〜6個(各200字以内)], "inheritedFromA": 親Aから継承したもの(300字以内), "inheritedFromB": 親Bから継承したもの(300字以内), "blendType": "' +
       `${mode}` +
-      ', "imagePrompt": サムネイル画像の英語プロンプト(1500字以内・外観・機能・使い方が一目で分かる具体的描写)}',
+      ', "technologies": [技術名0〜6個(各50字以内)], "domains": [分野0〜6個(各50字以内)], "keywords": [キーワード0〜8個(各50字以内)], "imagePrompt": サメネイル画像の英語プロンプト(1500字以内・外観・機能・使い方が一目で分かる具体的描写)}',
   ].join('\n');
 
   const user = [
@@ -152,11 +174,38 @@ function cap(v: unknown, max: number): string {
 }
 
 /**
+ * 検索用メタデータ（technologies / domains / keywords）の抽出（issue #38）。
+ * **lenient**: 欠損・不正型は空配列にして公開を止めない
+ * （必須フィールドの検証に比べて、検索補助は失敗してもデータを壊さないため）。
+ * 重複は正規化して除去し、件数・1件の長さは上限つき。
+ */
+function tagList(v: unknown, max: number): string[] {
+  if (!Array.isArray(v)) return [];
+  const out: string[] = [];
+  const seen = new Set<string>();
+  for (const x of v) {
+    if (typeof x !== 'string') continue;
+    const s = x.replace(/\s+/g, ' ').trim().slice(0, CAP_TAG);
+    if (!s) continue;
+    const key = normalizeText(s);
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    out.push(s);
+    if (out.length >= max) break;
+  }
+  return out;
+}
+
+/**
  * 危険・根拠なし主張・具体性欠如のチェック（issue #16 §3・AGENTS.md「危険な提案や
  * 具体性のない提案はそのまま公開しない」）。公開しない理由を返す。通れば null。
  */
 export function riskCheck(idea: GeneratedIdea): string | null {
-  const text = `${idea.name} ${idea.summary} ${idea.description} ${idea.mechanism} ${idea.useCases.join(' ')}`;
+  const text = `${idea.name} ${idea.summary} ${idea.description} ${idea.mechanism} ${idea.useCases.join(' ')} ${[
+    ...idea.technologies,
+    ...idea.domains,
+    ...idea.keywords,
+  ].join(' ')}`;
 
   // 根拠のない主張（未実装アイデアとして公開できない）
   if (/実装済み|発売済み|すでに発売|特許取得|取得済み特許|专利/.test(text)) {
@@ -283,6 +332,11 @@ export function parseBlendResponse(
     inheritedFromB,
     blendType: o.blendType,
     imagePrompt,
+    // 検索用メタデータ（issue #38）: あれば使う。欠損しても公開は止めない
+    // （それ以前の必須フィールド検証・riskCheck・言語チェックはすべて通っている）。
+    technologies: tagList(o.technologies, MAX_TAGS),
+    domains: tagList(o.domains, MAX_TAGS),
+    keywords: tagList(o.keywords, MAX_KEYWORDS),
   };
 
   const risk = riskCheck(idea);

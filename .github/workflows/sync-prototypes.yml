@@ -12,8 +12,11 @@ on:
   workflow_dispatch:
 
 # data/prototypes.json のコミットに必要な最小権限のみ。
+# actions: write は Pages 再ビルドの dispatch 用（GITHUB_TOKEN の push は
+# 他のワークフローを起動しないため、例外である workflow_dispatch で deploy.yml を呼ぶ / issue #40）。
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: sync-prototypes
@@ -45,13 +48,23 @@ jobs:
           node --experimental-strip-types scripts/sync-protopedia.ts
 
       - name: Commit updated data
+        id: commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/prototypes.json
           if git diff --cached --quiet; then
             echo "変更なし"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           git commit -m "chore(data): ProtoPedia作品を同期 $(date -u +%Y-%m-%dT%H:%M:%SZ)"
           git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      # 同期データの push でも Pages は再ビルドされないため、明示的に起動する（issue #40）。
+      - name: Trigger Pages rebuild
+        if: ${{ steps.commit.outputs.changed == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy.yml --repo "$GITHUB_REPOSITORY" --ref "$GITHUB_REF_NAME"

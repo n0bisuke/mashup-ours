@@ -64,6 +64,9 @@ function baseIdea(): GeneratedIdea {
     inheritedFromB: '手紙の声で場面を伝える体験',
     blendType: 'fusion',
     imagePrompt: 'a small handheld device glowing along a historic street',
+    technologies: [],
+    domains: [],
+    keywords: [],
   };
 }
 
@@ -81,6 +84,9 @@ function englishIdea(): GeneratedIdea {
     inheritedFromB: 'Conveying a scene through the voice of letters',
     blendType: 'fusion',
     imagePrompt: 'a small handheld device glowing along a historic street',
+    technologies: [],
+    domains: [],
+    keywords: [],
   };
 }
 
@@ -136,6 +142,10 @@ describe('parseBlendResponse の言語チェック（issue #23 §5）', () => {
           'name',
           'summary',
           'useCases',
+          // 検索用メタデータ（issue #38）。キーは英語のまま既存構造に追加
+          'technologies',
+          'domains',
+          'keywords',
         ].sort(),
       );
     }

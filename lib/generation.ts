@@ -10,10 +10,16 @@ export function computeGeneration(parentGenerations: readonly number[]): number 
   return 1 + Math.max(...parentGenerations);
 }
 
-/** 次の未使用の子作品IDを発行する（data内の既存IDとの重複を避ける）。 */
-export function nextOffspringId(existingIds: readonly string[]): string {
+/**
+ * 次の未使用の子作品IDを発行する（data内の既存IDとの重複を避ける）。
+ * retiredIds = 削除済みID（data/deleted-offspring.json）。削除したIDは再利用しない。
+ */
+export function nextOffspringId(
+  existingIds: readonly string[],
+  retiredIds: readonly string[] = [],
+): string {
   let max = 0;
-  for (const id of existingIds) {
+  for (const id of [...existingIds, ...retiredIds]) {
     const m = /^mashup-(\d{6})$/.exec(id);
     if (m) max = Math.max(max, Number(m[1]));
   }

@@ -1,39 +1,5 @@
 [
   {
-    "id": "mashup-000001",
-    "schemaVersion": 1,
-    "title": "Clappy Sipster",
-    "summary": "A wearable Clappy‑inspired costume that incorporates a smart drink dispenser, letting wearers instantly serve personalized beverages to strangers, instantly breaking the ice and fostering instant social connections.",
-    "concept": "Clappy Sipster transforms the traditional networking or cosplay event into an interactive, social‑drinking experience. The costume, mimicking the iconic Clappy’s bright colors and distinctive shape, is embedded with a compact, rechargeable drink dispensing unit. When a wearer approaches someone, the unit is triggered by a gentle tap on the logo or by a voice command, and within seconds a personalized beverage—water, juice, mock‑cocktail, or even a hot drink—is poured into a cup that the receiver can hold. The act of receiving a drink serves as a non‑verbal invitation to talk. Behind the scenes, the device communicates with the wearer’s smartphone via Bluetooth, allowing them to pre‑select flavors, set portion sizes, or even load a short ice‑breaker script that can be read aloud by a small speaker. The garment’s flexible housing keeps the components lightweight and comfortable, while a sensor network detects when a handshake or introduction occurs, automatically logging the encounter for follow‑up. The experience is tailored to both casual parties and professional mixers: at a cosplay convention, a fan can quickly brighten up the event with a playful drink exchange; at a corporate n",
-    "mechanism": "The core of Clappy Sipster is a modular microfluidic dispenser housed within a lightweight chassis that conforms to the costume’s silhouette. The dispenser consists of a 300‑ml reservoir, a peristaltic pump, and a small solenoid valve to control flow. Fluid selection is managed by a microcontroller that interfaces with the wearer’s smartphone via BLE. The smartphone app stores user‑preferred drink profiles and displays an intuitive UI for selecting a drink before approaching someone. When the wearer taps the Clappy logo or speaks a voice command, the microcontroller receives a trigger and initiates the dispensing sequence: the pump draws liquid from the reservoir, the valve opens, and a pre‑set volume is delivered in under two seconds. A miniature Bluetooth speaker within the unit can optionally play a pre‑recorded ice‑breaker message to accompany the drink. Sensors integrated into the costume detect physical proximity (using RFID tags embedded in guests’ event badges) and a gentle hand‑shake motion. Once proximity thresholds are crossed, the system prompts the wearer to offer a drink. The garment’s fabric is treated with a moisture‑wicking coating to prevent spills, and the liquid",
-    "useCases": [
-      "1. **Cosplay Convention** – A fan completes a Clappy costume while simultaneously offering themed mock‑cocktails to fellow attendees, sparking quick conversations about favorite moments. 2. **Corporat"
-    ],
-    "inheritedTraits": [
-      {
-        "parentId": "protopedia:4",
-        "trait": "The smart drink dispensing capability of Pour or Drink, which enables instant beverage offering to initiate conversation and build immediate rapport, is fully integrated. The ability to trigger dispensing through user input (touch or voice) and the design focus on fostering social connection remain "
-      },
-      {
-        "parentId": "protopedia:22",
-        "trait": "Clappy Sipster retains the authentic aesthetic and lightweight, breathable construction of the CosLappy costume, faithfully reproducing Clappy’s distinctive shape, colors, and signature accessories. The costume’s form‑fitting design and UV‑resistant fabric ensure a comfortable, engaging experience w"
-      }
-    ],
-    "parents": [
-      "protopedia:4",
-      "protopedia:22"
-    ],
-    "generation": 1,
-    "mode": "fusion",
-    "sourceIssue": 12,
-    "slot": "2026-11-09T19",
-    "createdAt": "2026-11-09T19:07:02.918Z",
-    "model": "@cf/openai/gpt-oss-20b",
-    "status": "idea",
-    "imagePrompt": "A vibrant, stylized illustration of a person wearing a full-body Clappy-inspired costume. The costume features bright yellow and blue panels, large smiling eyes, and a playful hat reminiscent of the Clappy character. Embedded within the torso and armpit area is a sleek, metallic smart drink dispenser unit with a small metal dispenser arm extending outward. A translucent cup is poised in the hand of an unseen recipient, with a gentle stream of sparkling liquid pouring into it. The background is a lively party setting with confetti and soft lighting, highlighting the interactive nature of the device. The logo on the costume glows softly, indicating readiness to dispense. The overall composition showcases the seamless blend of cosplay artistry and modern technology, ready for instant social interaction. The illustration is rendered in a clean, semi‑realistic style with high color contrast to emphasize the playful yet functional design of the Clappy Sipster.. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
-    "imagePath": "assets/inventions/mashup-000001.png"
-  },
-  {
     "id": "mashup-000002",
     "schemaVersion": 1,
     "title": "パパスピン",

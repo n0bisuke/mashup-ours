@@ -4,6 +4,7 @@ import {
   BLEND_MODE_DESCRIPTIONS,
   BLEND_MODE_LABELS,
   BREEDING_MODES,
+  blendModeLabel,
   statusLabel,
 } from '../lib/types.ts';
 import { MAX_COMMENT_LENGTH } from '../lib/issue.ts';
@@ -31,6 +32,7 @@ import sampleWorksJson from '../data/protopedia-sample.json';
 import rawPool from '../data/sample-prototypes.json';
 import rawSampleOffspring from '../data/offspring.sample.json';
 import { createCharacter } from './character.ts';
+import { createApplyGuide } from './apply-guide.ts';
 import {
   applyView,
   observeBreeding,
@@ -81,6 +83,13 @@ const candidates: ProtopediaWork[] = usingSampleCandidates
 const showSampleOffspring = offspring.length === 0;
 const children: Offspring[] = showSampleOffspring ? sampleOffspring : offspring;
 
+// 候補に組み込まれたAI生成アイデア（issue #36）。
+// IDは current-candidates.json（15分枠で全ユーザー共通）、実体は data/offspring.json。
+// 存在しないID・開発用サンプルは表示しない（削除済みIDはそもそも候補に載らない）。
+const offspringCandidates: Offspring[] = (candidatesFile?.offspringCandidates ?? [])
+  .map((id) => offspring.find((o) => o.id === id))
+  .filter((o): o is Offspring => !!o && o.sample !== true);
+
 const repoCfg = repoConfigFromEnv({
   VITE_GITHUB_OWNER: import.meta.env.VITE_GITHUB_OWNER,
   VITE_GITHUB_REPO: import.meta.env.VITE_GITHUB_REPO,
@@ -121,6 +130,22 @@ const nodeById = new Map<string, ProtopediaWork | Offspring>(allNodes.map((n) =>
 
 function isOffspring(n: ProtopediaWork | Offspring | undefined): n is Offspring {
   return !!n && 'sourceIssue' in n;
+}
+
+/**
+ * 親作品の表示用画像URL（issue #39 の共通化）。
+ * - ProtoPedia作品: `mainUrl`（取得済みの作品画像）
+ * - AI生成アイデア: `imagePath`（サイトルート相対パス → `base` を前につける。
+ *   `offspringThumb()` や系譜図ノードと同じ解決方法 = カスタムドメイン・サブパス配信でも一致）
+ * - 画像が無い（null / undefined）: null（呼び出し側で「？」プレースホルダー）
+ */
+export function nodeImageUrl(
+  n: ProtopediaWork | Offspring | undefined,
+  base: string,
+): string | null {
+  if (!n) return null;
+  if (isOffspring(n)) return n.imagePath ? `${base}${n.imagePath}` : null;
+  return n.mainUrl ? n.mainUrl : null;
 }
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -215,6 +240,9 @@ themeBtn.addEventListener('click', () => {
 const heroLeft = el(
   'div',
   {},
+  // 肩書き（issue #38 §1）: ロゴの上に小さく添えるだけ。表示順は
+  // 肩書き → Mashup Ours（読み仮名）→ コピー。h1 の文言は "Mashup Ours" のまま（主役はロゴ）。
+  el('p', { class: 'hero-katagi' }, 'みんなのプロトタイプ配合研究所'),
   el(
     'div',
     { class: 'hero-title-row' },
@@ -444,7 +472,7 @@ if (candidatesFile) {
       {},
       '最終更新: ',
       el('span', { class: 'value' }, updatedTxt),
-      `${jstNote(updatedTxt)}（Actionsの実行結果）`,
+      `${jstNote(updatedTxt)}`,
     ),
     el(
       'div',
@@ -461,12 +489,13 @@ if (candidatesFile) {
   const nextMs = slotToDate(f.nextSlot);
   if (Number.isFinite(nextMs) && Date.now() > nextMs + UPDATE_GRACE_MS) {
     candMeta.append(
-      el('div', { class: 'stale' }, '⚠ 候補更新が遅れています（Actionsの実行完了後に切り替わります）。'),
+      el('div', { class: 'stale' }, '⚠ 新しい候補への差し替えが遅れています。しばらくすると新しい候補になります。'),
     );
   }
-  if (f.candidates.length < scheduleCfg.maxCandidates) {
+  const totalCand = f.candidates.length + (f.offspringCandidates?.length ?? 0);
+  if (totalCand < scheduleCfg.maxCandidates) {
     candMeta.append(
-      el('div', { class: 'hint' }, `現在の候補は${f.candidates.length}件です（最大${scheduleCfg.maxCandidates}件）。`),
+      el('div', { class: 'hint' }, `現在の候補は${totalCand}件です（最大${scheduleCfg.maxCandidates}件）。`),
     );
   }
 } else {
@@ -499,7 +528,18 @@ interface PickControls {
   b: HTMLButtonElement;
 }
 
-const pickRegistry = new Map<string, PickControls>();
+const pickRegistry = new Map<string, PickControls[]>();
+
+/**
+ * 作品ごとに選択操作を登録する。**同じIDが複数の場所に出てきたら両方を登録**
+ * （issue #36: AI生成アイデアは「候補カード」と「最近誕生した発明」の両方に
+ * 出るので、どちらで選んでも状態が同期する）。
+ */
+function registerPick(id: string, controls: PickControls): void {
+  const list = pickRegistry.get(id);
+  if (list) list.push(controls);
+  else pickRegistry.set(id, [controls]);
+}
 
 function pickButton(slot: 'a' | 'b', id: string, stopBubble: boolean): HTMLButtonElement {
   const btn = el(
@@ -590,12 +630,59 @@ function buildCandidateCard(w: ProtopediaWork, index: number): HTMLElement {
   body.append(summary, foot);
   card.append(body);
 
-  pickRegistry.set(w.id, { host: card, badge, a: btnA, b: btnB });
+  registerPick(w.id, { host: card, badge, a: btnA, b: btnB });
+  return card;
+}
+
+/**
+ * AI生成アイデアの候補カード（issue #36）。
+ * ProtoPediaカードとの見た目の区別は **破線のサムネイル枠 + 「AI生成アイデア・未実装」ラベル**
+ * （色だけに依存させない）。操作（Aにする / Bにする）は ProtoPediaカードと完全に同一。
+ */
+function buildOffspringCandidateCard(c: Offspring, index: number): HTMLElement {
+  const card = el('article', { class: 'candidate child-card', 'data-id': c.id });
+  card.append(offspringThumb(c, import.meta.env.BASE_URL, 'thumb'));
+
+  const badge = el('span', { class: 'badge pick-state' }, '');
+  badge.hidden = true; // 選択中のみ表示
+
+  const idx = el(
+    'div',
+    { class: 'card-index' },
+    `作品 No.${String(index + 1).padStart(2, '0')} / AI生成`,
+  );
+  const h3 = el('h3', {}, c.title, badge);
+  const meta = el(
+    'div',
+    { class: 'card-meta' },
+    el('span', { class: 'badge idea' }, 'AI生成アイデア・未実装'),
+    el('span', { class: 'badge gen' }, `第${c.generation}世代`),
+    el('span', { class: 'badge mode' }, blendModeLabel(c.mode)),
+  );
+  const summary = el('p', { class: 'summary' }, c.summary || '（概要なし）');
+  // 個別ページへのリンク（= 親として選ぶ前の確認。実在作品との誤認を避ける表記）
+  const link = el(
+    'a',
+    { href: `${import.meta.env.BASE_URL}ideas/${encodeURIComponent(c.id)}/` },
+    'この発明を見る →',
+  );
+  const btnA = pickButton('a', c.id, false);
+  const btnB = pickButton('b', c.id, false);
+  const picks = el('div', { class: 'picks' }, btnA, btnB);
+  const foot = el('div', { class: 'card-foot' }, link, picks);
+
+  const body = el('div', { class: 'card-body' }, idx, h3, meta, summary, foot);
+  card.append(body);
+  registerPick(c.id, { host: card, badge, a: btnA, b: btnB });
   return card;
 }
 
 candidates.forEach((w, i) => grid.append(buildCandidateCard(w, i)));
-if (candidates.length === 0) {
+// AI生成アイデアの候補カード（issue #36）。ProtoPediaカードと並べて選べる。
+offspringCandidates.forEach((c, i) =>
+  grid.append(buildOffspringCandidateCard(c, candidates.length + i)),
+);
+if (candidates.length + offspringCandidates.length === 0) {
   grid.append(el('div', { class: 'empty' }, '候補がありません（データ未同期です）。'));
 }
 candSection.append(
@@ -644,21 +731,25 @@ const breedingIntervalMs = scheduleCfg.breedingIntervalMinutes * 60_000;
 const lastBirthMs = children
   .filter((c) => !c.sample)
   .reduce((max, c) => Math.max(max, Date.parse(c.createdAt) || 0), 0);
+// 文言は内部実装（Actions・順次処理など）を説明せず、「いつ発明が生まれるか」だけを伝える（issue #33）。
 const nextBreedingHint =
   lastBirthMs === 0
-    ? 'まだ配合の成功記録がありません（最初の申請を順次受け付けています）。'
+    ? '最初の発明は、申し込みの順番に生まれます。'
     : Date.now() < lastBirthMs + breedingIntervalMs
-      ? `次の配合の目安: ${formatDateTimeJST(lastBirthMs + breedingIntervalMs)}${JST_NOTE}（前回の誕生から間隔を空けて処理）。`
-      : '次の配合はただちに処理できます（申請の順次処理）。';
+      ? `次の発明は ${formatDateTimeJST(lastBirthMs + breedingIntervalMs)}${JST_NOTE} ごろに誕生します（前回の誕生からこの間隔を空けています）。`
+      : '次の発明は、ただちに生まれます（申し込みの順番に1組ずつ）。';
 const statusNote = el(
   'div',
   { class: 'slot' },
   el(
     'div',
     {},
-    '配合の間隔（設定値）: ',
-    el('span', { class: 'value' }, intervalLabel(scheduleCfg.breedingIntervalMinutes)),
-    '。',
+    el(
+      'span',
+      { class: 'value' },
+      `新しい発明は約${intervalLabel(scheduleCfg.breedingIntervalMinutes)}ごとに誕生します。`,
+    ),
+    ' ',
     nextBreedingHint,
   ),
   el('div', {}, breedingShareText(scheduleCfg)),
@@ -941,8 +1032,9 @@ function renderFvCapsule(
   }
   const n = nodeById.get(id);
   name.textContent = n ? n.title : id;
-  // 子作品は出典画像を持たない → プレースホルダー。ProtoPedia親は作品画像（読み込み失敗時も同様）。
-  const url = n && !isOffspring(n) && n.mainUrl ? n.mainUrl : null;
+  // ProtoPedia親 = 作品画像 / AI生成親 = 生成画像（issue #39）。
+  // 画像が無い・読み込み失敗のときは「？」プレースホルダー（発明名と選択状態はそのまま表示）。
+  const url = nodeImageUrl(n, import.meta.env.BASE_URL);
   if (!url) {
     view.replaceChildren(el('span', { class: 'capsule-q' }, '？'));
     return;
@@ -957,7 +1049,7 @@ function renderFvCapsule(
 /** 装置の状態表示文（§7 状態表。Issue作成画面を開いただけ=申請成功にしない）。 */
 function fvStatusText(): string {
   if (applyPhase === 'opening') return '申請手続き中 — Issue作成画面で「送信」してね';
-  if (applyPhase === 'confirmed') return '配合申請受付！ 次の配合の処理を待つのじゃ';
+  if (applyPhase === 'confirmed') return '配合申請受付！ 次の発明の誕生を待つのじゃ';
   if (applyPhase === 'unconfirmed') return '実験失敗？ 申請をまだ確認できません — 送信したか確認してもう一度読み込んでね';
   if (observedPhase === 'fresh') return '新しい発明が誕生したぞ！';
   if (observedPhase === 'generating') return '配合実験中 — AIが新しい発明を考えています';
@@ -999,16 +1091,18 @@ function refreshBreedButton(): void {
 }
 
 function updateSelectionUI(): void {
-  for (const [id, c] of pickRegistry) {
+  for (const [id, controls] of pickRegistry) {
     const isA = pickA === id;
     const isB = pickB === id;
-    c.host.classList.toggle('is-a', isA);
-    c.host.classList.toggle('is-b', isB);
-    c.a.setAttribute('aria-pressed', String(isA));
-    c.b.setAttribute('aria-pressed', String(isB));
-    if (c.badge) {
-      c.badge.hidden = !(isA || isB);
-      c.badge.textContent = isA ? '親A選択中' : isB ? '親B選択中' : '';
+    for (const c of controls) {
+      c.host.classList.toggle('is-a', isA);
+      c.host.classList.toggle('is-b', isB);
+      c.a.setAttribute('aria-pressed', String(isA));
+      c.b.setAttribute('aria-pressed', String(isB));
+      if (c.badge) {
+        c.badge.hidden = !(isA || isB);
+        c.badge.textContent = isA ? '親A選択中' : isB ? '親B選択中' : '';
+      }
     }
   }
   statusA.textContent = pickText(pickA);
@@ -1105,7 +1199,11 @@ async function fetchRuntimeOffspring(): Promise<Offspring[]> {
   }
 }
 
-breedBtn.addEventListener('click', () => {
+/**
+ * Issue作成画面を開く（URL生成・phase 切替は既存処理のまま = 変更しない / issue #35）。
+ * 案内ダイアログの「GitHubで配合を申し込む」からだけ呼ばれる。
+ */
+function openIssueCreator(): void {
   const pair = currentPair();
   if (!pair || !repoCfg) return;
   const wa = nodeById.get(pair[0]);
@@ -1134,6 +1232,17 @@ breedBtn.addEventListener('click', () => {
       (result) => setApplyPhase(result),
     );
   }
+}
+
+// 案内ダイアログ（issue #35）: 「配合を申し込む」ではすぐには GitHub へ移動しない。
+// 博士が手順（ログイン → 内容確認 → 緑のCreate）を案内し、実際に「GitHubで配合を申し込む」
+// を押したときだけ openIssueCreator() が動く。閉じても選択・入力内容は変えない。
+const applyGuide = createApplyGuide(() => openIssueCreator());
+
+breedBtn.addEventListener('click', () => {
+  const pair = currentPair();
+  if (!pair || !repoCfg) return;
+  applyGuide.open();
 });
 
 // ---------------------------------------------------------------------------
@@ -1160,9 +1269,11 @@ const list = el('ul', { class: 'offspring' });
  */
 function offspringThumb(c: Offspring, base: string, cls: string): HTMLElement {
   const box = el('div', { class: cls });
-  if (c.imagePath) {
+  // 画像URLはカプセル（renderFvCapsule）と同じ nodeImageUrl() で解決する（issue #39）。
+  const src = nodeImageUrl(c, base);
+  if (src) {
     const img = el('img', {
-      src: `${base}${c.imagePath}`,
+      src,
       alt: `${c.title}のサムネイル（AIが生成した画像）`,
       loading: 'lazy',
     });
@@ -1192,7 +1303,7 @@ if (sorted.length === 0) {
         { class: 'title' },
         c.title,
         el('span', { class: 'badge idea' }, '未実装のアイデア'),
-        el('span', { class: 'badge mode' }, BLEND_MODE_LABELS[c.mode] ?? c.mode),
+        el('span', { class: 'badge mode' }, blendModeLabel(c.mode)),
         c.sample ? el('span', { class: 'badge sample' }, 'SAMPLE') : '',
       ),
       el('div', { class: 'hint' }, c.summary),
@@ -1208,7 +1319,7 @@ if (sorted.length === 0) {
     const btnA = pickButton('a', c.id, true);
     const btnB = pickButton('b', c.id, true);
     main.append(el('div', { class: 'li-picks' }, btnA, btnB));
-    pickRegistry.set(c.id, { host: li, badge: null, a: btnA, b: btnB });
+    registerPick(c.id, { host: li, badge: null, a: btnA, b: btnB });
     list.append(li);
   }
 }
@@ -1405,7 +1516,7 @@ function renderDetail(id: string): void {
   let media: HTMLElement | null = null;
   if (isOffspring(node)) {
     badges.append(el('span', { class: 'badge idea' }, 'AIが考えた未実装の発明アイデア'));
-    badges.append(el('span', { class: 'badge mode' }, BLEND_MODE_LABELS[node.mode] ?? node.mode));
+    badges.append(el('span', { class: 'badge mode' }, blendModeLabel(node.mode)));
     if (node.sample) badges.append(el('span', { class: 'badge sample' }, 'SAMPLE'));
     if (node.imagePath) {
       const img = el('img', {
@@ -1432,7 +1543,7 @@ function renderDetail(id: string): void {
   add('概要', node.summary);
 
   if (isOffspring(node)) {
-    add('配合タイプ', BLEND_MODE_LABELS[node.mode] ?? node.mode);
+    add('配合タイプ', blendModeLabel(node.mode));
     add('コンセプト', node.concept);
     add('仕組み', node.mechanism);
     if (node.useCases && node.useCases.length > 0) {

@@ -29,6 +29,15 @@ describe('nextOffspringId', () => {
   it('不正なIDは無視する', () => {
     expect(nextOffspringId(['garbage'])).toBe('mashup-000001');
   });
+  it('削除済みIDは採番で再利用しない（issue #32）', () => {
+    // 削除済みIDは既存IDと合わせて最大値の計算に使う
+    expect(nextOffspringId(['mashup-000002'], ['mashup-000001'])).toBe('mashup-000003');
+    // 本番データが0件でも、削除済みIDを飛び越えて採番する
+    expect(nextOffspringId([], ['mashup-000001'])).toBe('mashup-000002');
+    expect(nextOffspringId([], ['mashup-000007'])).toBe('mashup-000008');
+    // 引数省略は従来どおり（台帳が無い運用でも壊さない）
+    expect(nextOffspringId(['mashup-000001'])).toBe('mashup-000002');
+  });
 });
 
 describe('slotKey', () => {

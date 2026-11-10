@@ -91,17 +91,19 @@ jobs:
       # 配合結果の push では Pages が再ビルドされない（GitHub公式:
       # GITHUB_TOKEN による push は他の workflow をトリガーしない）。
       # 例外である workflow_dispatch で deploy.yml を明示的に起動する。
-      # コミットが発生したときだけ呼ぶ（=ビルド回数を増やさない）。
+      # コミットが発生した**かつ**新しい発明が生まれたときだけ呼ぶ
+      # （キャッシュ再利用 reused のコミットは processed-issues のみ = 公開内容は不変）。
       - name: Trigger Pages rebuild
-        if: ${{ steps.commit.outputs.changed == 'true' }}
+        if: ${{ steps.commit.outputs.changed == 'true' && steps.breed.outputs.outcome == 'success' }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run deploy.yml --repo "$GITHUB_REPOSITORY"
 
       # 結果コメント＆クローズは**コミット成功の後**（AGENTS.md: コミット後にIssueへリンク）。
       # 本文はスクリプトが書いたファイルを --body-file で読む = AI出力を shell へ埋め込まない。
+      # reused（同じ配合条件のキャッシュヒット / issue #37）も正常処理として同じ経路で完了する。
       - name: Comment result on issue
-        if: ${{ steps.breed.outputs.outcome == 'success' }}
+        if: ${{ steps.breed.outputs.outcome == 'success' || steps.breed.outputs.outcome == 'reused' }}
         env:
           GH_TOKEN: ${{ github.token }}
           ISSUE: ${{ steps.breed.outputs.issue_number }}

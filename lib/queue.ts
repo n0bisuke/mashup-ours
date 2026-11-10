@@ -7,9 +7,13 @@
  * - 不正な申請はAI呼び出し**前に**却下理由を返す（呼び出し側が理由をコメントして記録する）。
  * - 「妥当な申請のうち最も古い1件」を選ぶ。不正な申請が古い順に1件ずつ
  *   却下されていくため、不正Issueの大量投稿でもAI呼び出しは増えない。
- * - このモジュールは純関数（Node依存なし）。フロントは呼ばない。
+ * - 同じ配合条件（親A・親B・配合タイプ・コメント）の発明がすでに生まれていれば
+ *   `reuse` を返す = **却下ではなく正常な再利用**（AIは呼び出さない / issue #37）。
+ *   親の組が同じでも条件が1つでも違えば通常どおり新規生成する。
+ * - このモジュールは純関数（暗号は lib/breed-key.ts、Node依存）。フロントは呼ばない。
  */
-import { parseBreedingIssue, samePair, validateParents } from './issue.ts';
+import { parseBreedingIssue, validateParents } from './issue.ts';
+import { requestHashOf } from './breed-key.ts';
 import { isAncestorDescendantPair } from './generation.ts';
 import type { BreedingRequest } from './types.ts';
 
@@ -79,6 +83,14 @@ export type QueueSelection =
       key: string;
     }
   | {
+      action: 'reuse';
+      issue: IssueRecord;
+      request: BreedingRequest;
+      /** 同じ配合条件で生まれている既存の発明ID */
+      existingId: string;
+      key: string;
+    }
+  | {
       action: 'process';
       issue: IssueRecord;
       request: BreedingRequest;
@@ -89,8 +101,12 @@ export interface QueueOptions {
   processed: ProcessedIssues;
   knownProtopediaIds: ReadonlySet<string>;
   knownOffspringIds: ReadonlySet<string>;
-  /** すでに生まれた子作品の親ペア（samePair で重複生成を防ぐ） */
-  offspringPairs: ReadonlyArray<readonly [string, string]>;
+  /**
+   * 配合条件のハッシュ（`requestHashOf`）→ すでに生まれている子作品ID。
+   * 一致したら `reuse` を返す（AI呼び出し前に判定 / issue #37）。
+   * 親ペアだけの重複判定はしない: 配合タイプやコメントが違っていれば新規生成できる。
+   */
+  existingByRequestHash: ReadonlyMap<string, string>;
   /** 系譜のエッジ（parent → child）。近親交配（祖先×子孫）の検出に使う。 */
   edges: ReadonlyArray<readonly [string, string]>;
 }
@@ -99,6 +115,7 @@ export interface QueueOptions {
  * 処理対象のIssueを1件選ぶ。
  * - 何もなければ { action: 'none' }
  * - 不正なら最も古い候補を却下対象として返す（理由つき・AIは呼ばない）
+ * - 同じ配合条件の発明がすでに存在すれば `reuse`（AIは呼ばず既存の発明を返す）
  * - 妥当なら最も古い申請を processing 対象として返す
  */
 export function selectBreedingIssue(
@@ -132,15 +149,7 @@ export function selectBreedingIssue(
       return { action: 'reject', issue, request: parsed.request, reason: parents.reason, key };
     }
     const pair: [string, string] = [parsed.request.parentA, parsed.request.parentB];
-    if (opts.offspringPairs.some((p) => samePair(p, pair))) {
-      return {
-        action: 'reject',
-        issue,
-        request: parsed.request,
-        reason: '同じ親の組み合わせはすでに生成されています',
-        key,
-      };
-    }
+    // 近親交配（祖先×子孫）は条件に関係なく禁止のまま（issue #37 §4）。
     if (isAncestorDescendantPair(pair[0], pair[1], opts.edges)) {
       return {
         action: 'reject',
@@ -149,6 +158,12 @@ export function selectBreedingIssue(
         reason: '親の一方がもう一方の先祖です（系譜上、この組み合わせは避けています）',
         key,
       };
+    }
+    // 同じ配合条件の発明がすでに存在するか = 4項目（親A/親B/配合タイプ/コメント）の完全一致。
+    // 一致 = 既存の発明を返す正常な処理（却下ではない）。1つでも違えば新規生成へ進む。
+    const existingId = opts.existingByRequestHash.get(requestHashOf(parsed.request));
+    if (existingId !== undefined) {
+      return { action: 'reuse', issue, request: parsed.request, existingId, key };
     }
     return { action: 'process', issue, request: parsed.request, key };
   }

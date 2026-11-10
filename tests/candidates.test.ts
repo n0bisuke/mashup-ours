@@ -7,6 +7,7 @@ import {
   isCandidatesFile,
   nextSlotKey,
   selectCandidates,
+  selectOffspringCandidate,
 } from '../lib/candidates.ts';
 import { PROTOPEDIA_SITE_BASE } from '../lib/protopedia.ts';
 import type { ProtopediaWork } from '../lib/types.ts';
@@ -225,5 +226,117 @@ describe('isCandidatesFile（フロント読み込みガード）', () => {
         candidates: [{ ...f.candidates[0], sourceUrl: 'http://insecure' }, ...f.candidates.slice(1)],
       }),
     ).toBe(false);
+  });
+});
+
+// --- AI生成アイデアの候補（issue #36） ---------------------------------------
+
+const OFF_IDS = ['mashup-000001', 'mashup-000002', 'mashup-000003'];
+
+describe('selectOffspringCandidate', () => {
+  it('1枠に1件だけ選ぶ（ProtoPedia候補と合計が上限を超えない）', () => {
+    const picked = selectOffspringCandidate(OFF_IDS, '2026-11-10T0515');
+    expect(picked).toMatch(/^mashup-\d{1,9}$/);
+    expect(OFF_IDS).toContain(picked);
+  });
+
+  it('同じスロットなら常に同じ1件（決定的・全ユーザー共通・再読込でも不変）', () => {
+    expect(selectOffspringCandidate(OFF_IDS, '2026-11-10T0515')).toBe(
+      selectOffspringCandidate(OFF_IDS, '2026-11-10T0515'),
+    );
+    // 並び順に依存しない
+    expect(selectOffspringCandidate([...OFF_IDS].reverse(), '2026-11-10T0515')).toBe(
+      selectOffspringCandidate(OFF_IDS, '2026-11-10T0515'),
+    );
+  });
+
+  it('スロットが変われば（ほぼ確実に）別の1件になる', () => {
+    // 3件から1件なので偶然一致しうる。複数スロットで全部同じなら決定的選出として不正。
+    const picks = ['2026-11-10T0515', '2026-11-10T0530', '2026-11-10T0545', '2026-11-10T0600'].map(
+      (s) => selectOffspringCandidate(OFF_IDS, s),
+    );
+    expect(new Set(picks).size).toBeGreaterThan(1);
+  });
+
+  it('重複ID・不正IDは除外し、1件だけ返す', () => {
+    const picked = selectOffspringCandidate(
+      ['mashup-000001', 'mashup-000001', 'protopedia:93', '', 'bad-id', 'mashup-999999999999'],
+      '2026-11-10T0515',
+    );
+    expect(picked).toBe('mashup-000001');
+  });
+
+  it('候補が無いときは null（= ProtoPedia 6件で埋める）', () => {
+    expect(selectOffspringCandidate([], '2026-11-10T0515')).toBeNull();
+    expect(selectOffspringCandidate(['protopedia:93'], '2026-11-10T0515')).toBeNull();
+  });
+});
+
+describe('buildCandidatesFile（AI生成1件を含む候補 / issue #36）', () => {
+  it('合計6件 = ProtoPedia 5件 + AI生成 1件', () => {
+    const f = buildCandidatesFile(pool, '2026-11-10T0515', 'data/sample-prototypes.json', new Date(), {
+      offspringIds: OFF_IDS,
+    });
+    expect(f.candidates).toHaveLength(CANDIDATES_PER_SLOT - 1);
+    expect(f.offspringCandidates).toHaveLength(1);
+    expect(f.candidates.length + (f.offspringCandidates?.length ?? 0)).toBe(CANDIDATES_PER_SLOT);
+    expect(isCandidatesFile(f)).toBe(true);
+  });
+
+  it('AI生成候補が0件なら従来どおり ProtoPedia 6件（offspringCandidates は付けない）', () => {
+    const f = buildCandidatesFile(pool, '2026-11-10T0515', 'data/sample-prototypes.json', new Date(), {
+      offspringIds: [],
+    });
+    expect(f.candidates).toHaveLength(CANDIDATES_PER_SLOT);
+    expect(f.offspringCandidates).toBeUndefined();
+    expect(isCandidatesFile(f)).toBe(true);
+  });
+
+  it('ProtoPedia候補は1件以上を確保（AI生成だけで埋めない）', () => {
+    const f = buildCandidatesFile(pool, '2026-11-10T0515', 'data/sample-prototypes.json', new Date(), {
+      maxCandidates: 2,
+      offspringIds: OFF_IDS,
+    });
+    expect(f.candidates.length).toBe(1);
+    expect(f.offspringCandidates).toHaveLength(1);
+    expect(isCandidatesFile(f, 2)).toBe(true);
+  });
+
+  it('AI生成の実体はIDだけ（候補JSONに発明本文を複写しない）', () => {
+    const f = buildCandidatesFile(pool, '2026-11-10T0515', 'data/sample-prototypes.json', new Date(), {
+      offspringIds: OFF_IDS,
+    });
+    const json = JSON.stringify(f);
+    expect(json).not.toContain('コンセプト'); // 本文は data/offspring.json 側だけにある
+    expect(f.offspringCandidates?.[0]).toMatch(/^mashup-\d{1,9}$/);
+  });
+});
+
+describe('isCandidatesFile（AI生成候補の検証 / issue #36）', () => {
+  const withChild = () =>
+    buildCandidatesFile(pool, '2026-11-10T0515', 'data/sample-prototypes.json', new Date(), {
+      offspringIds: OFF_IDS,
+    });
+
+  it('offspringCandidates が無い旧ファイルは「AI生成なし」として受理する', () => {
+    const f = withChild();
+    const { offspringCandidates: _omitted, ...legacy } = f;
+    expect(isCandidatesFile(legacy)).toBe(true);
+  });
+
+  it('不正なID・重複を拒否する', () => {
+    const f = withChild();
+    expect(isCandidatesFile({ ...f, offspringCandidates: ['protopedia:93'] })).toBe(false);
+    expect(isCandidatesFile({ ...f, offspringCandidates: ['github:1'] })).toBe(false);
+    expect(isCandidatesFile({ ...f, offspringCandidates: ['mashup-000001', 'mashup-000001'] })).toBe(
+      false,
+    );
+    expect(isCandidatesFile({ ...f, offspringCandidates: 'mashup-000001' })).toBe(false);
+  });
+
+  it('合計が上限を超えたら拒否する（ProtoPedia 6件 + AI 1件 = 7件にはならない）', () => {
+    const proto6 = buildCandidatesFile(pool, '2026-11-10T0515', 'data/sample-prototypes.json', new Date());
+    expect(proto6.candidates).toHaveLength(CANDIDATES_PER_SLOT);
+    expect(isCandidatesFile({ ...proto6, offspringCandidates: ['mashup-000001'] })).toBe(false);
   });
 });

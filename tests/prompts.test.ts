@@ -176,6 +176,9 @@ describe('設定の反映（buildBlendPrompt / buildImagePrompt）', () => {
       inheritedFromB: '手紙の声で場面を伝える体験',
       blendType: 'fusion',
       imagePrompt: 'a small handheld device glowing along a historic street',
+      technologies: [],
+      domains: [],
+      keywords: [],
     };
 
     const custom = valid();

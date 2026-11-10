@@ -25,6 +25,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
+      # どのきっかけで起動したか・公開データの鮮度をログに残す（issue #40:
+      # 「候補更新の遅延」「デプロイ失敗の原因」を Actions のログから検知できるようにする）。
+      - name: Report trigger and data freshness
+        run: |
+          echo "trigger=${GITHUB_EVENT_NAME} sha=${GITHUB_SHA} ref=${GITHUB_REF_NAME}"
+          node -e 'const fs=require("node:fs");const c=JSON.parse(fs.readFileSync("data/current-candidates.json","utf8"));const age=Math.round((Date.now()-new Date(c.generatedAt).getTime())/60000);console.log("candidates slot="+c.slot+" generatedAt="+c.generatedAt+" ("+age+"分前)");if(!(age>=0)||age>60)console.log("::warning::候補データの生成から"+age+"分経過しています（rotate-candidates の遅延・未実行の可能性）");const off=JSON.parse(fs.readFileSync("data/offspring.json","utf8"));const last=off.map((o)=>o.createdAt).sort().pop();if(last)console.log("offspring latest="+last);'
+
       - name: Setup Node.js
         uses: actions/setup-node@v7
         with:
@@ -53,6 +60,13 @@ jobs:
         uses: actions/upload-pages-artifact@v5
         with:
           path: dist
+
+      # 失敗しても原因の見出しをログに出す（issue #40: 失敗時に原因が Actions のログから分かる）。
+      - name: Failure summary
+        if: failure()
+        run: |
+          echo "::error::Pages デプロイのビルド/検証に失敗しました。失敗したステップとそのログを確認してください（tests / validate-data / build）。"
+          echo "::error::run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
   deploy:
     needs: build

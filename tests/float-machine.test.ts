@@ -330,6 +330,27 @@ describe('選択の永続化（§2: 再読み込みで失わない）', () => {
     expect((document.querySelector('button.breed') as HTMLButtonElement).disabled).toBe(false);
   });
 
+  it('再読み込み後も選択とカプセルの画像が復元する（issue #39）', async () => {
+    await boot();
+    const childIdx = cards().findIndex((c) => c.dataset.id?.startsWith('mashup-'));
+    const protoIdx = cards().findIndex((c) => c.dataset.id?.startsWith('protopedia:'));
+    if (childIdx < 0 || protoIdx < 0) return; // 画像付き候補が揃わない枠は検証省略
+    pickBtn(protoIdx, 'a').click();
+    pickBtn(childIdx, 'b').click();
+    const fvA = document.querySelector('.capsule-a .capsule-view img')?.getAttribute('src');
+    const fvB = document.querySelector('.capsule-b .capsule-view img')?.getAttribute('src');
+    expect(fvA).toBeTruthy(); // ProtoPediaの作品画像
+    expect(fvB).toBeTruthy(); // AI生成の生成画像（修正前は「？」で img が無い）
+
+    await boot({ freshStorage: false }); // 再読み込み（保存値は残す）
+    expect(document.querySelector('.capsule-a .capsule-view img')?.getAttribute('src')).toBe(fvA);
+    expect(document.querySelector('.capsule-b .capsule-view img')?.getAttribute('src')).toBe(fvB);
+    // 小型配合マシンも同じ画像
+    const floats = document.querySelectorAll('.float-slot .float-thumb img');
+    expect(floats[0]?.getAttribute('src')).toBe(fvA);
+    expect(floats[1]?.getAttribute('src')).toBe(fvB);
+  });
+
   it('候補が入れ替わって存在しないIDは復元しない', async () => {
     await boot();
     localStorage.setItem(

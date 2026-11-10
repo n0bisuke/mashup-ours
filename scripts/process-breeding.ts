@@ -56,10 +56,15 @@ import {
   type ParentSource,
   type WorkElements,
 } from '../lib/elements.ts';
-import { commentIssue, listOpenIssues, type GhOptions } from '../lib/github.ts';
+import { commentIssue, getIssue, listOpenIssues, type GhOptions } from '../lib/github.ts';
+import { parseBreedingIssue } from '../lib/issue.ts';
+import { parseParentRef } from '../lib/parent-ref.ts';
+import { isRequestHash, requestHashOf } from '../lib/breed-key.ts';
 import { detectLanguageRequest } from '../lib/language.ts';
 import { parsePromptsConfig, type PromptsConfig } from '../lib/prompts.ts';
+import { parseSearchTaxonomy, type SearchTaxonomy } from '../lib/search.ts';
 import { computeGeneration, nextOffspringId, slotKey } from '../lib/generation.ts';
+import { readDeletedOffspringIds } from '../lib/deleted-offspring.ts';
 import { repoConfigFromEnv } from '../lib/config.ts';
 import {
   MAX_FAILED_ATTEMPTS,
@@ -113,6 +118,7 @@ const EXTRACT_TEMPERATURE = 0.2;
 const PATHS = {
   schedule: fileURLToPath(new URL('../config/schedule.json', import.meta.url)),
   prompts: fileURLToPath(new URL('../config/prompts.json', import.meta.url)),
+  taxonomy: fileURLToPath(new URL('../config/search-taxonomy.json', import.meta.url)),
   offspring: fileURLToPath(new URL('../data/offspring.json', import.meta.url)),
   prototypes: fileURLToPath(new URL('../data/prototypes.json', import.meta.url)),
   samplePrototypes: fileURLToPath(new URL('../data/sample-prototypes.json', import.meta.url)),
@@ -200,6 +206,23 @@ function loadPrompts(): PromptsConfig {
   }
   const parsed = parsePromptsConfig(raw);
   if (!parsed.ok) fail(`config/prompts.json が不正なため処理を停止します: ${parsed.reason}`);
+  return parsed.config;
+}
+
+/**
+ * config/search-taxonomy.json（検索用の分野・技術分類 / issue #38）。
+ * 読めない・不正なら exit 1 = AIを呼ばない（config/prompts.json と同一の扱い）。
+ * 生成プロンプトに正規の分野リストを埋め込み、AIの分類ゆれを減らす。
+ */
+function loadTaxonomy(): SearchTaxonomy {
+  let raw: unknown;
+  try {
+    raw = readJson(PATHS.taxonomy);
+  } catch (e) {
+    fail(`config/search-taxonomy.json を読めないため処理を停止します: ${e instanceof Error ? e.message : String(e)}`);
+  }
+  const parsed = parseSearchTaxonomy(raw);
+  if (!parsed.ok) fail(`config/search-taxonomy.json が不正なため処理を停止します: ${parsed.reason}`);
   return parsed.config;
 }
 
@@ -314,6 +337,12 @@ async function main(): Promise<void> {
     `ℹ️ プロンプト設定: config/prompts.json（配合タイプ指示${Object.keys(prompts.modeInstructions).length}件 / ルール${prompts.sharedRules.length}件 / 画像スタイル${prompts.imageStyleSuffix.length}字）`,
   );
 
+  // 検索用の分野・技術分類（issue #38）。不正なら AI を呼ばず停止する。
+  const taxonomy = loadTaxonomy();
+  log(
+    `ℹ️ 検索分類: config/search-taxonomy.json（分野${taxonomy.domains.length}件 / 技術${taxonomy.technologies.length}件）`,
+  );
+
   const repoCfg = repoConfigFromEnv(process.env);
   if (!repoCfg) {
     fail('GITHUB_REPOSITORY（owner/repo）が未設定です。Issue取得ができないため停止します。');
@@ -326,6 +355,8 @@ async function main(): Promise<void> {
 
   // --- ローカルデータ（外部APIはProtoPediaを呼ばない。AIはCloudflareだけ） -------
   const offspring = readOffspringFile(PATHS.offspring);
+  // 削除済みID台帳（issue #32）。壊れていたらAI呼び出しの前に停止する。
+  const retiredIds = readDeletedOffspringIds();
   const processed = loadProcessed();
   const usage = loadUsage();
   let state = loadState();
@@ -343,8 +374,56 @@ async function main(): Promise<void> {
   const offspringById = new Map(offspring.map((o) => [o.id, o]));
   const knownProtopediaIds = new Set<string>(poolById.keys());
   const knownOffspringIds = new Set<string>(offspringById.keys());
-  const offspringPairs = offspring.map((o) => o.parents);
   const edges = offspring.flatMap((o) => o.parents.map((p): [string, string] => [p, o.id]));
+
+  // --- 1. 配合条件インデックス（重複判定 / issue #37） --------------------------
+  // 同じ条件（親A・親B・配合タイプ・コメント）の発明がすでにあれば、AIを呼ばずに
+  // 既存の発明を返す。requestHash の無い既存データは**元のIssue本文から復元**し、
+  // 復元できなければ推測せず「重複判定できないデータ」として明示する。
+  const existingByRequestHash = new Map<string, string>();
+  /** 復元できた既存データ（通常の生成時だけ offspring.json へ書き戻す） */
+  const rebuiltHashes = new Map<string, string>();
+  const unresolvable: string[] = [];
+  for (const o of offspring) {
+    if (isRequestHash(o.requestHash)) {
+      if (!existingByRequestHash.has(o.requestHash)) existingByRequestHash.set(o.requestHash, o.id);
+      continue;
+    }
+    if (!o.sourceIssue || o.sourceIssue <= 0) {
+      unresolvable.push(`${o.id}（元のIssue参照がありません）`);
+      continue;
+    }
+    if (!ghOpts.token) {
+      unresolvable.push(`${o.id}（Issueを取得するトークンがありません）`);
+      continue;
+    }
+    try {
+      const rec = await getIssue(o.sourceIssue, ghOpts);
+      const parsed = parseBreedingIssue(rec.body);
+      if (!parsed.ok) throw new Error(parsed.reason);
+      // 元Issueの条件が保存データと一致するときだけ信頼する（他人のIssueと取り違えない）
+      if (
+        parsed.request.parentA !== o.parents[0] ||
+        parsed.request.parentB !== o.parents[1] ||
+        parsed.request.mode !== o.mode
+      ) {
+        throw new Error('元のIssueの配合条件が保存データと一致しません');
+      }
+      const h = requestHashOf(parsed.request);
+      if (!existingByRequestHash.has(h)) existingByRequestHash.set(h, o.id);
+      rebuiltHashes.set(o.id, h);
+    } catch (e) {
+      unresolvable.push(`${o.id}（${e instanceof Error ? e.message : String(e)}）`);
+    }
+  }
+  log(
+    `   配合条件インデックス: ${existingByRequestHash.size}件（Issueからの復元 ${rebuiltHashes.size}件）`,
+  );
+  if (unresolvable.length > 0) {
+    log(
+      `   ⚠️ 重複判定できない既存データ（推測せず対象外）: ${unresolvable.join(' / ')}`,
+    );
+  }
 
   // --- 1. キュー取得（open Issue / 作成日時昇順 / ラベル非信用） -----------------
   log('🔎 open Issueを取得しています…');
@@ -357,7 +436,7 @@ async function main(): Promise<void> {
     processed,
     knownProtopediaIds,
     knownOffspringIds,
-    offspringPairs,
+    existingByRequestHash,
     edges,
   });
 
@@ -398,6 +477,58 @@ async function main(): Promise<void> {
     writeJsonAtomic(PATHS.processed, processed);
     setOutput('outcome', 'rejected');
     setOutput('issue_number', String(issue.number));
+    return;
+  }
+
+  // --- 2.5 キャッシュヒット（同じ配合条件の発明がすでに存在する / issue #37） ----
+  // これは却下ではなく**正常な処理**: AIを呼び出さず、新IDも画像も作らず、
+  // 既存の発明へのリンクをIssueへコメントして処理済みとしてクローズする。
+  // 間隔ゲートも消費しない（生成を行わないため、時間枠を空ける必要がない）。
+  if (selection.action === 'reuse') {
+    const { issue, request, key, existingId } = selection;
+    const existing = offspringById.get(existingId);
+    log(
+      `♻️ 同じ配合条件の発明がすでにあります: ${existingId}（Issue #${issue.number} は新規生成しません / AI呼び出し 0回）`,
+    );
+    if (dryRun) {
+      log(`🏁 dry-run: 本番なら ${existingId}「${existing?.title ?? ''}」を案内してIssueを閉じます。`);
+      setOutput('outcome', 'dry-run');
+      setOutput('issue_number', String(issue.number));
+      return;
+    }
+
+    // --- 保存は process-breeding の通常処理と同様、失敗しても記録を残さない ---
+    const attempts = (processed[key]?.attempts ?? 0) + 1;
+    processed[key] = {
+      issue: issue.number,
+      status: 'resolved',
+      reason: `cache-hit: ${existingId}`,
+      at: new Date().toISOString(),
+      attempts,
+    };
+    writeJsonAtomic(PATHS.processed, processed);
+
+    // コメントはこのスクリプトがファイルに書き、ワークフローが --body-file で読む
+    // （AI出力・ユーザー入力を shell / Actions式へ埋め込まない）。
+    const siteUrl = (process.env.SITE_URL ?? `https://${repoCfg.owner}.github.io/${repoCfg.repo}/`).replace(/\/+$/, '');
+    const lines = [
+      `♻️ すでに同じ配合で生まれた発明があります: ${existingId}${existing ? `「${existing.title}」` : ''}`,
+      '',
+      '親A・親B・配合タイプ・ひとことが同じだったため、新規生成は行わず既存の発明をご案内します（生成AIは呼び出していません）。',
+      '',
+      `配合: ${request.parentA} × ${request.parentB} / ${BLEND_MODE_LABELS[request.mode]}`,
+      `詳細を見る: ${siteUrl}/?id=${existingId}`,
+      '',
+      '同じ親でも、配合タイプかひとこと（コメント）を変えると新しい発明を生成できます。',
+      '',
+      '※ これはAIが考えた未実装の発明アイデアです（実際に製作したものではありません）。',
+    ];
+    mkdirSync(PATHS.tmpDir, { recursive: true });
+    writeFileSync(PATHS.report, `${lines.join('\n')}\n`, 'utf8');
+
+    setOutput('outcome', 'reused');
+    setOutput('issue_number', String(issue.number));
+    setOutput('offspring_id', existingId);
     return;
   }
 
@@ -493,7 +624,11 @@ async function main(): Promise<void> {
   };
 
   const resolveParent = (id: string): ResolvedParent | null => {
-    if (id.startsWith('protopedia:')) {
+    // 種類は構造で判定（issue #36）。ProtoPedia側も**APIを呼ばず**保存済みプールから読む
+    // （AI生成親に対してProtoPedia APIを呼ぶことはもとと無い = ここはJSON参照だけ）。
+    const ref = parseParentRef(id);
+    if (ref === null) return null;
+    if (ref.source === 'protopedia') {
       const w = poolById.get(id);
       if (!w) return null;
       return { id: w.id, title: w.title, summary: w.summary, extra: w.systemDescription, generation: 0 };
@@ -505,7 +640,10 @@ async function main(): Promise<void> {
       id: o.id as ParentId,
       title: o.title,
       summary: o.summary,
-      extra: `${o.concept} ${o.mechanism}`,
+      // AI生成親の入力は保存済みJSON（発明名・概要・仕組み・継承要素）だけ
+      extra: `${o.concept} ${o.mechanism} 継承: ${o.inheritedTraits
+        .map((t) => `${t.parentId} から ${t.trait}`)
+        .join(' / ')}`,
       generation: o.generation,
     };
   };
@@ -602,7 +740,7 @@ async function main(): Promise<void> {
       // 言語指定は申請コメント（許可された入力）のみから（issue #23 §4）。
       // 元作品の説明文が英語でも日本語のまま。
       language: detectLanguageRequest(request.comment),
-    }, prompts); // 文言は config/prompts.json（issue #25）
+    }, prompts, taxonomy); // 文言は config/prompts.json（issue #25）/ 分類は search-taxonomy.json（issue #38）
 
     let lastReason = '不明なエラー';
     let generated: GeneratedIdea | null = null;
@@ -651,7 +789,10 @@ async function main(): Promise<void> {
   }
 
   // --- 8. Offspring を組み立てる ------------------------------------------------
-  const id = nextOffspringId(offspring.map((o) => o.id));
+  const id = nextOffspringId(
+    offspring.map((o) => o.id),
+    retiredIds, // 削除済みIDは再利用しない（issue #32）
+  );
   const generation = computeGeneration([parentA.generation, parentB.generation]);
   const imagePromptText = buildImagePrompt(idea, prompts); // スタイル文言は config/prompts.json
 
@@ -707,10 +848,24 @@ async function main(): Promise<void> {
     status: 'idea',
     imagePrompt: imagePromptText,
     imagePath,
+    // 配合条件のキー（issue #37）。同じ条件の次回申請からAI呼び出しを省く。
+    requestHash: requestHashOf(request),
+    // 検索用メタデータ（issue #38）。**この生成と同じAI出力**から取る
+    // （検索のためだけの追加リクエストは無い）。空なら付けない
+    // （= 判断できなかったことを隠さず、既存データと同じ「テキストから検索」に戻る）。
+    ...(idea.technologies.length > 0 ? { technologies: idea.technologies } : {}),
+    ...(idea.domains.length > 0 ? { domains: idea.domains } : {}),
+    ...(idea.keywords.length > 0 ? { keywords: idea.keywords } : {}),
   };
 
   // --- 10. 保存（全ファイル原子書き込み。ワークフローがコミットする） ------------
-  writeJsonAtomic(PATHS.offspring, [...offspring, newChild]);
+  // 既存データの requestHash 復元（元Issueから）があれば、このタイミングだけ書き戻す
+  // （キャッシュヒット経路では既存の発明データを変更しない / issue #37 §3・§5）。
+  const offspringToSave = offspring.map((o) => {
+    const h = rebuiltHashes.get(o.id);
+    return h !== undefined && !o.requestHash ? { ...o, requestHash: h } : o;
+  });
+  writeJsonAtomic(PATHS.offspring, [...offspringToSave, newChild]);
   writeJsonAtomic(PATHS.elementCache, cache);
   writeJsonAtomic(PATHS.usage, usageFile);
 

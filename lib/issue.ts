@@ -4,6 +4,7 @@
  * 不正な入力はAI呼び出し前に却下する。
  */
 import { isBreedingMode, type BreedingMode, type BreedingRequest, type ParentId } from './types.ts';
+import { parseParentRef } from './parent-ref.ts';
 
 const MAX_BODY_LENGTH = 4000;
 const MAX_FIELD_LENGTH = 100;
@@ -116,16 +117,19 @@ export function validateParents(
   knownOffspringIds: ReadonlySet<string>,
 ): ParseResult {
   for (const id of [request.parentA, request.parentB]) {
-    if (id.startsWith('protopedia:')) {
+    // 種類の区別は構造で判定する（issue #36）。形式が読めないIDは未知の名前空間として却下。
+    const ref = parseParentRef(id);
+    if (ref === null) {
+      return { ok: false, reason: `未知のID名前空間です: ${id}` };
+    }
+    if (ref.source === 'protopedia') {
       if (!knownProtopediaIds.has(id)) {
         return { ok: false, reason: `存在しないProtoPedia作品です: ${id}` };
       }
-    } else if (id.startsWith('mashup-')) {
+    } else {
       if (!knownOffspringIds.has(id)) {
         return { ok: false, reason: `まだ生まれていない子作品は親にできません: ${id}` };
       }
-    } else {
-      return { ok: false, reason: `未知のID名前空間です: ${id}` };
     }
   }
   return { ok: true, request };

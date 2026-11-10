@@ -82,6 +82,22 @@ export interface Offspring {
   imagePath?: string | null;
   /** 画像生成に使ったプロンプト（再生成・検証用）。 */
   imagePrompt?: string;
+  /**
+   * 配合条件の一意キー（SHA-256 / issue #37）。
+   * 親A・親B・配合タイプ・正規化したコメントから算出。同じキーの申請が来たら
+   * 既存の発明を再返し、AIを呼び出さない。Issue番号・申請日時は含めない。
+   * 保存前のデータには無いことがある（その場合は元Issueから復元を試みる）。
+   */
+  requestHash?: string;
+  /**
+   * 検索用メタデータ（issue #38）。**任意**（既存データは無くてもよい =
+   * タイトル・概要・仕組み・利用シーンのテキストから検索できる）。
+   * 新規生成時に AI が一緒に出力する（検索のためだけに追加のAIリクエストは作らない）。
+   * 補完は scripts/backfill-search-metadata.ts（ルール補完・既定はドライラン）。
+   */
+  technologies?: string[];
+  domains?: string[];
+  keywords?: string[];
 }
 
 /**
@@ -111,6 +127,26 @@ export const BREEDING_MODES: readonly BreedingMode[] = ['fusion', 'genetic', 'mu
 
 export function isBreedingMode(v: unknown): v is BreedingMode {
   return typeof v === 'string' && (BREEDING_MODES as readonly string[]).includes(v);
+}
+
+/** 配合タイプが記録されていない・未知の値のときに表示する文字（勝手に単純配合としない）。 */
+export const BLEND_MODE_UNKNOWN_LABEL = '配合タイプ不明';
+
+/**
+ * 配合タイプの表示ラベル（一覧・個別ページ・系譜図で共通 = 表示名を統一するための単一箇所）。
+ * 参照するのは**実データの `Offspring.mode`（申請時に指定された値）だけ**で、
+ * AIが生成した説明文から配合タイプを推測しない。欠損・未知の値は「配合タイプ不明」。
+ */
+export function blendModeLabel(mode: unknown): string {
+  return isBreedingMode(mode) ? BLEND_MODE_LABELS[mode] : BLEND_MODE_UNKNOWN_LABEL;
+}
+
+/**
+ * 配合方法の説明文。配合タイプが判別できるときだけ返し、欠損・未知は**空文字**
+ * （= 説明を出さない。どんな配合だったか分からないときに単純配合の説明を当てはめない）。
+ */
+export function blendModeDescription(mode: unknown): string {
+  return isBreedingMode(mode) ? BLEND_MODE_DESCRIPTIONS[mode] : '';
 }
 
 /**

@@ -160,7 +160,8 @@ export function candidateChipText(cfg: ScheduleConfig): string {
 
 /** 配合枠の共有ルール説明（設定から生成。全ユーザー共有であることを明示）。 */
 export function breedingShareText(cfg: ScheduleConfig): string {
-  return `配合は${intervalLabel(cfg.breedingIntervalMinutes)}に最大1件、全ユーザー共有です（ユーザーごとの回数制限ではありません）。候補の更新とは別の処理です。`;
+  // 「候補の更新とは別の処理」は内部実装の説明なので画面に出さない（issue #33）。
+  return `配合は${intervalLabel(cfg.breedingIntervalMinutes)}に最大1件、全ユーザー共有です（ユーザーごとの回数制限ではありません）。`;
 }
 
 // ---------------------------------------------------------------------------
