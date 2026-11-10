@@ -1,66 +1,25 @@
 {
   "schemaVersion": 1,
-  "slot": "2026-11-10T0515",
-  "generatedAt": "2026-11-10T05:24:31.159Z",
-  "nextSlot": "2026-11-10T0530",
+  "slot": "2026-11-10T1000",
+  "generatedAt": "2026-11-10T10:04:32.358Z",
+  "nextSlot": "2026-11-10T1015",
   "source": "data/sample-prototypes.json",
   "candidates": [
     {
-      "id": "protopedia:93",
-      "title": "ドライブメモ for くるくるピ",
-      "sourceUrl": "https://protopedia.net/prototype/93",
-      "summary": "ドライブ中の気になる場所を見つけた時にくるくるピっと記録する 。",
+      "id": "protopedia:2042",
+      "title": "ケッセ鬼を滅するMRチャンバラ運動アプリ",
+      "sourceUrl": "https://protopedia.net/prototype/2042",
+      "summary": "刀を振り回すチャンバラゲームによって有酸素運動を日々行い、減量を支援します。",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/bf6338ec-5205-413a-bbaf-2239b34fae07.png",
+      "mainUrl": "https://protopedia.net/pic/1e83aa14-13a5-4df4-a9e7-a559122dd98e.png",
       "authors": [
-        "ひで@blue_islands"
-      ],
-      "status": 4,
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:3676",
-      "title": "メカノによる高精度機械式ジャイロ実験台",
-      "sourceUrl": "https://protopedia.net/prototype/3676",
-      "summary": "Meccano Based High-Precision Gyroscope Platform",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/290cc5ef-dee1-41eb-9621-191bac4e384d.jpg",
-      "authors": [
-        "Liem Peng Hong@liemph"
+        "HideG@hideg"
       ],
       "tags": [
-        "ジャイロ"
-      ],
-      "status": 4,
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:2",
-      "title": "プロジェクターをIoTしてみた",
-      "sourceUrl": "https://protopedia.net/prototype/2",
-      "summary": "昨年(2016年)に開催中止になった for Pro ハッカソンでつくりたかったアイデア。1年寝かせたけど、世に出てこなかったようなので、今回、締め切り前の1泊2日でつくってみました。",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/8d0c7a7e-0a87-416d-98a2-8bad511e6a89.png",
-      "authors": [
-        "ひさやん@hisayan"
-      ],
-      "tags": [
-        "FPGA"
-      ],
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:2500",
-      "title": "M5StickVで金のウンコを動かしてガキを驚かす",
-      "sourceUrl": "https://protopedia.net/prototype/2500",
-      "summary": "Let's make a demo that will surprise the kid who was sucked by the poop!",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/55a484aa-716f-45a7-9b7d-878a4409f35f.jpg",
-      "authors": [
-        "kinneko@kinneko"
-      ],
-      "tags": [
-        "NT名古屋"
+        "MagicLeap",
+        "MR",
+        "ゲーミフィケーション",
+        "呼吸"
       ],
       "status": 4,
       "licenseType": "CC BY 4+"
@@ -76,6 +35,51 @@
         "えりな@erina000"
       ],
       "status": 4,
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:8",
+      "title": "Project Musha 視覚障害体験AR",
+      "sourceUrl": "https://protopedia.net/prototype/8",
+      "summary": "健常者にとって全盲は両目を閉じることで体感できますが、 視野狭窄や色盲がどの程度生活しづらいかは想像しにくいです。 それらをARで体験できるように、プロトタイプをつくりました。 \"左右別々の眼の症状\" を設定できる安価なシミュレーターは、実はなかなかの発明で \"世界初\" と思われます。 別々に設定し、体験すると、かなり気持ち悪いです。 動作環境は Androidスマホ + Chrome Browser 推奨環境は Google CardBoard などのスマホをAR/VRゴーグルにするガジェットです。 ※アプリ化し、いくつかAPIとのマッシュアップも検討したのですが、まずはどなたにも簡単に体験いただきやすいWebブラウザアプリとして開発してみました。",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/edc84a49-d26a-4336-98d1-053d7dcc716f.png",
+      "authors": [
+        "ひさやん@hisayan"
+      ],
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:10",
+      "title": "また、会いに行きたくなるビアサーバー by No Beer No Life",
+      "sourceUrl": "https://protopedia.net/prototype/10",
+      "summary": "若者の飲み文化をつくるため、舞い降りたビアサーバーバーチャルアイドル。 若者はお金がないのです。だから飲みに行きけないのです。 居酒屋よりも安く楽しめる「コンビニ飲み」の文化をつくる仕組みです。 ビアサーバーにバーチャルアイドル（売り子）がついて、お話しします。 (HVC-C認識) 誰かが前を通ったら、「冷えてますよ、飲みませんか？」と声をかけ（人体検出） ビアサーバー側を向いたら、「おにいさん、よってってよ〜」（性別・世代認識） 20歳未満には売ってはいけないので、 TASPOをつかって、シャリーン。するとビールを注ぎます（ここの機械連携は未実装） ↑もちろん、TASPOの電子マネーで決済も完了します。 コンビニ店員さんの手をわずらわせることなく、ビアサーバーがコンビニに。 セブンイレブンがコーヒードリッパーで、とてつもなく売上を上げたように、 ビアサーバーもいきますよ！ たのしいアイドルと共に、ビアサーバーを全国展開します。 参考URL:",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/a7112b01-07ad-4508-ba8a-ebd074a53386.png",
+      "authors": [
+        "@erikosakashita",
+        "kazu@kazu2112",
+        "TakuKobayashi@takukobayashi",
+        "ひさやん@hisayan"
+      ],
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:6",
+      "title": "スキー場での「会えない」を解決し「会いたい」を叶える雪山BOT with LINE Beacon",
+      "sourceUrl": "https://protopedia.net/prototype/6",
+      "summary": "全力でハッカソン！1%のアイデアと99%の実証実験！！",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/09de39fd-554f-4c27-bc72-4f80267d9150.jpg",
+      "authors": [
+        "ひさやん@hisayan",
+        "佐田幸宏@yukihirosada"
+      ],
+      "tags": [
+        "LINE Beacon",
+        "ゲレンデ",
+        "新幹線"
+      ],
       "licenseType": "CC BY 4+"
     }
   ],
