@@ -18,11 +18,13 @@ import {
 import { newIssueUrl, repoConfigFromEnv } from '../lib/config.ts';
 import { CANDIDATES_PER_SLOT, isCandidatesFile, type CandidatesFile } from '../lib/candidates.ts';
 import {
+  breedingFreqLabel,
   breedingNotice,
   breedingShareText,
   candidateChipText,
   candidateNotice,
   intervalLabel,
+  nextBreedingSlotStart,
   resolveSchedule,
 } from '../lib/schedule.ts';
 import rawSchedule from '../config/schedule.json';
@@ -725,18 +727,27 @@ const statusRow = el(
 );
 
 // 稼働状況と配合待ち（DESIGN.md §1: ファーストビュー圏で分かるように）。
-// 固定の「1時間枠」表記はやめ、config/schedule.json の間隔から次回の目安を計算する
-//（仕様は「間隔を空けて最大1件」。Actionsの遅延・失敗でずれる場合があるため目安と明示）。
-const breedingIntervalMs = scheduleCfg.breedingIntervalMinutes * 60_000;
+// 固定の「1時間枠」表記はやめ、config/schedule.json（時間帯別配合 issue #41 にも対応）から
+// 次回の目安を計算する（Actionsの遅延・失敗でずれる場合があるため目安と明示）。
 const lastBirthMs = children
   .filter((c) => !c.sample)
   .reduce((max, c) => Math.max(max, Date.parse(c.createdAt) || 0), 0);
+// 次に発明が生まれる時刻の目安。
+// 時間帯別設定あり = 前回の誕生が属する枠の**次の枠開始** / なければ = 前回の誕生 + 間隔。
+const nextBirthAtMs =
+  lastBirthMs === 0
+    ? null
+    : (nextBreedingSlotStart(scheduleCfg, new Date(lastBirthMs))?.getTime() ??
+      lastBirthMs + scheduleCfg.breedingIntervalMinutes * 60_000);
+const windowsMode = Boolean(scheduleCfg.breedingWindows?.length);
 // 文言は内部実装（Actions・順次処理など）を説明せず、「いつ発明が生まれるか」だけを伝える（issue #33）。
 const nextBreedingHint =
   lastBirthMs === 0
     ? '最初の発明は、申し込みの順番に生まれます。'
-    : Date.now() < lastBirthMs + breedingIntervalMs
-      ? `次の発明は ${formatDateTimeJST(lastBirthMs + breedingIntervalMs)}${JST_NOTE} ごろに誕生します（前回の誕生からこの間隔を空けています）。`
+    : nextBirthAtMs !== null && Date.now() < nextBirthAtMs
+      ? windowsMode
+        ? `次の発明は ${formatDateTimeJST(nextBirthAtMs)}${JST_NOTE} の配合枠から生まれます（前回の誕生と同じ枠では増えません）。`
+        : `次の発明は ${formatDateTimeJST(nextBirthAtMs)}${JST_NOTE} ごろに誕生します（前回の誕生からこの間隔を空けています）。`
       : '次の発明は、ただちに生まれます（申し込みの順番に1組ずつ）。';
 const statusNote = el(
   'div',
@@ -747,7 +758,9 @@ const statusNote = el(
     el(
       'span',
       { class: 'value' },
-      `新しい発明は約${intervalLabel(scheduleCfg.breedingIntervalMinutes)}ごとに誕生します。`,
+      windowsMode
+        ? `新しい発明は${breedingFreqLabel(scheduleCfg)}に誕生します。`
+        : `新しい発明は約${intervalLabel(scheduleCfg.breedingIntervalMinutes)}ごとに誕生します。`,
     ),
     ' ',
     nextBreedingHint,

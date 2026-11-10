@@ -144,7 +144,7 @@ describe('キーワード検索（AND）', () => {
   const list = [
     idea('mashup-000001', {
       title: '授業を変える点呼システム',
-      summary: '出席と理解度を同時にとる',
+      summary: '授業の出席と理解度を同時にとる',
       concept: '教室で先生が使う',
       createdAt: '2026-11-09T12:00:00Z',
     }),

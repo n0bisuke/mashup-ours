@@ -75,6 +75,9 @@ import {
   type ProcessedIssues,
 } from '../lib/queue.ts';
 import {
+  breedingFreqLabel,
+  breedingSlotsPerDay,
+  currentBreedingSlot,
   initialBreedingState,
   isBreedingState,
   parseScheduleConfig,
@@ -327,9 +330,11 @@ async function main(): Promise<void> {
   }
 
   const cfg = loadSchedule();
-  log(
-    `ℹ️ 頻度設定: 配合間隔 ${cfg.breedingIntervalMinutes}分 / 日次AI上限 ${cfg.dailyAiCallLimit ?? '（未設定）'}回${dryRun ? ' / DRY-RUN' : ''}`,
-  );
+  // 時間帯別設定（issue #41）なら時間帯、なければ従来の間隔を表示する。
+  const freqText = cfg.breedingWindows
+    ? `${breedingFreqLabel(cfg)}・1日${breedingSlotsPerDay(cfg)}枠`
+    : `配合間隔 ${cfg.breedingIntervalMinutes}分`;
+  log(`ℹ️ 頻度設定: ${freqText} / 日次AI上限 ${cfg.dailyAiCallLimit ?? '（未設定）'}回${dryRun ? ' / DRY-RUN' : ''}`);
 
   // プロンプト文言の読み込み（不正ならここで exit 1 = AIを呼ばない / issue #25）
   const prompts = loadPrompts();
@@ -878,7 +883,9 @@ async function main(): Promise<void> {
   writeJsonAtomic(PATHS.processed, processed);
 
   // 状態（成功）。AI呼び出し回数は実際の呼び出し回数に合わせて補正する。
-  let nextState = recordBreedingAttempt(state, cfg, { now, success: true });
+  // 時間帯別設定（issue #41）では**実行した枠**を lastSlot に残し、同じ枠の二重生成を防ぐ。
+  const doneSlot = currentBreedingSlot(cfg, now);
+  let nextState = recordBreedingAttempt(state, cfg, { now, success: true, slotKey: doneSlot?.key ?? null });
   nextState = {
     ...nextState,
     aiCalls: {
@@ -888,7 +895,9 @@ async function main(): Promise<void> {
   };
   writeJsonAtomic(PATHS.state, nextState);
 
-  log(`✅ ${id}「${newChild.title}」を保存しました（Issue #${issue.number} / スロット ${newChild.slot}）`);
+  log(
+    `✅ ${id}「${newChild.title}」を保存しました（Issue #${issue.number} / スロット ${newChild.slot}${doneSlot ? ` / 配合枠 ${doneSlot.key}` : ''}）`,
+  );
   log(
     `   本日のAI呼び出し: ${nextState.aiCalls[day] ?? 0}回${cfg.dailyAiCallLimit !== undefined ? ` / 上限 ${cfg.dailyAiCallLimit}回` : ''}`,
   );

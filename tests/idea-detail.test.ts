@@ -259,3 +259,41 @@ it('mode 未記録・未知の値は「配合タイプ不明」で、説明も u
   expect(h2.querySelector('.det-hero .badge.mode')?.textContent).toBe('配合タイプ不明');
   expect(h2.querySelector('.det-mode-note')?.textContent).not.toContain('配合方法:');
 });
+
+// --- 技術・分野タグ（issue #38 §8） ------------------------------------------
+
+it('技術・分野タグを表示し、押すと一覧の該当条件の検索へ移動する（issue #38）', () => {
+  const withTags = [
+    {
+      ...fixtures[0],
+      technologies: ['Dify', 'IoT'],
+      domains: ['教育・学習'],
+    },
+  ] as unknown as Offspring[];
+  const host = build('mashup-000001', withTags);
+  const section = host.querySelector('.det-tags');
+  expect(section).toBeTruthy();
+  const chips = Array.from(host.querySelectorAll<HTMLAnchorElement>('.det-tag-row a.tag-chip'));
+  expect(chips.map((a) => a.textContent)).toEqual(['Dify', 'IoT', '教育・学習']);
+  // リンクは一覧の検索URL（リポジトリ名やドメインをハードコードしない）
+  expect(chips[0].getAttribute('href')).toBe('/ideas/?tech=Dify');
+  expect(chips[1].getAttribute('href')).toBe('/ideas/?tech=IoT');
+  expect(chips[2].getAttribute('href')).toBe('/ideas/?domain=%E6%95%99%E8%82%B2%E3%83%BB%E5%AD%A6%E7%BF%92');
+  expect(chips[2].getAttribute('data-kind')).toBe('domain');
+  expect(host.textContent).toContain('タグを押すと、その条件でアイデア一覧を検索します。');
+});
+
+it('タグが無い既存データには「技術・分野タグ」の見出し自体を出さない（issue #38）', () => {
+  const legacy = [{ ...fixtures[0], technologies: undefined, domains: undefined }] as unknown as Offspring[];
+  const host = build('mashup-000001', legacy);
+  expect(host.querySelector('.det-tags')).toBeNull();
+  expect(host.textContent).not.toContain('技術・分野タグ');
+  // それ以外のセクションはいつもどおり
+  expect(host.querySelector('.det-title')).toBeTruthy();
+});
+
+it('空配列のタグも見出しを出さない（空の区画を作らない / issue #38）', () => {
+  const empty = [{ ...fixtures[0], technologies: [], domains: [] }] as unknown as Offspring[];
+  const host = build('mashup-000001', empty);
+  expect(host.querySelector('.det-tags')).toBeNull();
+});

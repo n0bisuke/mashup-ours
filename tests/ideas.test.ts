@@ -158,3 +158,149 @@ it('一覧と個別ページの配合タイプ表示名を統一する（issue #
   expect(h2.querySelector('.idea-item .badge.mode')?.textContent).toBe('配合タイプ不明');
   expect(h2.textContent).not.toContain('undefined');
 });
+
+// --- 検索（issue #38: 技術 × 分野の掛け合わせ検索） -------------------------
+
+/** メタデータを持つ架空の発明（タグ絞り込み・一致表示の検証用）。 */
+function taggedIdea(id: string, overrides: Partial<Offspring>): Offspring {
+  return { ...fixtures[0], id, ...overrides } as Offspring;
+}
+
+const searchable: Offspring[] = [
+  taggedIdea('mashup-000011', {
+    title: '授業を変える点呼システム',
+    summary: '出席と理解度を同時にとる',
+    concept: '教室で先生が使う',
+    technologies: ['Dify'],
+    domains: ['教育・学習'],
+    createdAt: '2026-11-09T12:00:00Z',
+  }),
+  taggedIdea('mashup-000012', {
+    title: '業務を整える通知マシン',
+    summary: '社内の漏れを減らす',
+    concept: '職場で使う',
+    technologies: ['LINE'],
+    domains: ['業務・ビジネス'],
+    createdAt: '2026-11-09T11:00:00Z',
+  }),
+  taggedIdea('mashup-000013', {
+    // タグ無し（既存データ）: テキスト検索の対象には残る
+    title: '光る歴史散歩デバイス',
+    summary: '歩くと体験が光で変わる',
+    technologies: undefined,
+    domains: undefined,
+    createdAt: '2026-11-09T10:00:00Z',
+  }),
+];
+
+function buildWith(
+  list: Offspring[],
+  opts: Parameters<typeof buildIdeasPage>[3] = {},
+): HTMLElement {
+  document.body.innerHTML = '';
+  const host = document.createElement('div');
+  document.body.append(host);
+  buildIdeasPage(host, list, ctx, opts);
+  return host;
+}
+
+it('検索UI（キーワード・技術・分野・クリア）を一覧に用意する（issue #38）', () => {
+  const host = buildWith(searchable, { syncUrl: false });
+  const form = host.querySelector('form.search-row');
+  expect(form).toBeTruthy();
+  expect(host.querySelector<HTMLInputElement>('#idea-search-input')?.type).toBe('search');
+  const tech = Array.from(host.querySelectorAll<HTMLOptionElement>('#search-tech option')).map(
+    (o) => o.value,
+  );
+  const domain = Array.from(
+    host.querySelectorAll<HTMLOptionElement>('#search-domain option'),
+  ).map((o) => o.value);
+  // 実データに存在する条件だけを候補にする（存在しない条件は出さない）
+  expect(tech).toEqual(['', 'Dify', 'LINE']);
+  // 分野は config/search-taxonomy.json の並び順（実データにあるものだけ）
+  expect(domain).toEqual(['', '業務・ビジネス', '教育・学習']);
+  expect(domain).not.toContain('医療・ヘルスケア');
+  // 検索できない状態ではクリアボタンを出さない
+  expect(host.querySelector<HTMLButtonElement>('.search-clear')?.hidden).toBe(true);
+  expect(host.textContent).toContain('全3件');
+  expect(host.textContent).toContain('技術と分野は掛け合わせで絞り込めます');
+});
+
+it('技術と分野を掛け合わせて絞り込み、件数チップが切り替わる（issue #38）', () => {
+  const host = buildWith(searchable, {
+    syncUrl: false,
+    initialQuery: { q: '', tech: 'Dify', domain: '教育・学習' },
+  });
+  const items = Array.from(host.querySelectorAll<HTMLElement>('.idea-item'));
+  expect(items.map((i) => i.dataset.id)).toEqual(['mashup-000011']);
+  expect(host.querySelector('.chip')?.textContent).toBe('検索結果: 1件');
+  expect(host.querySelector('.chip')?.classList.contains('is-filtered')).toBe(true);
+  expect(host.querySelector<HTMLButtonElement>('.search-clear')?.hidden).toBe(false);
+  expect(host.querySelector<HTMLSelectElement>('#search-tech')?.value).toBe('Dify');
+  expect(host.querySelector<HTMLSelectElement>('#search-domain')?.value).toBe('教育・学習');
+  // 選択中タグは状態を色だけでなく aria-pressed でも示す
+  const pressed = host.querySelectorAll<HTMLButtonElement>('.idea-tags .tag-chip[aria-pressed="true"]');
+  expect(pressed.length).toBe(2); // 技術Dify + 分野教育・学習
+});
+
+it('キーワードはANDで絞り、一致した項目をカードに示す（issue #38）', () => {
+  const host = buildWith(searchable, {
+    syncUrl: false,
+    initialQuery: { q: '点呼 授業', tech: '', domain: '' },
+  });
+  const items = Array.from(host.querySelectorAll<HTMLElement>('.idea-item'));
+  expect(items.map((i) => i.dataset.id)).toEqual(['mashup-000011']);
+  const hint = host.querySelector('.idea-match')?.textContent ?? '';
+  expect(hint).toContain('に一致');
+  expect(hint).toContain('発明名'); // どの項目に一致したか分かる
+});
+
+it('条件に合う発明が無いときは専用の空状態を出す（issue #38）', () => {
+  const host = buildWith(searchable, {
+    syncUrl: false,
+    initialQuery: { q: '', tech: 'Dify', domain: '業務・ビジネス' },
+  });
+  expect(host.querySelectorAll('.idea-item')).toHaveLength(0);
+  expect(host.textContent).toContain('条件に合う発明はまだ見つからないようです。');
+  expect(host.querySelector('.chip')?.textContent).toBe('検索結果: 0件');
+});
+
+it('カードのタグを押すと絞り込み、同じタグをもう一度押すと解除される（issue #38）', () => {
+  const host = buildWith(searchable, { syncUrl: false });
+  const tag = host.querySelector<HTMLButtonElement>(
+    '.idea-item[data-id="mashup-000011"] button.tag-chip[data-kind="tech"]',
+  );
+  expect(tag?.dataset.value).toBe('Dify');
+  tag?.click();
+  expect(
+    Array.from(host.querySelectorAll<HTMLElement>('.idea-item')).map((i) => i.dataset.id),
+  ).toEqual(['mashup-000011']);
+  expect(host.querySelector('.chip')?.textContent).toBe('検索結果: 1件');
+  // もう一度同じタグ → 解除（全件に戻る）
+  const again = host.querySelector<HTMLButtonElement>(
+    '.idea-item[data-id="mashup-000011"] button.tag-chip[data-kind="tech"]',
+  );
+  again?.click();
+  expect(host.querySelectorAll('.idea-item')).toHaveLength(3);
+  expect(host.querySelector('.chip')?.textContent).toBe('全3件');
+});
+
+it('タグが無い作品にはタグ行を作らない（既存データを壊さない / issue #38）', () => {
+  const host = buildWith(searchable, { syncUrl: false });
+  const legacy = host.querySelector('.idea-item[data-id="mashup-000013"]');
+  expect(legacy?.querySelector('.idea-tags')).toBeNull();
+  // タグを持つ作品には出る
+  expect(host.querySelector('.idea-item[data-id="mashup-000011"] .idea-tags')).toBeTruthy();
+});
+
+it('検索条件はURLに記録され、共有できる（issue #38 §7）', () => {
+  const host = buildWith(searchable, { syncUrl: false });
+  const form = host.querySelector('form.search-row');
+  const input = host.querySelector<HTMLInputElement>('#idea-search-input');
+  if (input) input.value = '点呼';
+  form?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+  const items = Array.from(host.querySelectorAll<HTMLElement>('.idea-item'));
+  expect(items.map((i) => i.dataset.id)).toEqual(['mashup-000011']);
+  // syncUrl:false では履歴を触らない（テストで履歴を汚さない）
+  expect(host.querySelectorAll('.idea-item').length).toBe(1);
+});

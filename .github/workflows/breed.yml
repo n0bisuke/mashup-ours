@@ -2,10 +2,13 @@
 # Cloudflare Workers AI（gpt-oss-20b）で発明を1件生成し、FLUX.1 schnellでサムネイルを1枚生成。
 # data/ と public/static/assets/inventions/ をコミットし、結果をIssueへコメントしてクローズする。
 #
-# 実行可否（issue #15 / 追加開発指示 §10）: cron はJSONを読めないため、ワークフローは
-# 一定間隔で「起床」するだけ。間隔・連続失敗冷却・日次AI上限の判定は
-# scripts/process-breeding.ts が config/schedule.json + data/breeding-state.json で行う
-# （=「間隔を空けて最大1件」。cronの正時厳密実行は保証しない仕様のまま）。
+# 実行可否（issue #15 / 追加開発指示 §10 / 時間帯別配合 issue #41）:
+# cron はJSONを読めないため、ワークフローは時刻表に合わせて「起床」するだけ。
+# どの枠か・連続失敗冷却・日次AI上限の判定は scripts/process-breeding.ts が
+# config/schedule.json（breedingWindows）+ data/breeding-state.json で行う。
+#   - 同じ枠で二重生成しない（成功した枠を lastSlot に永続化）
+#   - 1回の実行は**現在の1枠だけ**を見る（遅延しても過去の枠をまとめて処理しない）
+# cron の正時厳密実行は保証しない（下は「起床」時刻であり、実行はスクリプトが判断）。
 #
 # 手動実行（workflow_dispatch）の dry_run は既定 true:
 #   AI呼び出し・データ書き込み・Issue操作をすべて禁止（本番枠も消費しない）。
@@ -13,11 +16,17 @@ name: Breed (Workers AI)
 
 on:
   schedule:
-    # 起床間隔は15分固定（:09/:24/:39/:54）。rotate-candidates（:04）と+5分ずらし、
-    # 正時（:00）の高負荷を避ける。実効的な配合間隔は max(設定値, 起床間隔15分)。
-    # 表記は `9/15` ではなく列挙形（ステップ表現の schedule が一度も発火しなかったため、
-    # 等価表現への変更でワークフローを再アクティベートする）。
-    - cron: '9,24,39,54 * * * *'
+    # 時間帯別配合（issue #41 / JST = UTC+9。config/schedule.json の breedingWindows）:
+    #   13:00〜21:00 JST = 30分枠 / 21:00〜翌13:00 JST = 2時間枠（1日24枠）。
+    # ここに書くのは**起床時刻**。予定時刻ちょうどの実行は保証しない（Actionsの遅延・
+    # 正時の高負荷を避けるため :06 から始め、枠ごとに2回目を置く = 失敗時の再試行枠）。
+    # 表記は `6/15` のステップ形ではなく列挙形（ステップ表現の schedule が一度も発火しなかったため）。
+    #
+    # 30分枠（JST 13:00/13:30/…/20:30 = UTC 04:00〜11:30 の枠開始）: 毎時 :06 と :21 に起床
+    - cron: '6,21 4-11 * * *'
+    # 2時間枠（JST 21:00/23:00/…/翌11:00 = UTC 12,14,16,18,20,22,0,2 の枠開始）:
+    # 枠開始の :06 と、30分後の :36（同じ枠内での再試行）
+    - cron: '6,36 0,2,12,14,16,18,20,22 * * *'
   workflow_dispatch:
     inputs:
       dry_run:
@@ -29,7 +38,7 @@ on:
 permissions: {}
 
 concurrency:
-  # 直列化: 同時実行・再実行があっても1時間枠の上限を破らない（AGENTS.md）。
+  # 直列化: 同時実行・再実行があっても時間帯ごとの枠上限（1日24枠）を破らない（AGENTS.md）。
   group: breed
   cancel-in-progress: false
 

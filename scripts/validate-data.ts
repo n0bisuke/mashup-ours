@@ -8,6 +8,8 @@ import { computeGeneration, isAncestorDescendantPair, nextOffspringId } from '..
 import { isRequestHash } from '../lib/breed-key.ts';
 import {
   DEFAULT_AUTO_REQUEST_IDLE_HOURS,
+  breedingFreqLabel,
+  breedingSlotsPerDay,
   isBreedingState,
   parseScheduleConfig,
 } from '../lib/schedule.ts';
@@ -38,8 +40,12 @@ const sched = parseScheduleConfig(schedRaw);
 if (!sched.ok) fail(`config/schedule.json が不正です: ${sched.reason}`);
 const scheduleCfg = sched.config;
 const idleHours = scheduleCfg.autoRequestIdleHours ?? DEFAULT_AUTO_REQUEST_IDLE_HOURS;
+// 時間帯別配合（issue #41）なら「13:00〜21:00は30分ごと…・1日24枠」を表示、なければ従来の間隔。
+const freqDesc = scheduleCfg.breedingWindows
+  ? `${breedingFreqLabel(scheduleCfg)}・1日${breedingSlotsPerDay(scheduleCfg)}枠`
+  : `${scheduleCfg.breedingIntervalMinutes}分`;
 console.log(
-  `✅ config/schedule.json OK（候補更新 ${scheduleCfg.candidateRotationMinutes}分 / 配合 ${scheduleCfg.breedingIntervalMinutes}分 / 最大${scheduleCfg.maxCandidates}件 / 自動申請 ${idleHours === 0 ? '無効' : `${idleHours}時間`}）`,
+  `✅ config/schedule.json OK（候補更新 ${scheduleCfg.candidateRotationMinutes}分 / 配合 ${freqDesc} / 最大${scheduleCfg.maxCandidates}件 / 自動申請 ${idleHours === 0 ? '無効' : `${idleHours}時間`}）`,
 );
 
 // --- config/prompts.json（プロンプト文言設定 / issue #25） -------------------

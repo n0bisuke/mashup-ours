@@ -2,5 +2,9 @@
   "candidateRotationMinutes": 15,
   "breedingIntervalMinutes": 60,
   "maxCandidates": 6,
-  "autoRequestIdleHours": 8
+  "autoRequestIdleHours": 8,
+  "breedingWindows": [
+    { "startJst": "13:00", "endJst": "21:00", "intervalMinutes": 30 },
+    { "startJst": "21:00", "endJst": "13:00", "intervalMinutes": 120 }
+  ]
 }

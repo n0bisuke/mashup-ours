@@ -29,7 +29,6 @@ const OFFSPRING_PATH = fileURLToPath(new URL('../data/offspring.json', import.me
 
 /** 検索メタデータの上限（lib/blend.ts の生成時と同じ基準）。 */
 const MAX_TAGS = 6;
-const MAX_KEYWORDS = 8; // 触らないが、形式検証と揃えるための上限参照
 
 const writeMode = process.argv.slice(2).includes('--write');
 

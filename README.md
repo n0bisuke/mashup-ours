@@ -14,8 +14,8 @@ ProtoPediaに公開された実在の作品を2つ「親」として選び、生
 | 投稿 | GitHub Issues（サイトにログイン機能・書き込みトークンなし） |
 | 配合候補 | `config/schedule.json` の間隔（既定15分）ローテ → `data/current-candidates.json`（**ブラウザはProtoPedia APIを呼ばない**） |
 | 作品データ | ProtoPedia API v2 → 少数取得（`data/sample-prototypes.json` ほか）→ 候補プール |
-| 配合ワーカー | GitHub Actions（起床は一定間隔、実行可否は設定間隔で判定 + 手動 `workflow_dispatch`） |
-| 頻度設定 | `config/schedule.json`（候補更新間隔・配合間隔・候補件数をファイルで変更 / issue #15） |
+| 配合ワーカー | GitHub Actions（起床は時刻表、実行可否は設定と実行済み枠で判定 + 手動 `workflow_dispatch`） |
+| 頻度設定 | `config/schedule.json`（候補更新間隔・**時間帯別配合（JST）**・候補件数をファイルで変更 / issue #15・#41） |
 | プロンプト文言 | `config/prompts.json`（配合タイプ指示・共通ルール・画像スタイルをファイルで変更 / issue #25。**出力JSONスキーマと言語ルールはコード固定**） |
 | 永続データ | リポジトリ内の `data/offspring.json`（各子作品に配合条件ハッシュ `requestHash` / issue #37） / `data/breeding-state.json` / `data/element-cache.json` / `data/processed-issues.json` / `data/ai-usage.json` / `data/deleted-offspring.json`（削除済みID台帳 / issue #32） |
 | AI | **Cloudflare Workers AI**（Actionsサーバー側から呼ぶ。テキスト `@cf/openai/gpt-oss-20b`・画像 `@cf/black-forest-labs/flux-1-schnell` / issue #16） |
@@ -55,6 +55,7 @@ npm run dev            # http://localhost:5173
 ## GitHub上の設定（手動）
 
 1. **Pages**: Settings → Pages → Source を `GitHub Actions` に設定（`deploy.yml` が push のたびにテスト → ビルド → デプロイ）。**base は既定で相対パス（`./`）**: カスタムドメインのルート配信・`<owner>.github.io/<repo>/`・フォーク先のいずれでも、ドメインや公開パスを変更してもビルド設定なしで動く（Issue リンクは `GITHUB_REPOSITORY` から自動導出）。絶対パスに固定したい場合のみ `VITE_BASE=/<repo>/` を指定する。絶対パス base をカスタムドメインで使うとアセットが全部404で真っ黒になる（実例: 2026-11-10 → 相対baseへ修正）。
+   - **bot の push ではデプロイが起動しない**（GitHub公式: [GITHUB_TOKEN でトリガーされたイベントは新しいワークフロー実行を作らない。例外は `workflow_dispatch` と `repository_dispatch`](https://docs.github.com/en/actions/concepts/security/github_token)）。候補更新（`rotate-candidates.yml`）・同期（`sync-prototypes.yml`）・配合（`breed.yml`）はいずれも github-actions[bot] としてコミットするため、**データ更新後に `gh workflow run deploy.yml` でデプロイを明示的に起動する**（各ワークフローの `Trigger Pages rebuild` ステップ。`actions: write` が要る）。これがないと「データは更新されたのにサイトが古いまま」になる（issue #40 の根本原因）。デプロイ側は起動トリガー・データ鮮度（`generatedAt` の経過分）・失敗箇所をログに出す。
 2. **Issues**: Settings → Issues でラベル `breeding-request` を用意（ワークフロー側で管理。利用者が付ける前提にしない）。
 3. **Secrets**: Settings → Secrets and variables → Actions に登録:
    - `CLOUDFLARE_ACCOUNT_ID` / `CLOUDFLARE_API_TOKEN`（配合処理。**未設定時はコスト0で停止**し、`npm run breed:dry` の動作確認のみ）
@@ -71,24 +72,35 @@ npm run dev            # http://localhost:5173
   "candidateRotationMinutes": 15,
   "breedingIntervalMinutes": 60,
   "maxCandidates": 6,
-  "autoRequestIdleHours": 8
+  "autoRequestIdleHours": 8,
+  "breedingWindows": [
+    { "startJst": "13:00", "endJst": "21:00", "intervalMinutes": 30 },
+    { "startJst": "21:00", "endJst": "13:00", "intervalMinutes": 120 }
+  ]
 }
 ```
 
 | キー | 意味 | 既定 |
 | --- | --- | --- |
 | `candidateRotationMinutes` | 配合候補の更新間隔（分・正の整数、1〜10080） | 15 |
-| `breedingIntervalMinutes` | 配合（生成AI呼び出し）の間隔（分・正の整数）。**前回の成功からの空き時間** | 60 |
+| `breedingIntervalMinutes` | 配合（生成AI呼び出し）の間隔（分・正の整数）。**前回の成功からの空き時間**。`breedingWindows` ありのときは使わない | 60 |
+| `breedingWindows`（任意） | **時間帯別配合（issue #41）**。JSTの区間ごとに間隔を切り替える。**未設定 = 従来の間隔モード** | 出荷設定は13:00〜21:00=30分 / 21:00〜翌13:00=2時間 |
 | `maxCandidates` | 1枠の候補件数の上限（正の整数、1〜50） | 6 |
 | `dailyAiCallLimit`（任意） | UTC日ごとの生成AI呼び出し回数の上限（正の整数）。未設定 = 上限なし | なし |
 | `autoRequestIdleHours`（任意） | **自動配合申請**の待機時間（時間・0〜720の整数）。**0 = 自動作成しない** | 8 |
 
 - **候補更新と配合処理は独立した設定**であり、UIでも混同しない（「◯ごとに新しい発明候補が届くよ！」と「◯に最大1つ、新しい発明が誕生します！」は別々のキーから生成）。「1時間に1回」「毎時」などの固定文言はサイトに存在しない。
-- **GitHub ActionsのcronはJSONを読めない**ため、ワークフローは一定間隔（15分）で「起床」し、スクリプト側が実行可否を判定する:
+- **時間帯別配合（`breedingWindows` / issue #41）**: JSTの区間ごとに配合間隔を切り替える。出荷設定は **13:00〜21:00 = 30分（16枠）+ 21:00〜翌13:00 = 2時間（8枠）= 1日24枠**。
+  - 検証: 各区間は `"HH:MM"` / 正の整数の間隔 / **区間の長さが間隔で割り切れる**こと / **始点 = 前の区間の終点**（最後の終点 = 最初の始点）で24時間を隙間・重複なく覆う鎖であること。不正なら `validate-data`・ワーカーともに exit 1（= AIを呼ばない）。並びの起点はどこからでもよい。
+  - 枠キーは **JST基準**（例 `2026-11-10T1300JST`）。`data/breeding-state.json` の `lastSlot` に**成功した枠だけ**保存し、**同じ枠で二重生成しない**。失敗では枠を消費しない = 同じ枠内・次の枠で再試行できる。`lastSlot` は任意項目で、無い旧ファイルもそのまま読める。
+  - **1回の実行は「現在の1枠だけ」を見る**: 遅延した実行が過去の枠をまとめて処理することはない（1回で生成できるのは最大1件）。枠を過ぎれば次枠として扱い、未処理Issueは従来どおり**古い順**に選ぶ。
+  - サイトの文言（`breedingNotice` / `breedingShareText` / `breedingFreqLabel` / 次の発明の目安）もこの設定から生成される。
+- **GitHub ActionsのcronはJSONを読めない**ため、ワークフローは時刻表に合わせて「起床」し、スクリプト側が実行可否を判定する:
   - 候補: `scripts/rotate-candidates.ts` が現在時刻から設定間隔でスロットを算出し、`data/current-candidates.json` の `slot` と比較。同一枠ならスキップ（= 二重生成しない）。**「間隔ごとに必ず生成」ではなく「間隔を空けて最大1件」**なので、Actionsの遅延があっても正常動作。手動実行（`workflow_dispatch`）も同じ判定を通る。
   - 実効的な候補更新間隔 = **max(設定値, 起床間隔15分)**。15分未満の間隔にする場合は cron（`rotate-candidates.yml`）も合わせて短くすること。
-  - 配合: ワーカー（`breed.yml` / issue #6）が `shouldBreed()`（`lib/schedule.ts`）で判定。前回成功日時（`data/breeding-state.json`）と `breedingIntervalMinutes` を比較し、未経過なら生成AIを呼ばない。
-- **失敗時の再試行条件（明示）**: 失敗は間隔に数えないので次の起床で再試行できる（最大3回）。連続3回失敗すると間隔ぶんの冷却に入り、冷却経過で再開。成功でカウントはリセット。`dailyAiCallLimit` 設定時はUTC日単位で上限（失敗した試行も呼び出し回数に計上）。
+  - 配合: ワーカー（`breed.yml` / issue #6）が `shouldBreed()`（`lib/schedule.ts`）で判定。**時間帯設定あり = 現在の枠が `lastSlot` と一致しないか**、**なし = 前回成功日時と `breedingIntervalMinutes`** を比較し、条件を満たさないなら生成AIを呼ばない。
+  - `breed.yml` の cron（**JST = UTC+9。列挙形・正時回避**）: 30分枠（JST 13:00〜20:30 = UTC 04:00〜11:30 の枠開始）= `'6,21 4-11 * * *'`、2時間枠（JST 21,23,1,3,5,7,9,11 = UTC 12,14,16,18,20,22,0,2）= `'6,36 0,2,12,14,16,18,20,22 * * *'`。**書いているのは起床時刻**であり、予定時刻ちょうどの実行は保証しない（枠ごとに2回置き、2本目を枠内の再試行に使う）。
+- **失敗時の再試行条件（明示）**: 失敗は枠を消費しないので次の起床で再試行できる（最大3回）。連続3回失敗すると**その時間帯の間隔ぶん**の冷却に入り、冷却経過で再開。成功でカウントはリセット。`dailyAiCallLimit` 設定時はUTC日単位で上限（失敗した試行も呼び出し回数に計上）。
 - **設定が不正なとき**: rotate / validate は exit 1 で処理を停止してエラーを通知（= AIを呼ばない）。フロントは既定値で表示を続けつつエラーを告知する。
 - 既存の `data/offspring.json`・Issue申請・`current-candidates.json` は変更不要（設定変更との互換性を維持）。
 - ローカル開発で枠内に再生成したいときだけ `npm run rotate:candidates -- --force`（ワークフローからは渡さない）。
@@ -122,9 +134,10 @@ npm run dev            # http://localhost:5173
 
 - **表示**: `lib/datetime.ts` の共通関数だけを通す。日付 `2026/11/10` / 日時 `2026/11/10 15:00` / 時刻 `15:00` / 時間帯 `15:00〜15:15`（日跨ぎは `2026/11/09 23:30〜2026/11/10 00:30`）。24時間表記・秒なし・`Intl.DateTimeFormat` に `timeZone: 'Asia/Tokyo'` を明示するため**ブラウザ/OSのタイムゾーン設定に依存しない**。文言は「現在の配合枠」「最終更新」「次の候補更新」「誕生日時」で、値の後ろに「（日本時間）」を添える。
 - **不正・欠損の日時**は例外ではなく **`日時不明`** を表示する（そのときだけ「（日本時間）」は付けない）。
-- **内部はUTC**: JSONの `createdAt` / `generatedAt` / スロットキー（`YYYY-MM-DDTHHMM`）はISO 8601（UTC）のまま、Actionsのcron・間隔判定・スロット境界もUTCの絶対時刻。**JST文字列を再解析して判定することはしない**（比較・判定は `lib/schedule.ts` / `lib/candidates.ts`、`lib/datetime.ts` は表示専用）。既存JSONの書換も不要。
+- **内部はUTC**: JSONの `createdAt` / `generatedAt` / スロットキー（`YYYY-MM-DDTHHMM`）はISO 8601（UTC）のまま、Actionsのcron・候補スロット境界もUTCの絶対時刻。**JST文字列を再解析して判定することはしない**（比較・判定は `lib/schedule.ts` / `lib/candidates.ts`、`lib/datetime.ts` は表示専用）。既存JSONの書換も不要。
+  - 例外は **時間帯別配合の枠（issue #41）**: `config/schedule.json` の `startJst`/`endJst` がJST表記なので、`lib/schedule.ts` が**絶対時刻（epoch）を +9時間して JST の時・分として区間を当てる**（夏時間なしの固定オフセット。`Intl` やローカルタイムゾーンには依存しない）。枠キー `…JST` と `data/offspring.json` の `slot`（UTC）は別物で、既存JSONの書換は不要。
 - **予定時刻は保証しない**: 「次の候補更新」はActionsの実行結果（JSONの値）から導いた**更新予定**で、遅延時は `⚠ 候補更新が遅れています` が出る（端末時計で補完しない）。カウントダウン表示は無い。
-- 配合の実行制限は従来どおり**前回成功からの経過時間（elapsed方式）**で、表示時間帯（固定枠の境界）とは独立した設定（`breedingIntervalMinutes`）。
+- 配合の実行制限は `config/schedule.json`: **`breedingWindows` あり = 時間帯の枠（JST固定区間）ごとに最大1件**、**なし = 前回成功からの経過時間（elapsed方式 / `breedingIntervalMinutes`）**。どちらも「候補更新の表示時間帯（`15:00〜15:15`）」とは独立した設定。
 
 ## ProtoPedia作品の取得と候補ローテ（API v2）
 
@@ -193,7 +206,7 @@ slot: 2026-11-09T1715                                ← 申請時の候補ス�
 
 ## 生成AIによる配合（Cloudflare Workers AI / issue #16）
 
-`.github/workflows/breed.yml` が cron（`9,24,39,54 * * * *` = 15分ごとに起床・列挙形）と `workflow_dispatch` で起動し、`scripts/process-breeding.ts` が処理します。**実効的な配合は `config/schedule.json` の `breedingIntervalMinutes`（既定60分）を空けて最大1件**（全ユーザー共有。cronは正時に厳密実行しないため「間隔を空けて最大1件」という仕様）。
+`.github/workflows/breed.yml` が cron（**時間帯別起床 / issue #41**: `'6,21 4-11 * * *'` = 30分枠（JST 13:00〜20:30）、`'6,36 0,2,12,14,16,18,20,22 * * *'` = 2時間枠（JST 21:00〜翌11:00）の2エントリ・列挙形）と `workflow_dispatch` で起動し、`scripts/process-breeding.ts` が処理します。**実効的な配合は `config/schedule.json` の `breedingWindows`（出荷設定 = 1日24枠）の現在枠ごとに最大1件**（全ユーザー共有。同一枠は `data/breeding-state.json` の `lastSlot` で防止。cronは正時に厳密実行しないため「枠に最大1件」という仕様）。`breedingWindows` を外せば従来の `breedingIntervalMinutes` 間隔モードに戻る。
 
 ```text
 open Issue の最古1件（ラベル非信用・タイトル/本文で判定）
@@ -281,6 +294,19 @@ open Issue の最古1件（ラベル非信用・タイトル/本文で判定）
   リンク先は `repoConfigFromEnv()` の `owner/repo` から組み立てる（**リポジトリ名はハードコードしない**）。owner/repo 未設定のビルドではリンク行ごと出さず、非公式プロジェクトの注記だけを残す。
 - **スクリーンショット確認**: `npm run build && npx vite preview --port 4173` を起動してから `npm run screenshot`（**ライト/ダーク両テーマ** × デスクトップ/詳細/モバイルを `tmp/` に出力。初回のみ `npx playwright install chromium` と `install-deps` が必要）。
 
+## アイデア検索（技術 × 分野 / issue #38）
+
+`/ideas` で **キーワード（AND）× 技術タグ × 分野タグ** を掛け合わせて発明を探せる（授業・ワークショップでの出しやすさを想定）。
+
+- **検索はブラウザ内で完結する**: インデックスはビルド時に取り込まれた `data/offspring.json` から作る（追加リクエスト・生成AI呼び出し・DB/検索サーバは一切ない。閲覧・検索にAIは使わない）。
+- 実装は純関数 `lib/search.ts`（`normalizeText` = NFKC → 小文字 → 空白畳み込み、`searchIdeas` / `facetOptions` / `suggestTechnologies` / `suggestDomains` / `searchHref`）。フロント・スクリプト・テストで共有。
+- **分類の単一ソースは `config/search-taxonomy.json`**（分野 / 技術の固定候補、`domainAliases` / `technologyAliases` の表記揺れ、`domainMatchTerms` のルール補完語）。`npm run validate-data` が形式を検証し、`lib/blend.ts` のプロンプトにも同じ分類を埋め込む。読み込みに失敗したワーカーは **AI を呼ばずに停止**する。
+- **メタデータ（`technologies` / `domains` / `keywords`）は任意**: 新規生成時に AI が一緒に出力する（検索のためだけの追加AIリクエストは作らない）。無いつまり既存データはタイトル・概要・仕組み・利用シーンのテキストから検索できる。
+- 絞り込み候補は **固定候補のうち実データにあるものだけ**（存在しない条件は出さない）+ データ固有の値。表示は元の表記のまま。
+- 並びは `technology(100) → domain(90) → title(60) → summary(40) → keyword(30) → detail(20)` のスコア順、同点は新しい順。カードに「どの項目に一致したか」を表示。
+- 条件は URL（`/ideas/?q=…&tech=…&domain=…`）に同期（入力=replace / 選択・タグ=push / 戻る進むで復元）。個別ページのタグを押すとその条件の一覧へ移動する。
+- **既存データへの補完は別処理**: `npm run backfill:search-metadata`（ルール補完・**既定ドライラン**、`--write` で保存）。技術名が本文に明示されているときだけ付与し、分野も語が明確に現れたときだけ（推測でタグを付けない）。`keywords` は決定的なルールが無いため補完しない。**`--ai` は有料APIを呼ぶため未実装**（明示指示が要る）。
+
 ## ID名前空間の決定事項
 
 - ProtoPedia作品: `protopedia:<数字>`（第0世代）
@@ -313,6 +339,8 @@ open Issue の最古1件（ラベル非信用・タイトル/本文で判定）
 **未検証**:
 - [ ] **`status` と制作状態バッジの対応が公式ドキュメントと一致するか**（issue #29）— 1/2/3/4 の意味はカタログHTMLとの18件照合による**実測**。将来コードが追加・変更される可能性がある（未知コードは表示しない安全側）。
 - [ ] `deploy.yml` / `sync-prototypes.yml` / `rotate-candidates.yml` の実動作 — push後のActions実行結果で確認（ローカルではYAML構文・スクリプト単体・決定的選出テストのみ確認）。
+  - [ ] **bot push 後の `gh workflow run deploy.yml` によるデプロイ連動**（issue #40 で追加）— 手元では dispatch 文と `actions: write` の設定のみ確認。**本番の「候補更新 → デプロイ起動 → 公開反映」は push 後の実行結果待ち**。
+  - [ ] **`schedule` の安定した連続発火**（issue #40 調査）— リポジトリ作成（2026-11-09）以降の `event=schedule` は rotate / breed 各1回・`auto-request.yml` は0回のみで、**再現条件は特定できていない（未検証）**。ワークフローは active・`disabled_reason` なし、GitHub Status も正常。検知は手動実行とデプロイ時の鮮度警告（`generatedAt` が60分超なら `::warning::`）で担保する。
 - [ ] `releaseFlg` のenum値の意味（観測値は常に 2。欠損=公開扱いの暫定実装）。
 - [ ] ProtoPedia APIのレート制限・1レスポンスの件数上限（ページ間隔100msで暫定対応）。
 - [ ] **Cloudflare Workers AI の本番生成**（テキスト接続は確認済み＝上記。以下は未検証）。
@@ -320,12 +348,14 @@ open Issue の最古1件（ラベル非信用・タイトル/本文で判定）
   - [ ] **本番の抽出（1200）・生成（2500トークン）での推論トークン消費** — 思考込みの予算のため、長文思考で `finish_reason=length` になる可能性。起きれば検証失敗→再試行→失敗処理に落ちる（安全側）。
   - [ ] 無料枠・料金・レート制限の現行条件（**「1時間に1回なら無料枠内」とは断定しない**）。
 - [x] `breed.yml` / `rotate-candidates.yml` の cron 実動作 — **2026-11-10 に `event=schedule` の発火を両方確認**（列挙形 `4,19,34,49` / `9,24,39,54` へ変更して再アクティベート。rotate → 候補コミット → breed → 子作品生成 → Issueクローズ → Pagesデプロイまで一巡を確認 / issue #20・#5）。**連続発火の安定性は未検証**（各1回のみ観測）。
+- [ ] **時間帯別配合の cron 2エントリ**（issue #41）— `'6,21 4-11 * * *'`（30分枠）と `'6,36 0,2,12,14,16,18,20,22 * * *'`（2時間枠）の**発火は push 後で未検証**（旧 `'9,24,39,54 * * * *'` からの書き換え）。ローカルでは `breed:dry` で「新しい配合枠 2026-11-10 14:30 JST（30分枠）」の判定と、枠計算・二重生成防止・境界・文言の単体テスト（`tests/schedule.test.ts`）を確認済み。**1日24枠ちょうど（16 + 8）の実運用での配分は未検証**。
 - [ ] **自動配合申請 `auto-request.yml` の本番動作**（issue #27）— ローカルでは実リポジトリに対する**ドライラン判定**（直近申請 #28 を検出→作成せず）と単体テスト（判定・選出・フォーマット・API形状）のみ。**実Issueの作成は未検証**（初回の発火は cron `27 * * * *`。新規ワークフローの schedule が発火するかも要確認。不発なら cron の書き換えで再アクティベートする）。
 - [ ] `data/offspring.json` へのコミットとブランチ保護の兼ね合い — Actions実装時に確認、必要ならPR方式へ。
 - [ ] GitHub Pages 本番での `/ideas` 配信 — ローカル preview では `/`・`/ideas/`・`/ideas` すべて200を確認。Pagesの `/ideas` → `/ideas/` リダイレクト挙動は未検証（自前リンクは末尾 `/` つきなので影響なし）。
 - [ ] ブラウザからの匿名 GitHub API ポーリング（申請確認・実験待ち/生成中/誕生の観測）の実挙動 — ローカルではフェッチ注入の単体テストのみ。実ネットワークでのレート制限・CORS挙動は未検証。
 - [ ] Pages 本番での `dist/data/offspring.json` 配信（誕生のランタイム検知）— ローカル preview/dev では 200 を確認済み。
 - [ ] **個別ページ `/ideas/<id>/` とカスタム404の本番配信**（issue #24）— ローカルでは GH Pages 相当サーバ（未知パス→`404.html`・末尾スラッシュ301）で全検証済みだが、本番カスタムドメインでの実配信は push → deploy 後。カスタム404のリンク基点は `/ideas/` 位置から計算（一般未知パスでは `/` 仮定）。
+- [ ] **`/ideas` の検索と検索付きURLの本番配信**（issue #38）— ローカルの GH Pages 相当サーバで light/dark/モバイル・絞り込み・0件・個別ページのタグを確認済み。本番カスタムドメインでの `?q=&tech=&domain=` は push 後。**現状の実データ（`mashup-000002`）はタグ未付与のため絞り込み候補は「すべて」のみ**（`backfill:search-metadata --write` は未実行 = データ書換待ちの指示）。
 
 ## 開発コマンド
 
@@ -339,6 +369,8 @@ npm run validate-data   # config/schedule + config/prompts + offspring / prototy
                         # current-candidates / breeding-state / element-cache / processed-issues / ai-usage の検証
 npm run fetch:sample    # ProtoPediaから少数だけ取得 → data/sample-prototypes.json（トークン要）
 npm run rotate:candidates # 候補をスロットから決定的に選出 → data/current-candidates.json（トークン不要・設定間隔の枠内ならスキップ / --force で解除）
+npm run backfill:search-metadata   # 既存データへ検索メタデータをルール補完（**既定はドライラン** = 差分表示のみ。
+                        # --write で保存。発明名・説明・画像・親子関係は変えない / issue #38。AI補完の --ai は未実装）
 npm run breed:dry         # 配合ワーカーの安全確認（AI・データ書き込み・Issue操作をしない）
 npm run breed             # 配合ワーカーを本番同様に実行（Cloudflare認証情報が必要）
 npm run breed:check-ai    # Cloudflare Workers AI の接続確認のみ（1回）

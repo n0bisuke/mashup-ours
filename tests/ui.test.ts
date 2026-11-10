@@ -4,6 +4,7 @@
  * APIキーなし・Issuesなしでサイトが起動し、
  * 「候補6件表示 → 2作品選択 → Issue URL生成」まで通ることを確認する。
  */
+import { readFileSync } from 'node:fs';
 import { expect, it, vi } from 'vitest';
 import rawCandidates from '../data/current-candidates.json';
 import rawOff from '../data/offspring.json';
@@ -114,12 +115,19 @@ it('配合枠・次の候補更新は日本時間で表示され、UTCの生デ�
   expect(text).not.toMatch(/\d{4}-\d{2}-\d{2}T\d{2}/); // UTCスロットキーを露出しない
   expect(text).not.toContain('UTC'); // 「次回更新（UTC）」等の表記は無効
   expect(text).not.toContain('次回の候補更新予定'); // 旧文言
-  expect(text).toContain('1時間に最大1件、全ユーザー共有');
+  // 配合の頻度説明は config/schedule.json から生成（固定文言にしない / issue #15・#41）
+  const { breedingShareText, parseScheduleConfig } = await import('../lib/schedule.ts');
+  const rawSchedule: unknown = (await import('../config/schedule.json')).default;
+  const parsedSchedule = parseScheduleConfig(rawSchedule);
+  expect(parsedSchedule.ok).toBe(true);
+  if (parsedSchedule.ok) expect(text).toContain(breedingShareText(parsedSchedule.config));
   expect(text).toContain('ページを再読み込みしても候補は変わりません');
 });
 
-it('頻度の文言が config/schedule.json から生成される（固定文言なし / issue #15）', async () => {
-  const { breedingNotice, candidateNotice, parseScheduleConfig } = await import('../lib/schedule.ts');
+it('頻度の文言が config/schedule.json から生成される（固定文言なし / issue #15・#41）', async () => {
+  const { breedingFreqLabel, breedingNotice, candidateNotice, parseScheduleConfig } = await import(
+    '../lib/schedule.ts'
+  );
   const raw: unknown = (await import('../config/schedule.json')).default;
   const parsed = parseScheduleConfig(raw);
   expect(parsed.ok).toBe(true); // 出荷している設定は常に有効
@@ -129,7 +137,12 @@ it('頻度の文言が config/schedule.json から生成される（固定文言
   const text = document.body.textContent ?? '';
   expect(text).toContain(candidateNotice(parsed.config)); // 「◯ごとに新しい発明候補が届くよ！」
   expect(text).toContain(breedingNotice(parsed.config)); // 「◯に最大1つ、新しい発明が誕生します！」
-  expect(text).toContain('新しい発明は約1時間ごとに誕生します。'); // 内部用語を排した文言（issue #33）
+  // 時間帯別配合（issue #41）: 頻度の説明も設定から生成した時間帯になる
+  const freq = breedingFreqLabel(parsed.config);
+  expect(freq).toContain('13:00〜21:00は30分ごと');
+  expect(freq).toContain('21:00〜13:00は2時間ごと');
+  expect(freq).toContain('日本時間');
+  expect(text).toContain(`新しい発明は${freq}に誕生します。`);
   // 「1時間に1回」「毎時」などの固定文言はサイトから消えている
   expect(text).not.toContain('毎時');
   expect(text).not.toContain('1時間に1回');
@@ -804,4 +817,27 @@ it('nodeImageUrl は ProtoPedia=mainUrl / AI生成=imagePath / 画像なしな�
     imagePath: 'assets/inventions/x.png',
   } as unknown as Parameters<typeof nodeImageUrl>[0];
   expect(nodeImageUrl(withImage, '/repo/')).toBe('/repo/assets/inventions/x.png');
+});
+
+// --- トップの肩書き（issue #38 §2） ------------------------------------------
+
+it('トップのヒーローは「肩書き → ロゴ(h1) → コピー」の順で読ませる（issue #38）', async () => {
+  await boot();
+  const heroTop = document.querySelector('.hero-top');
+  expect(heroTop).toBeTruthy();
+  const katagi = heroTop?.querySelector('.hero-katagi');
+  expect(katagi?.textContent).toBe('みんなのプロトタイプ配合研究所');
+  const h1 = heroTop?.querySelector('h1');
+  expect(h1).toBeTruthy();
+  // 順序: 肩書き → h1（ロゴ）→ コピー
+  const order = Array.from(heroTop?.querySelectorAll('.hero-katagi, h1, .copy') ?? []).map(
+    (n) => n.className || n.tagName,
+  );
+  expect(order[0]).toBe('hero-katagi');
+  expect(order[1]).toBe('H1');
+  expect(order[2]).toBe('copy');
+  // 肩書きは h1 より目立たない（CSSで字面を控えめにする / スタイルシートの存在確認）
+  const css = readFileSync('public/style.css', 'utf8');
+  expect(css).toContain('.hero-katagi');
+  expect(css).toMatch(/\.hero-katagi\s*\{[^}]*--text-dim/);
 });

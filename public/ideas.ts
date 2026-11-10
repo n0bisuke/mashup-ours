@@ -4,7 +4,7 @@ import { blendModeLabel } from '../lib/types.ts';
 import { repoConfigFromEnv } from '../lib/config.ts';
 import { formatDateTimeJSTWithNote } from '../lib/datetime.ts';
 import { CANDIDATES_PER_SLOT, isCandidatesFile } from '../lib/candidates.ts';
-import { intervalLabel, resolveSchedule } from '../lib/schedule.ts';
+import { breedingFreqLabel, resolveSchedule } from '../lib/schedule.ts';
 import {
   EMPTY_QUERY,
   MATCH_FIELD_LABELS,
@@ -15,7 +15,6 @@ import {
   searchIdeas,
   searchQueryString,
   type MatchField,
-  type SearchHit,
   type SearchQuery,
 } from '../lib/search.ts';
 import rawOffspring from '../data/offspring.json';
@@ -374,7 +373,7 @@ export function buildIdeasPage(
         el(
           'p',
           {},
-          `研究所トップで発明を2つえらんで「配合を申し込む」と、AIがあたらしい発明案を考えます。配合は${intervalLabel(scheduleCfg.breedingIntervalMinutes)}に最大1件（全員で共有）。`,
+          `研究所トップで発明を2つえらんで「配合を申し込む」と、AIがあたらしい発明案を考えます。配合は${breedingFreqLabel(scheduleCfg)}に最大1件（全員で共有）。`,
         ),
         el('p', {}, el('a', { href: ctx.base }, '研究所トップへ →')),
       ),

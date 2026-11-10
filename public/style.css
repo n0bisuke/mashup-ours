@@ -2957,6 +2957,12 @@ button.tag-chip.is-active {
     flex-direction: column;
   }
 
+  /* 縦積みでは flex-basis が高さ扱いになるため、入力は行の高さに戻す */
+  .search-input {
+    flex: none;
+    width: 100%;
+  }
+
   .search-select,
   .search-btn,
   .search-clear {
