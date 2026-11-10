@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "slot": "2026-11-10T1000",
-  "generatedAt": "2026-11-10T10:04:32.358Z",
-  "nextSlot": "2026-11-10T1015",
+  "slot": "2026-11-10T1745",
+  "generatedAt": "2026-11-10T17:57:31.006Z",
+  "nextSlot": "2026-11-10T1800",
   "source": "data/sample-prototypes.json",
   "candidates": [
     {
@@ -25,6 +25,48 @@
       "licenseType": "CC BY 4+"
     },
     {
+      "id": "protopedia:93",
+      "title": "ドライブメモ for くるくるピ",
+      "sourceUrl": "https://protopedia.net/prototype/93",
+      "summary": "ドライブ中の気になる場所を見つけた時にくるくるピっと記録する 。",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/bf6338ec-5205-413a-bbaf-2239b34fae07.png",
+      "authors": [
+        "ひで@blue_islands"
+      ],
+      "status": 4,
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:101",
+      "title": "鯖江夕景",
+      "sourceUrl": "https://protopedia.net/prototype/101",
+      "summary": "鯖江夕景は鯖江市のオープンデータの鯖江百景を基に制作しています。夕景はその日ごとに違う顔を見せてくれて、季節ごとにも変化をもたらします。鯖江市の観光地の魅力を引き出すため、鯖江夕景を活用してください。",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/4c30e575-7c24-42be-b318-3b00c001f7b1.png",
+      "authors": [
+        "ひで@blue_islands"
+      ],
+      "status": 4,
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:3",
+      "title": "おしゃべりパパ人形",
+      "sourceUrl": "https://protopedia.net/prototype/3",
+      "summary": "子どもが喜んでくれて、遊んでくれたら目的達成！ 小さな子どものための電子工作",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/838b69fe-fc94-4807-b6a5-223068816f9c.jpg",
+      "authors": [
+        "@erikosakashita",
+        "ひさやん@hisayan"
+      ],
+      "tags": [
+        "mash"
+      ],
+      "licenseType": "CC BY 4+"
+    },
+    {
       "id": "protopedia:3351",
       "title": "IRリモコン",
       "sourceUrl": "https://protopedia.net/prototype/3351",
@@ -35,51 +77,6 @@
         "えりな@erina000"
       ],
       "status": 4,
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:8",
-      "title": "Project Musha 視覚障害体験AR",
-      "sourceUrl": "https://protopedia.net/prototype/8",
-      "summary": "健常者にとって全盲は両目を閉じることで体感できますが、 視野狭窄や色盲がどの程度生活しづらいかは想像しにくいです。 それらをARで体験できるように、プロトタイプをつくりました。 \"左右別々の眼の症状\" を設定できる安価なシミュレーターは、実はなかなかの発明で \"世界初\" と思われます。 別々に設定し、体験すると、かなり気持ち悪いです。 動作環境は Androidスマホ + Chrome Browser 推奨環境は Google CardBoard などのスマホをAR/VRゴーグルにするガジェットです。 ※アプリ化し、いくつかAPIとのマッシュアップも検討したのですが、まずはどなたにも簡単に体験いただきやすいWebブラウザアプリとして開発してみました。",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/edc84a49-d26a-4336-98d1-053d7dcc716f.png",
-      "authors": [
-        "ひさやん@hisayan"
-      ],
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:10",
-      "title": "また、会いに行きたくなるビアサーバー by No Beer No Life",
-      "sourceUrl": "https://protopedia.net/prototype/10",
-      "summary": "若者の飲み文化をつくるため、舞い降りたビアサーバーバーチャルアイドル。 若者はお金がないのです。だから飲みに行きけないのです。 居酒屋よりも安く楽しめる「コンビニ飲み」の文化をつくる仕組みです。 ビアサーバーにバーチャルアイドル（売り子）がついて、お話しします。 (HVC-C認識) 誰かが前を通ったら、「冷えてますよ、飲みませんか？」と声をかけ（人体検出） ビアサーバー側を向いたら、「おにいさん、よってってよ〜」（性別・世代認識） 20歳未満には売ってはいけないので、 TASPOをつかって、シャリーン。するとビールを注ぎます（ここの機械連携は未実装） ↑もちろん、TASPOの電子マネーで決済も完了します。 コンビニ店員さんの手をわずらわせることなく、ビアサーバーがコンビニに。 セブンイレブンがコーヒードリッパーで、とてつもなく売上を上げたように、 ビアサーバーもいきますよ！ たのしいアイドルと共に、ビアサーバーを全国展開します。 参考URL:",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/a7112b01-07ad-4508-ba8a-ebd074a53386.png",
-      "authors": [
-        "@erikosakashita",
-        "kazu@kazu2112",
-        "TakuKobayashi@takukobayashi",
-        "ひさやん@hisayan"
-      ],
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:6",
-      "title": "スキー場での「会えない」を解決し「会いたい」を叶える雪山BOT with LINE Beacon",
-      "sourceUrl": "https://protopedia.net/prototype/6",
-      "summary": "全力でハッカソン！1%のアイデアと99%の実証実験！！",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/09de39fd-554f-4c27-bc72-4f80267d9150.jpg",
-      "authors": [
-        "ひさやん@hisayan",
-        "佐田幸宏@yukihirosada"
-      ],
-      "tags": [
-        "LINE Beacon",
-        "ゲレンデ",
-        "新幹線"
-      ],
       "licenseType": "CC BY 4+"
     }
   ],
