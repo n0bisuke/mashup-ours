@@ -7,6 +7,13 @@
       "inputTokens": 3025,
       "outputTokens": 5166,
       "estimatedNeurons": 239
+    },
+    "2026-11-10": {
+      "textCalls": 3,
+      "imageCalls": 1,
+      "inputTokens": 2758,
+      "outputTokens": 3199,
+      "estimatedNeurons": 180
     }
   }
 }

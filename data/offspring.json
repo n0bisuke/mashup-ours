@@ -32,5 +32,44 @@
     "status": "idea",
     "imagePrompt": "A vibrant, stylized illustration of a person wearing a full-body Clappy-inspired costume. The costume features bright yellow and blue panels, large smiling eyes, and a playful hat reminiscent of the Clappy character. Embedded within the torso and armpit area is a sleek, metallic smart drink dispenser unit with a small metal dispenser arm extending outward. A translucent cup is poised in the hand of an unseen recipient, with a gentle stream of sparkling liquid pouring into it. The background is a lively party setting with confetti and soft lighting, highlighting the interactive nature of the device. The logo on the costume glows softly, indicating readiness to dispense. The overall composition showcases the seamless blend of cosplay artistry and modern technology, ready for instant social interaction. The illustration is rendered in a clean, semi‑realistic style with high color contrast to emphasize the playful yet functional design of the Clappy Sipster.. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
     "imagePath": "assets/inventions/mashup-000001.png"
+  },
+  {
+    "id": "mashup-000002",
+    "schemaVersion": 1,
+    "title": "パパスピン",
+    "summary": "手で回すハンドスピナーと親しみやすい音声対話型人形を融合し、回転と対話でリラックスと学びを同時に提供する新感覚の子ども向け玩具。",
+    "concept": "パパスピンは、子どもが手で回すだけでスピナーが滑らかに回転し、内蔵された小型マイクロコントローラとスピーカーが子どもの声やタッチに応じて「パパ」というキャラクターがリアルタイムで会話を返します。首と手の小さなサーボモーターでボディが軽く動き、子どもの感触に合わせて頭を回転させたり、軽く手を振ったりすることで、見るだけでなく触れることでインタラクティブに遊べます。使用は、子どもがひとりで遊ぶとき、親子でのコミュニケーションタイム、または授業でリラックスの一環として利用できる。回転の安定性はハンドクラッピナーの設計を踏襲し、長時間揺れなく楽しめるため、集中力を養う時間を作り出します。また、低電圧バッテリー駆動で安全性と長時間使用が可能。音声は事前に録音されたスクリプトとリアルタイム音声認識の組み合わせで、子どもが話しかけるとその発話内容に合わせて返答し、会話が続くよう工夫。これにより、子どもは楽しく体を動かしながら言語発達や自己表現を自然に学ぶことができる。",
+    "mechanism": "パパスピンは3Dプリンティングで作られた軽量ボディに、以下の構成要素を組み込む。1. スピナー本体：高精度軸とスムーズなギアシステムを採用し、手入力の回転力を最小摩擦で長時間回転させる。2. 音声対話ユニット：ESP32などの低消費電力マイクロコントローラにマイクとスピーカーを接続し、ボディ内部に配置。音声データはフラッシュメモリに保存され、必要に応じて再生。3. タッチ感知センサー：LED/光センサーをボディ上部に配置し、子どもの軽いタッチや指紋で反応する。4. サーボモーター：小型DCサーボを頭部と手に埋め込み、スピナーの回転速度に合わせて頭部を左右にゆっくり回転させ、手を軽く振る動きを実現。5. 低電圧バッテリー：1000mAhのリチウムポリマーバッテリーを使用し、USB-C充電ポートで簡単に再充電。6. ソフトウェア：FSM（状態遷移）を採用し、回転状態・タッチ・音声入力を検知して適切な音声応答を生成。音声認識は軽量ライブラリを用い、発話内容を簡易解析。全体のソフトはマイクロコントローラ上で実行し、バッテリー消費を抑える。",
+    "useCases": [
+      "子どものリラックスタイム：おやすみ前に手で回しつつ「パパ」と話すことで寝る準備をより楽しく。",
+      "親子コミュニケーション：子どもが話すとパパが返事をし、対話を通じて絵本や物語の学習教材として活用。",
+      "学校のリフレッシュタイム：授業の合間に子どもが手で回しながら音声で質問や感想を共有。",
+      "保育園のアクティビティ：集中力を養うためにスピン＆トークで集中を保つサポート。",
+      "パーティーゲーム：子ども同士で誰が長く回せるか競争し、勝者がパパの特別な音声メッセージを受け取る。",
+      "自宅学習ツール：学習に集中できない子どもに、回転と話し相手で注意力を促進。"
+    ],
+    "inheritedTraits": [
+      {
+        "parentId": "protopedia:18",
+        "trait": "ハンドクラッピナーの高安定性回転設計と2種類のハンドスピナー・パチパチトールくんキャラクターを採用。手入力による滑らかな回転とリラックス効果を維持し、リラクゼーションと集中力向上を目的としている。"
+      },
+      {
+        "parentId": "protopedia:3",
+        "trait": "おしゃべりパパ人形の低電圧マイクロコントローラとスピーカーを内蔵し、タッチセンサーで簡単に反応する設計。子どもが安全に触れられ、長時間使用可能な低消費電力バッテリーとシンプルな会話スクリプトを取り入れ、親しみやすい対話体験を実現。"
+      }
+    ],
+    "parents": [
+      "protopedia:18",
+      "protopedia:3"
+    ],
+    "generation": 1,
+    "mode": "fusion",
+    "sourceIssue": 17,
+    "slot": "2026-11-10T02",
+    "createdAt": "2026-11-10T02:18:28.990Z",
+    "model": "@cf/openai/gpt-oss-20b",
+    "status": "idea",
+    "imagePrompt": "A brightly colored handheld spinner toy shaped like a friendly dad figure, with a smooth rotating core visible through a translucent body. The device features a small speaker on its chest, a touch sensor on the top, and a soft, smiling face on the front. The head can slightly tilt and the arms have small servo-driven hinges. The spinner has two distinct colored versions (red and yellow), each with a playful charmer animation on the side. The toy sits on a hardwood floor with a child happily spinning it, voice bubbles showing friendly dialogue. The background is a cozy playroom with soft lighting, emphasizing the tactile and auditory aspects of the toy.. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
+    "imagePath": "assets/inventions/mashup-000002.png"
   }
 ]
