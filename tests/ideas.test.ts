@@ -112,6 +112,36 @@ it('sourceIssue 0 や repoCfg 未設定では元Issueリンクを出さない', 
   expect(host2.querySelector('a[href*="/issues/"]')).toBeNull();
 });
 
+// --- 配合申請者のGitHubアイコン+ユーザー名（issue #42） ----------------------
+
+it('requester があるカードは申請者のチップを foot に表示する（issue #42）', () => {
+  const fx: Offspring = {
+    ...fixtures[0],
+    requester: { login: 'test-user', avatarUrl: 'https://avatars.githubusercontent.com/u/123?v=4' },
+  };
+  const host = build([fx]);
+  const chip = host.querySelector<HTMLAnchorElement>('.idea-item .idea-foot .requester-chip');
+  expect(chip).toBeTruthy();
+  expect(chip?.getAttribute('href')).toBe('https://github.com/test-user');
+  expect(chip?.getAttribute('target')).toBe('_blank');
+  expect(chip?.getAttribute('rel')).toBe('noopener noreferrer');
+  expect(chip?.textContent).toContain('@test-user');
+  expect(chip?.getAttribute('title')).toBe('配合を申し込んだ人');
+  expect(chip?.querySelector('img')?.getAttribute('src')).toBe(
+    'https://avatars.githubusercontent.com/u/123?v=4',
+  );
+});
+
+it('requester 無しの既存データではチップを出さない（issue #42）', () => {
+  const host = build(fixtures); // サンプルデータに requester は無い
+  expect(host.querySelector('.requester-chip')).toBeNull();
+  // 不正な avatarUrl は表示ごと省く fail-safe
+  const bad = [
+    { ...fixtures[0], requester: { login: 'x', avatarUrl: 'https://evil.example.com/u/1' } },
+  ] as unknown as Offspring[];
+  expect(build(bad).querySelector('.requester-chip')).toBeNull();
+});
+
 it('タイトル等の外部入力をHTMLとして挿入しない（XSS）', () => {
   const evil: Offspring = {
     ...fixtures[0],

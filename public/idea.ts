@@ -1,6 +1,6 @@
 import './style.css';
 import type { Offspring, ParentId, ProtopediaWork } from '../lib/types.ts';
-import { blendModeDescription, blendModeLabel } from '../lib/types.ts';
+import { blendModeDescription, blendModeLabel, isRequester } from '../lib/types.ts';
 import { repoConfigFromEnv } from '../lib/config.ts';
 import { formatDateTimeJSTWithNote } from '../lib/datetime.ts';
 import { searchHref, type SearchQuery } from '../lib/search.ts';
@@ -350,6 +350,38 @@ export function buildIdeaDetail(
         { class: 'det-meta hint' },
         `発明ID: ${c.id} ・ 誕生日時: ${formatDateTimeJSTWithNote(c.createdAt)}`,
       ),
+      // 配合申請者のGitHubアイコン+ユーザー名（issue #42）。
+      // データがあるときだけ表示（requester 無しの旧データ・サンプルでは省く）。
+      // login / avatarUrl は表示前にもう一度 isRequester で検証する fail-safe。
+      ...(isRequester(c.requester)
+        ? [
+            (() => {
+              const r = c.requester;
+              const img = el('img', {
+                src: r.avatarUrl,
+                alt: '',
+                width: '18',
+                height: '18',
+                loading: 'lazy',
+              });
+              // アバターの読み込みに失敗したら画像だけ外す（@login の表示は残る）。
+              img.addEventListener('error', () => img.remove());
+              return el(
+                'a',
+                {
+                  class: 'requester-chip hint',
+                  href: `https://github.com/${encodeURIComponent(r.login)}`,
+                  target: '_blank',
+                  rel: 'noopener noreferrer',
+                  title: `${r.login}が配合を申し込んだ人`,
+                },
+                img,
+                '配合を申し込んだ人: ',
+                `@${r.login}`,
+              );
+            })(),
+          ]
+        : []),
     ),
   );
   wrap.append(el('section', {}, el('div', { class: 'lab-panel' }, hero)));

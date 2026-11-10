@@ -17,7 +17,7 @@ import { parsePromptsConfig } from '../lib/prompts.ts';
 import { parseSearchTaxonomy } from '../lib/search.ts';
 import { ELEMENT_KEYS, isWorkElements } from '../lib/elements.ts';
 import { isProcessedIssues } from '../lib/queue.ts';
-import { isBreedingMode, statusLabel, type Offspring, type Workset } from '../lib/types.ts';
+import { isBreedingMode, isRequester, statusLabel, type Offspring, type Workset } from '../lib/types.ts';
 
 const FILE = new URL('../data/offspring.json', import.meta.url);
 const WORKSET_FILE = new URL('../data/prototypes.json', import.meta.url);
@@ -142,6 +142,15 @@ for (const item of items) {
         v.every((t) => typeof t === 'string' && t.length > 0 && t.length <= 50),
       `${key} は50字以下の文字列を12件以下で持つ必要があります`,
     );
+  }
+  // 申請者の公開情報（issue #42）: 任意。在れば login / avatarUrl の書式を検証する
+  //（GitHub APIの値を検証済みでしか保存しないが、手書き編集・将来の変更にも耐える）。
+  if (item.requester !== undefined) {
+    if (!isRequester(item.requester)) {
+      fail(
+        `${item.id}: requester の形式が不正（login の書式 / avatarUrl は avatars.githubusercontent.com のみ受理）`,
+      );
+    }
   }
 
   for (const p of item.parents) {

@@ -297,3 +297,52 @@ it('空配列のタグも見出しを出さない（空の区画を作らない 
   const host = build('mashup-000001', empty);
   expect(host.querySelector('.det-tags')).toBeNull();
 });
+
+// --- 配合申請者のGitHubアイコン+ユーザー名（issue #42） ----------------------
+
+it('requester があるとき「配合を申し込んだ人」を表示する（issue #42）', () => {
+  const withReq = [
+    {
+      ...fixtures[0],
+      requester: {
+        login: 'test-user',
+        avatarUrl: 'https://avatars.githubusercontent.com/u/123456?v=4',
+      },
+    },
+  ] as unknown as Offspring[];
+  const host = build('mashup-000001', withReq);
+  const chip = host.querySelector<HTMLAnchorElement>('.det-hero-main .requester-chip');
+  expect(chip).toBeTruthy();
+  expect(chip?.getAttribute('href')).toBe('https://github.com/test-user');
+  expect(chip?.getAttribute('target')).toBe('_blank');
+  expect(chip?.getAttribute('rel')).toBe('noopener noreferrer');
+  expect(chip?.textContent).toContain('配合を申し込んだ人: @test-user');
+  const img = chip?.querySelector('img');
+  expect(img?.getAttribute('src')).toBe('https://avatars.githubusercontent.com/u/123456?v=4');
+  // 悪意あるloginでもURLエンコードで壊さない（XSSの面も含めて）
+  const weird = [
+    { ...fixtures[0], requester: { login: 'a-b', avatarUrl: 'https://avatars.githubusercontent.com/u/9' } },
+  ] as unknown as Offspring[];
+  const host2 = build('mashup-000001', weird);
+  expect(host2.querySelector('.requester-chip')?.getAttribute('href')).toBe('https://github.com/a-b');
+});
+
+it('requester が無い・不正な既存データでは表示しない（issue #42）', () => {
+  const host = build('mashup-000001'); // サンプルデータに requester は無い
+  expect(host.querySelector('.requester-chip')).toBeNull();
+  // 不正な avatarUrl（GitHubのCDN以外）は表示ごと省く fail-safe
+  const bad = [
+    {
+      ...fixtures[0],
+      requester: { login: 'test-user', avatarUrl: 'https://evil.example.com/u/1' },
+    },
+  ] as unknown as Offspring[];
+  const host2 = build('mashup-000001', bad);
+  expect(host2.querySelector('.requester-chip')).toBeNull();
+  // login の書式が不正でも省く
+  const badLogin = [
+    { ...fixtures[0], requester: { login: 'bad login!', avatarUrl: 'https://avatars.githubusercontent.com/u/1' } },
+  ] as unknown as Offspring[];
+  const host3 = build('mashup-000001', badLogin);
+  expect(host3.querySelector('.requester-chip')).toBeNull();
+});

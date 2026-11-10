@@ -855,6 +855,9 @@ async function main(): Promise<void> {
     imagePath,
     // 配合条件のキー（issue #37）。同じ条件の次回申請からAI呼び出しを省く。
     requestHash: requestHashOf(request),
+    // 申請者の公開情報（issue #42）。GitHub APIのIssue件から、書式を通った
+    // login / avatar_url の2項目だけ。無い・不正なら省く（= 表示も出さない）。
+    requester: issue.user,
     // 検索用メタデータ（issue #38）。**この生成と同じAI出力**から取る
     // （検索のためだけの追加リクエストは無い）。空なら付けない
     // （= 判断できなかったことを隠さず、既存データと同じ「テキストから検索」に戻る）。

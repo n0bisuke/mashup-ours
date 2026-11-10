@@ -55,6 +55,33 @@ export interface InheritedTrait {
   trait: string;
 }
 
+/**
+ * 配合申請者の公開情報（issue #42）。
+ * GitHub Issue に自ら投稿した公開情報のうち **login と avatar_url の2項目だけ**を
+ * 保持する（メール・表示名等は収集しない）。`requester` が無い既存データ・
+ * サンプルデータでも表示は止めない（アイコン表示を省くだけ）。
+ */
+export interface Requester {
+  /** GitHubログイン名（`@` なし。プロフィールURLの組み立てに使う）。 */
+  login: string;
+  /** GitHubアバターURL（`https://avatars.githubusercontent.com/...` のみ受理）。 */
+  avatarUrl: string;
+}
+
+/** GitHubログイン名の書式（英数とハイフン・39文字まで・ハイフン始終端不可）。 */
+export const REQUESTER_LOGIN_RE = /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$/;
+/** アバターURLの書式（**avatars.githubusercontent.com のユーザーアバターのみ**受理）。 */
+export const REQUESTER_AVATAR_RE = /^https:\/\/avatars\.githubusercontent\.com\/u\/\d{1,12}(\?[A-Za-z0-9&=%.~_-]{0,100})?$/;
+
+/** Requester の形と書式を検証する（保存前・表示前の両方で使う fail-safe）。 */
+export function isRequester(x: unknown): x is Requester {
+  if (typeof x !== 'object' || x === null || Array.isArray(x)) return false;
+  const r = x as Record<string, unknown>;
+  if (typeof r.login !== 'string' || !REQUESTER_LOGIN_RE.test(r.login)) return false;
+  if (typeof r.avatarUrl !== 'string' || !REQUESTER_AVATAR_RE.test(r.avatarUrl)) return false;
+  return true;
+}
+
 /** 生成AIが生み出した子作品（「未実装のアイデア」）。 */
 export interface Offspring {
   id: string; // e.g. "mashup-000001"
@@ -98,6 +125,8 @@ export interface Offspring {
   technologies?: string[];
   domains?: string[];
   keywords?: string[];
+  /** 配合申請者の公開情報（issue #42 / 任意。無い旧データ・サンプルには表示を出さない）。 */
+  requester?: Requester;
 }
 
 /**

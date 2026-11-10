@@ -1,6 +1,6 @@
 import './style.css';
 import type { Offspring, ParentId, ProtopediaWork } from '../lib/types.ts';
-import { blendModeLabel } from '../lib/types.ts';
+import { blendModeLabel, isRequester } from '../lib/types.ts';
 import { repoConfigFromEnv } from '../lib/config.ts';
 import { formatDateTimeJSTWithNote } from '../lib/datetime.ts';
 import { CANDIDATES_PER_SLOT, isCandidatesFile } from '../lib/candidates.ts';
@@ -157,6 +157,36 @@ function buildIdeaItem(
           rel: 'noopener noreferrer',
         },
         `生成Issue #${c.sourceIssue} ↗`,
+      ),
+    );
+  }
+  // 配合申請者のGitHubアイコン+ユーザー名（issue #42）。
+  // データがあるときだけ出す（requester 無しの旧データ・サンプルでは表示しない）。
+  // 書式は isRequester で再検証。アバターは avatars.githubusercontent.com のURLのみ
+  // 受理済み（lib/types.ts）なので、この img はGitHubのCDNしか指さない。
+  if (isRequester(c.requester)) {
+    const r = c.requester;
+    const img = el('img', {
+      src: r.avatarUrl,
+      alt: '',
+      width: '16',
+      height: '16',
+      loading: 'lazy',
+    });
+    // 読み込み失敗は画像だけ外す（@login の表示は残る）。
+    img.addEventListener('error', () => img.remove());
+    foot.append(
+      el(
+        'a',
+        {
+          class: 'requester-chip hint',
+          href: `https://github.com/${encodeURIComponent(r.login)}`,
+          target: '_blank',
+          rel: 'noopener noreferrer',
+          title: '配合を申し込んだ人',
+        },
+        img,
+        `@${r.login}`,
       ),
     );
   }

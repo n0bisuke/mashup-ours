@@ -7,6 +7,7 @@
  * - タイムアウト必須・リトライは控えめ（無限リトライしない）。
  * - 外部入力（Issue本文）はここではただの文字列。評価・実行はしない。
  */
+import { isRequester, type Requester } from './types.ts';
 import type { IssueRecord } from './queue.ts';
 
 const API_BASE = 'https://api.github.com';
@@ -37,6 +38,7 @@ interface RawIssue {
   title?: unknown;
   body?: unknown;
   created_at?: unknown;
+  user?: unknown;
   pull_request?: unknown;
 }
 
@@ -98,11 +100,25 @@ async function ghGet(path: string, opts: GhOptions): Promise<unknown> {
 function toIssueRecord(row: RawIssue): IssueRecord | null {
   if (row && typeof row.pull_request === 'object') return null; // PRは除外
   if (typeof row?.number !== 'number') return null;
+  // 申請者の公開情報（issue #42）: 書式を検証したものだけ保持する（fail-safe）。
+  // GitHub API のキーは `login` / `avatar_url`（スネークケース）なので先に詰め替え、
+  // この2項目**だけ**を検証に通す（email・type 等の他の公開情報は保存しない）。
+  // 不正・欠損なら項目ごと省く = 表示が出ないだけで、処理には影響しない。
+  let user: Requester | undefined;
+  const rawUser = (row.user ?? null) as Record<string, unknown> | null;
+  const candidate =
+    rawUser !== null && typeof rawUser.login === 'string'
+      ? { login: rawUser.login, avatarUrl: rawUser.avatar_url }
+      : null;
+  if (candidate && isRequester(candidate)) {
+    user = { login: candidate.login, avatarUrl: candidate.avatarUrl };
+  }
   return {
     number: row.number,
     title: typeof row.title === 'string' ? row.title : '',
     body: typeof row.body === 'string' ? row.body : '',
     createdAt: typeof row.created_at === 'string' ? row.created_at : '',
+    user,
   };
 }
 

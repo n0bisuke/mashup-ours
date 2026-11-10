@@ -17,7 +17,7 @@ ProtoPediaに公開された実在の作品を2つ「親」として選び、生
 | 配合ワーカー | GitHub Actions（起床は時刻表、実行可否は設定と実行済み枠で判定 + 手動 `workflow_dispatch`） |
 | 頻度設定 | `config/schedule.json`（候補更新間隔・**時間帯別配合（JST）**・候補件数をファイルで変更 / issue #15・#41） |
 | プロンプト文言 | `config/prompts.json`（配合タイプ指示・共通ルール・画像スタイルをファイルで変更 / issue #25。**出力JSONスキーマと言語ルールはコード固定**） |
-| 永続データ | リポジトリ内の `data/offspring.json`（各子作品に配合条件ハッシュ `requestHash` / issue #37） / `data/breeding-state.json` / `data/element-cache.json` / `data/processed-issues.json` / `data/ai-usage.json` / `data/deleted-offspring.json`（削除済みID台帳 / issue #32） |
+| 永続データ | リポジトリ内の `data/offspring.json`（各子作品に配合条件ハッシュ `requestHash` / issue #37、任意の申請者情報 `requester` / issue #42） / `data/breeding-state.json` / `data/element-cache.json` / `data/processed-issues.json` / `data/ai-usage.json` / `data/deleted-offspring.json`（削除済みID台帳 / issue #32） |
 | AI | **Cloudflare Workers AI**（Actionsサーバー側から呼ぶ。テキスト `@cf/openai/gpt-oss-20b`・画像 `@cf/black-forest-labs/flux-1-schnell` / issue #16） |
 | サムネイル | 生成成功時 `public/static/assets/inventions/<子ID>.png`（ViteのpublicDirから `dist/assets/inventions/` へ配信）（512×512）。**失敗してもテキストは保存**（`imagePath: null`） |
 
@@ -307,6 +307,16 @@ open Issue の最古1件（ラベル非信用・タイトル/本文で判定）
 - 条件は URL（`/ideas/?q=…&tech=…&domain=…`）に同期（入力=replace / 選択・タグ=push / 戻る進むで復元）。個別ページのタグを押すとその条件の一覧へ移動する。
 - **既存データへの補完は別処理**: `npm run backfill:search-metadata`（ルール補完・**既定ドライラン**、`--write` で保存）。技術名が本文に明示されているときだけ付与し、分野も語が明確に現れたときだけ（推測でタグを付けない）。`keywords` は決定的なルールが無いため補完しない。**`--ai` は有料APIを呼ぶため未実装**（明示指示が要る）。
 
+## 配合申請者のGitHubアイコン表示（issue #42）
+
+配合申請をした人の **GitHubアイコン（アバター）とユーザー名だけ**を、個別ページ（`/ideas/<id>/`・「配合を申し込んだ人: @login」）と一覧カード（生成Issueリンク横の `@login`）に表示する。
+
+- **収集は2項目だけ**: ワーカーがGitHub APIのIssue件から `login` と `avatar_url` のみを取り出し、書式検証を通ったものだけ `offspring.json` の `requester` に保存する（メール・表示名等は収集しない。**プライバシー方針（AGENTS.md）の最小収集**）。
+- **書式検証（`lib/types.ts`）**: `login` はGitHubの書式（英数とハイフン・39文字まで・ハイフン始終端不可）。`avatarUrl` は **`https://avatars.githubusercontent.com/u/<数字>` 形のみ受理**（任意URLは信用しない）。
+- **fail-safe**: user 無し・書式不正・`avatar_url` がGitHubのCDN以外なら**表示ごと省く**（保存・生成処理は止めない）。表示前にも `isRequester` で再検証するため、手書き編集したデータも壊さない。
+- **互換性**: `requester` は**任意**。既存データ・開発用サンプルには表示が出ないだけ。
+- アバターの`<img>`はGitHubのCDNのみを指し、読み込み失敗時は画像だけ外れる（`@login` の表示は残る）。login はURLエンコードしてプロフィールリンク（新規タブ・`rel="noopener noreferrer"`）にする。
+
 ## ID名前空間の決定事項
 
 - ProtoPedia作品: `protopedia:<数字>`（第0世代）
@@ -352,6 +362,7 @@ open Issue の最古1件（ラベル非信用・タイトル/本文で判定）
 - [ ] **自動配合申請 `auto-request.yml` の本番動作**（issue #27）— ローカルでは実リポジトリに対する**ドライラン判定**（直近申請 #28 を検出→作成せず）と単体テスト（判定・選出・フォーマット・API形状）のみ。**実Issueの作成は未検証**（初回の発火は cron `27 * * * *`。新規ワークフローの schedule が発火するかも要確認。不発なら cron の書き換えで再アクティベートする）。
 - [ ] `data/offspring.json` へのコミットとブランチ保護の兼ね合い — Actions実装時に確認、必要ならPR方式へ。
 - [ ] GitHub Pages 本番での `/ideas` 配信 — ローカル preview では `/`・`/ideas/`・`/ideas` すべて200を確認。Pagesの `/ideas` → `/ideas/` リダイレクト挙動は未検証（自前リンクは末尾 `/` つきなので影響なし）。
+- [ ] **配合申請者のアバター表示の実データ確認**（issue #42）— ローカルでは単体テスト（書式・抽出・表示・旧データ互換）で確認済み。**既存の実データ（2件）は `requester` を持たないため、初めての表示実例は次回の本番生成**（push 後に確認）。本番のGitHubアバターURLが `REQUESTER_AVATAR_RE`（avatars.githubusercontent.com の `/u/<数字>` 形）に一致することも実運用で再確認する。
 - [ ] ブラウザからの匿名 GitHub API ポーリング（申請確認・実験待ち/生成中/誕生の観測）の実挙動 — ローカルではフェッチ注入の単体テストのみ。実ネットワークでのレート制限・CORS挙動は未検証。
 - [ ] Pages 本番での `dist/data/offspring.json` 配信（誕生のランタイム検知）— ローカル preview/dev では 200 を確認済み。
 - [ ] **個別ページ `/ideas/<id>/` とカスタム404の本番配信**（issue #24）— ローカルでは GH Pages 相当サーバ（未知パス→`404.html`・末尾スラッシュ301）で全検証済みだが、本番カスタムドメインでの実配信は push → deploy 後。カスタム404のリンク基点は `/ideas/` 位置から計算（一般未知パスでは `/` 仮定）。

@@ -24,6 +24,12 @@ export interface IssueRecord {
   body: string;
   /** created_at（ISO 8601） */
   createdAt: string;
+  /**
+   * 申請者の公開情報（issue #42 / 任意）。`user.login` / `user.avatar_url` を
+   * **書式検証を通ったものだけ** 保持する。無い・不正な場合は項目ごと省く
+   * （表示のたの任意項目なので、ここで失敗しても処理は止めない）。
+   */
+  user?: { login: string; avatarUrl: string };
 }
 
 export type ProcessedStatus = 'resolved' | 'rejected' | 'failed';
