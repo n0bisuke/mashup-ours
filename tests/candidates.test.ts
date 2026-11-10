@@ -179,6 +179,20 @@ describe('isCandidatesFile（フロント読み込みガード）', () => {
     expect(isCandidatesFile(valid())).toBe(true);
   });
 
+  it('制作状態 status は 1..99 の整数のみ許可（欠損はOK / issue #29）', () => {
+    const ok = valid();
+    expect(isCandidatesFile({ ...ok, candidates: [{ ...ok.candidates[0], status: 4 }, ...ok.candidates.slice(1)] })).toBe(
+      true,
+    );
+    const f = valid();
+    for (const bad of [0, -1, 1.5, '供養', null, 100]) {
+      expect(
+        isCandidatesFile({ ...f, candidates: [{ ...f.candidates[0], status: bad }, ...f.candidates.slice(1)] }),
+        `status=${JSON.stringify(bad)} は拒否されるべき`,
+      ).toBe(false);
+    }
+  });
+
   it('オブジェクトでない・欠損・型不正を拒否する', () => {
     expect(isCandidatesFile(null)).toBe(false);
     expect(isCandidatesFile([])).toBe(false);

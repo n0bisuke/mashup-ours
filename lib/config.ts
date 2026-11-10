@@ -37,12 +37,22 @@ export interface IssueLinkOptions {
   comment?: string;
 }
 
-export function newIssueUrl(
-  cfg: RepoConfig,
+/** 配合申請Issueのタイトルと本文（UIの新規作成画面と自動申請が共有 / issue #27）。 */
+export interface IssueForm {
+  title: string;
+  body: string;
+}
+
+/**
+ * 配合申請Issueのタイトル・本文を組み立てる。
+ * 人手の申請（newIssueUrl）と自動申請（scripts/auto-request.ts）が**同じ形式**を
+ * 使うための共通部分。タイトルは表示用、本文が正規の入力元（AGENTS.md）。
+ */
+export function buildIssueForm(
   parentA: string,
   parentB: string,
   opts: IssueLinkOptions = {},
-): string {
+): IssueForm {
   const title = `[Breed] ${parentA} x ${parentB}`;
   // AGENTS.md: Issueの本文のみを正規の入力元とし、タイトルは表示用。
   const lines = [`parent_a: ${parentA}`, `parent_b: ${parentB}`];
@@ -60,6 +70,17 @@ export function newIssueUrl(
     `<!-- 任意: comment: の後に1行だけで自由記述を追加できます（最大${MAX_COMMENT_LENGTH}字・配合の動機など） -->`,
     '<!-- mashup-ours: generated link -->',
   );
-  const params = new URLSearchParams({ title, body: lines.join('\n') });
+  return { title, body: lines.join('\n') };
+}
+
+/** 配合申請の新規作成画面URL（タイトル・本文は buildIssueForm と同じものを使う）。 */
+export function newIssueUrl(
+  cfg: RepoConfig,
+  parentA: string,
+  parentB: string,
+  opts: IssueLinkOptions = {},
+): string {
+  const { title, body } = buildIssueForm(parentA, parentB, opts);
+  const params = new URLSearchParams({ title, body });
   return `https://github.com/${cfg.owner}/${cfg.repo}/issues/new?${params.toString()}`;
 }

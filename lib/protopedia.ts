@@ -117,6 +117,17 @@ function toIdNumber(v: unknown): number | null {
 const LICENSE_LABELS: Record<number, string> = { 1: 'CC BY 4+' };
 
 /**
+ * 制作状態（供養/開発中/完成）コードの抽出。
+ * 実APIは数値で返すが、文字列で返る版にも備えて整数化してから判定する。
+ * 1..99 の整数以外（null・欠損・想定外の型）は保存しない＝表示もされない。
+ */
+function toStatusCode(v: unknown): number | undefined {
+  const n = typeof v === 'number' ? v : typeof v === 'string' && v.trim() !== '' ? Number(v) : NaN;
+  if (!Number.isInteger(n) || n < 1 || n > 99) return undefined;
+  return n;
+}
+
+/**
  * releaseFlg の公開判定。
  * 仕様書に値の定義がないため: 欠損は公開として扱う（要実測確認）、
  * 明示的な非公開値のみ除外する。
@@ -238,6 +249,11 @@ export function normalizeWork(raw: unknown): ProtopediaWork | null {
   const tags = toTextList(r.tags, ['tagNm', 'tagName', 'nm', 'name'], MAX_TAGS, CAP_NAME);
   if (tags.length > 0) work.tags = tags;
 
+  // 制作状態（供養/開発中/完成）。タグではなく status 数値で返る（2026-11-10 実測、
+  // tagNm=供養 では0件）。ラベル対応は lib/types.ts の PROTOPEDIA_STATUS_LABELS。
+  const status = toStatusCode(r.status);
+  if (status !== undefined) work.status = status;
+
   const license =
     typeof r.licenseType === 'number'
       ? (LICENSE_LABELS[r.licenseType] ?? '')
@@ -322,6 +338,12 @@ export interface FetchAllOptions {
   maxPages?: number;
   /** 最初のオフセット（既定0。試作取得で対象範囲をずらすとき用） */
   offsetStart?: number;
+  /**
+   * 制作状態コードで絞り込む（2=開発中 / 3=完成 / 4=供養）。
+   * API の `status` クエリ（数値のみ。文字列は HTTP 500 / 2026-11-10実測）。
+   * 未指定なら全状態を対象にする。
+   */
+  status?: number;
   fetchImpl?: FetchImpl;
 }
 
@@ -351,10 +373,15 @@ export async function fetchAllWorks(opts: FetchAllOptions): Promise<FetchAllResu
     pageDelayMs = DEFAULT_PAGE_DELAY_MS,
     maxPages = 0,
     offsetStart = 0,
+    status,
     fetchImpl = fetch,
   } = opts;
 
   if (!token) throw new Error('APIトークンが設定されていません（PROTOPEDIA_API_V2_TOKEN）');
+  if (status !== undefined && (!Number.isInteger(status) || status < 1 || status > 99)) {
+    throw new Error('status は 1..99 の整数で指定してください（欠損時は指定しない）');
+  }
+  const statusQuery = status === undefined ? '' : `&status=${status}`;
 
   const works: ProtopediaWork[] = [];
   const seenIds = new Set<string>();
@@ -366,7 +393,7 @@ export async function fetchAllWorks(opts: FetchAllOptions): Promise<FetchAllResu
   while (works.length < maxWorks && (maxPages <= 0 || pages < maxPages)) {
     if (pages > 0 && pageDelayMs > 0) await sleep(pageDelayMs);
     const limit = Math.min(pageSize, maxWorks - works.length);
-    const url = `${PROTOPEDIA_API_BASE}/prototype/list?limit=${limit}&offset=${offset}`;
+    const url = `${PROTOPEDIA_API_BASE}/prototype/list?limit=${limit}&offset=${offset}${statusQuery}`;
 
     let body: unknown = null;
     let lastError: unknown = null;

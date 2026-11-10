@@ -317,6 +317,24 @@ export function buildIdeasPage(
         { class: 'foot-note' },
         'Mashup Oursは個人制作の非公式プロジェクトです。ProtoPediaおよびヒーローズ・リーグの公式サービスではありません。',
       ),
+      // リポジトリへのリンク（issue #30）。未設定時は出さない。
+      ...(ctx.repoCfg
+        ? [
+            el(
+              'div',
+              { class: 'foot-links' },
+              el(
+                'a',
+                {
+                  href: `https://github.com/${ctx.repoCfg.owner}/${ctx.repoCfg.repo}`,
+                  target: '_blank',
+                  rel: 'noopener noreferrer',
+                },
+                'GitHubリポジトリ ↗',
+              ),
+            ),
+          ]
+        : []),
     ),
   );
 }

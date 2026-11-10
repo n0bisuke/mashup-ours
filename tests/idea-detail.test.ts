@@ -219,3 +219,12 @@ it('URLユーティリティ（パスからID / サイトルート基点 / 個�
   expect(ideaDetailHref('/', 'mashup-000001')).toBe('/ideas/mashup-000001/');
   expect(ideaDetailHref('../../', 'mashup-000001')).toBe('../../ideas/mashup-000001/');
 });
+
+it('フッターにGitHubリポジトリへのリンク（issue #30 / 未設定時は出さない）', () => {
+  const host = build('mashup-000001');
+  const link = host.querySelector<HTMLAnchorElement>('.ideas-foot .foot-links a');
+  expect(link?.getAttribute('href')).toBe('https://github.com/test-owner/test-repo');
+  expect(link?.getAttribute('target')).toBe('_blank');
+  const host2 = build('mashup-000001', fixtures, { ...ctx, repoCfg: null });
+  expect(host2.querySelector('.ideas-foot .foot-links')).toBeNull();
+});

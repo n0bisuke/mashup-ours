@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import {
+  DEFAULT_AUTO_REQUEST_IDLE_HOURS,
   FALLBACK_SCHEDULE,
   MAX_CONSECUTIVE_FAILURES,
   breedingNotice,
@@ -69,6 +70,24 @@ describe('parseScheduleConfig（正の整数の検証 / issue #15）', () => {
     expect(parseScheduleConfig({ ...cfg(), maxCandidates: 51 }).ok).toBe(false);
   });
 
+  it('autoRequestIdleHours は0以上（0=無効）の整数だけ受理する（issue #27）', () => {
+    expect(parseScheduleConfig({ ...cfg(), autoRequestIdleHours: 8 }).ok).toBe(true);
+    expect(parseScheduleConfig({ ...cfg(), autoRequestIdleHours: 0 }).ok).toBe(true);
+    expect(parseScheduleConfig({ ...cfg(), autoRequestIdleHours: -1 }).ok).toBe(false);
+    expect(parseScheduleConfig({ ...cfg(), autoRequestIdleHours: 1.5 }).ok).toBe(false);
+    expect(parseScheduleConfig({ ...cfg(), autoRequestIdleHours: 721 }).ok).toBe(false);
+    expect(parseScheduleConfig({ ...cfg(), autoRequestIdleHours: '8' }).ok).toBe(false);
+
+    const set = parseScheduleConfig({ ...cfg(), autoRequestIdleHours: 12 });
+    expect(set.ok && set.config.autoRequestIdleHours).toBe(12);
+    const none = parseScheduleConfig({ ...cfg() });
+    expect(none.ok && none.config.autoRequestIdleHours).toBeUndefined();
+
+    // 既定値（8時間）はフォールバックにも載っている（フロント・ワーカーで同じ既定）
+    expect(FALLBACK_SCHEDULE.autoRequestIdleHours).toBe(DEFAULT_AUTO_REQUEST_IDLE_HOURS);
+    expect(DEFAULT_AUTO_REQUEST_IDLE_HOURS).toBe(8);
+  });
+
   it('未知のキーは無視する（将来の追加で壊さない）', () => {
     const r = parseScheduleConfig({ ...cfg(), futureOption: 'x' });
     expect(r.ok).toBe(true);
@@ -80,6 +99,8 @@ describe('parseScheduleConfig（正の整数の検証 / issue #15）', () => {
     );
     const r = parseScheduleConfig(raw);
     expect(r.ok).toBe(true);
+    // 自動配合申請の待機時間も出荷設定に載っている（issue #27）
+    expect(r.ok && r.config.autoRequestIdleHours).toBe(8);
   });
 });
 

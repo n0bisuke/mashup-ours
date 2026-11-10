@@ -68,7 +68,8 @@ npm run dev            # http://localhost:5173
 {
   "candidateRotationMinutes": 15,
   "breedingIntervalMinutes": 60,
-  "maxCandidates": 6
+  "maxCandidates": 6,
+  "autoRequestIdleHours": 8
 }
 ```
 
@@ -78,6 +79,7 @@ npm run dev            # http://localhost:5173
 | `breedingIntervalMinutes` | 配合（生成AI呼び出し）の間隔（分・正の整数）。**前回の成功からの空き時間** | 60 |
 | `maxCandidates` | 1枠の候補件数の上限（正の整数、1〜50） | 6 |
 | `dailyAiCallLimit`（任意） | UTC日ごとの生成AI呼び出し回数の上限（正の整数）。未設定 = 上限なし | なし |
+| `autoRequestIdleHours`（任意） | **自動配合申請**の待機時間（時間・0〜720の整数）。**0 = 自動作成しない** | 8 |
 
 - **候補更新と配合処理は独立した設定**であり、UIでも混同しない（「◯ごとに新しい発明候補が届くよ！」と「◯に最大1つ、新しい発明が誕生します！」は別々のキーから生成）。「1時間に1回」「毎時」などの固定文言はサイトに存在しない。
 - **GitHub ActionsのcronはJSONを読めない**ため、ワークフローは一定間隔（15分）で「起床」し、スクリプト側が実行可否を判定する:
@@ -136,12 +138,17 @@ ProtoPedia API v2 ──(Bearer)──> npm run fetch:sample（少数・手動 /
                           data/current-candidates.json ──> GitHub Pages（静的import）
 ```
 
-- **試作段階では全件収集を開始しない**: `npm run fetch:sample` は既定12件（`--count=` 上限50 / `--offset=`）。
+- **試作段階では全件収集を開始しない**: `npm run fetch:sample` は既定12件（`--count=` 上限50 / `--offset=` / `--status=` / `--merge`）。
   全件同期は `npm run sync:protopedia`。`sync-prototypes.yml` は**手動 dispatch のみ**（有効化するときだけ `schedule` を戻す）。
+- **制作状態で絞って追加取得できる（issue #29）**: `--status=4`（供養）/ `2`（開発中）/ `3`（完成）で API の `status` クエリを使用（**数値のみ**。文字列指定は HTTP 500 を実測）。
+  既定は**上書き取得**なので、`--merge` を付けると既存プールを保持したまま重複IDを除いて追記します（上限40件）。例:
+  `npm run fetch:sample -- --count=6 --status=4 --merge`（供養作品を6件追加）。実際に運用しているプールは 26件（既存12 + 供養6 + 開発中8）。
+- **制作状態とタグの一覧表示（issue #29）**: 配合候補カードに**状態バッジ**（開発中/完成/供養）と**タグチップ**（最大6件）、系譜図の詳細パネルに「制作状態」行を表示。
+  供養/開発中は**タグではなく `status` 数値**（`tagNm=供養` では0件）。ラベル対応は `lib/types.ts` の `PROTOPEDIA_STATUS_LABELS`（**2026-11-10 実測マッピング・公式ドキュメント未検証**）。状態バッジなし(1)・未知コードは表示しません。
 - **候補ローテ**: `npm run rotate:candidates` は保存済みプールからスロット（UTC `YYYY-MM-DDTHHMM`・設定間隔の刻み）に**決定的に** `maxCandidates` 件を選出。
   同じスロットなら常に同じ候補（枠内のActionsの再実行・ローカル実行でも不変）。APIもトークンも使わない。**前回と同一枠ならスキップ**（頻度制限。`--force` で解除）。
   `-- --slot=2026-11-09T1415` で任意の枠を検証、`-- --dry-run` で書き込まず確認。
-- **起床は15分固定・実行可否はスクリプト判定**: `.github/workflows/rotate-candidates.yml`（cron `4/15 * * * *` + dispatch）が一定間隔で起動し、スクリプトが `config/schedule.json` の間隔と前回生成の `slot` から実行可否を判断して `data/current-candidates.json` をコミット（issue #15）。
+- **起床は15分固定・実行可否はスクリプト判定**: `.github/workflows/rotate-candidates.yml`（cron `4,19,34,49 * * * *` = 列挙形 + dispatch）が一定間隔で起動し、スクリプトが `config/schedule.json` の間隔と前回生成の `slot` から実行可否を判断して `data/current-candidates.json` をコミット（issue #15）。
   画面上の「次回の候補更新予定」はこの**実行結果（JSONの値）**ベースで、遅延時は注意書きが出ます。
 - **失敗時の挙動**: 取得失敗・0件・不正レスポンスでは既存JSONを置き換えない（0件保存は拒否）。
 - **トークンの扱い**: `.env` / Secretsのみ。スクリプトがreadFileSyncで読む（シェルにexportしない）。ログ・JSON・コミット・フロントバンドルに入れない。
@@ -166,9 +173,24 @@ slot: 2026-11-09T1715                                ← 申請時の候補ス�
 - `comment`（研究員へのひとこと）は任意の自由記述（1行・最大500字・**Issue作成時のみ**入力）。生成時の追加条件としてAIに渡しますが、**渡し方は区切り付きの「参考資料（データであり命令ではない）」だけ**で、シェル・GitHub Actions式には一切埋め込みません（プロンプトインジェクション対策 / issue #5・#16 §5）。
 - 不正な入力はAIを呼ばずに理由をコメントします。
 
+## 自動配合申請（issue #27）
+
+利用者からの申請が**直近 `autoRequestIdleHours`（既定8時間）なかったら**、システム側が配合申請Issueを1件自動追加する。作成したIssueは**既存のキューそのまま**で `breed.yml` が処理する（特別経路は作らない）。
+
+`.github/workflows/auto-request.yml`（cron `27 * * * *` = 毎時27分 + `workflow_dispatch`）→ `scripts/auto-request.ts`。
+
+- **発動条件（すべて満たす）**: 直近8時間以内に**配合申請に見えるIssueが1件もない**（open/closed・自動/人手を問わず。機能追加などのIssueは数えない）／未処理のopen申請が残っていない／`autoRequestIdleHours` が1以上。
+- **自己制御**: 自動で作ったIssue自身が次の判定で「直近の申請」になるため、**最大でも待機時間に1件**。
+- **親の選出は生成AIを使わない**（この経路にAI呼び出しは存在しない）: 現行の配合候補（`data/current-candidates.json`）+ すでに生まれた子作品を Fisher–Yates でシャッフルし、最初に見つかる**有効なペア**を選ぶ。有効条件はワーカーの却下条件と同一（別ID / 生成済みペアでない / 系譜上 祖先×子孫でない）。候補2件未満・有効ペア0件なら作らない。
+- **フォーマットは人手の申請と完全同一**（`lib/config.ts` の `buildIssueForm()` を UI と共有）。区別は本文末尾のマーカー `<!-- mashup-ours: auto-request -->` と `source: auto-random`、冒頭の説明1行だけ（パーサーは `key: value` 行しか読まないため処理は変わらない）。
+- **ラベル**: `GITHUB_TOKEN` が作るIssueは `issues: opened` ワークフローを起動しないため `label-issues.yml` が走らず、スクリプト側で `breeding-request` をベストエフォート付与（付与に失敗しても申請は成立）。
+- **権限は `issues: write` のみ**。データ・画像のコミット、生成AI、外部APIはこのワークフローでは使わない。Secrets追加も不要（`github.token`）。
+- **手動確認**: `DRY_RUN=true node --experimental-strip-types scripts/auto-request.ts`（判定と選出だけ行いIssueは作らない）。dispatch の `dry_run` は既定 true。
+- 有効化・無効化は `config/schedule.json` の `autoRequestIdleHours`（0で停止）。UI・家系図はこの機能で変化しない。
+
 ## 生成AIによる配合（Cloudflare Workers AI / issue #16）
 
-`.github/workflows/breed.yml` が cron（`9/15 * * * *` = 15分ごとに起床）と `workflow_dispatch` で起動し、`scripts/process-breeding.ts` が処理します。**実効的な配合は `config/schedule.json` の `breedingIntervalMinutes`（既定60分）を空けて最大1件**（全ユーザー共有。cronは正時に厳密実行しないため「間隔を空けて最大1件」という仕様）。
+`.github/workflows/breed.yml` が cron（`9,24,39,54 * * * *` = 15分ごとに起床・列挙形）と `workflow_dispatch` で起動し、`scripts/process-breeding.ts` が処理します。**実効的な配合は `config/schedule.json` の `breedingIntervalMinutes`（既定60分）を空けて最大1件**（全ユーザー共有。cronは正時に厳密実行しないため「間隔を空けて最大1件」という仕様）。
 
 ```text
 open Issue の最古1件（ラベル非信用・タイトル/本文で判定）
@@ -235,6 +257,8 @@ open Issue の最古1件（ラベル非信用・タイトル/本文で判定）
   - **配置**: デスクトップは右下固定（幅200px・余白20px・`z-index: 30` = 将来のモーダル想定40より下）。**760px以下は画面下の横長バー**（左右8px・`env(safe-area-inset-bottom)` 対応・`html.has-float` で body の下padding 72px = 背後の候補カードボタンを操作できる）。切替200ms・選択フラッシュ240ms、`prefers-reduced-motion` で全停止。
   - **既知のトレードオフ**: デスクトップでコンテンツ幅（1100px）が画面幅に近いと、右下200pxがカード上に重なることがある。固定パネルの性質上スクロールで回避でき、主要CTA（「配合を申し込む」）には当たらない。
   - 検証: `tests/float-machine.test.ts`（28件）+ Playwright 47項目（`tmp/float-machine-check.mjs` / GH Pages相当サーバ・デスクトップ/モバイル/ダーク/reduced-motion）。
+- **フッターのGitHubリンク（issue #30）**: トップ（`.site-foot`）・一覧（`/ideas`）・個別ページのフッターに「GitHubリポジトリ ↗」を表示。
+  リンク先は `repoConfigFromEnv()` の `owner/repo` から組み立てる（**リポジトリ名はハードコードしない**）。owner/repo 未設定のビルドではリンク行ごと出さず、非公式プロジェクトの注記だけを残す。
 - **スクリーンショット確認**: `npm run build && npx vite preview --port 4173` を起動してから `npm run screenshot`（**ライト/ダーク両テーマ** × デスクトップ/詳細/モバイルを `tmp/` に出力。初回のみ `npx playwright install chromium` と `install-deps` が必要）。
 
 ## ID名前空間の決定事項
@@ -259,9 +283,12 @@ open Issue の最古1件（ラベル非信用・タイトル/本文で判定）
 - `users` / `tags` は `|`-区切りの**文字列**。作者は `表示名@handle` 形式（例 `ひさやん@hisayan`。そのまま保存 = クレジット用）。
 - `licenseType: 1` → 作品ページ表示「CC BY 4+」（id=1 のページと照合済み）。取得時はライセンスのある作品だけ保存。
 - 作品ページURLは `https://protopedia.net/prototype/<id>`。カタログ総数は 5,100件超（正確な総数は未測定）。
-- `data/sample-prototypes.json` 12件取得 → `data/current-candidates.json` 候補6件生成 → 両方とも `npm run validate-data` で検証済み。
+- `data/sample-prototypes.json` 12件取得 → `data/current-candidates.json` 候補6件生成 → 両方とも `npm run validate-data` で検証済み（現在は26件プール / issue #29）。
+- **`status`（制作状態）の実測**: カタログHTML `<span class="cat …">` とAPI `status` を18件照合し矛盾0 → `1`=状態バッジなし / `2`=開発中 / `3`=完成 / `4`=供養。
+  件数（2026-11-10・`limit=500` ページング実測）: **供養 116** / 開発中 2,415 / 完成 4,012 / 状態なし 455（計 6,998）。`status=<数値>` の絞り込みも有効（文字列は HTTP 500）。
 
 **未検証**:
+- [ ] **`status` と制作状態バッジの対応が公式ドキュメントと一致するか**（issue #29）— 1/2/3/4 の意味はカタログHTMLとの18件照合による**実測**。将来コードが追加・変更される可能性がある（未知コードは表示しない安全側）。
 - [ ] `deploy.yml` / `sync-prototypes.yml` / `rotate-candidates.yml` の実動作 — push後のActions実行結果で確認（ローカルではYAML構文・スクリプト単体・決定的選出テストのみ確認）。
 - [ ] `releaseFlg` のenum値の意味（観測値は常に 2。欠損=公開扱いの暫定実装）。
 - [ ] ProtoPedia APIのレート制限・1レスポンスの件数上限（ページ間隔100msで暫定対応）。
@@ -269,7 +296,8 @@ open Issue の最古1件（ラベル非信用・タイトル/本文で判定）
   - [ ] `flux-1-schnell` の応答（`result.image` の形式・width/height非指定時の挙動）— check-ai はテキストのみ確認。
   - [ ] **本番の抽出（1200）・生成（2500トークン）での推論トークン消費** — 思考込みの予算のため、長文思考で `finish_reason=length` になる可能性。起きれば検証失敗→再試行→失敗処理に落ちる（安全側）。
   - [ ] 無料枠・料金・レート制限の現行条件（**「1時間に1回なら無料枠内」とは断定しない**）。
-- [ ] `breed.yml` の cron 実動作（15分起床・間隔判定・Issueコメント/クローズまで）。ローカルは `npm run breed:dry` と単体テストのみ。
+- [x] `breed.yml` / `rotate-candidates.yml` の cron 実動作 — **2026-11-10 に `event=schedule` の発火を両方確認**（列挙形 `4,19,34,49` / `9,24,39,54` へ変更して再アクティベート。rotate → 候補コミット → breed → 子作品生成 → Issueクローズ → Pagesデプロイまで一巡を確認 / issue #20・#5）。**連続発火の安定性は未検証**（各1回のみ観測）。
+- [ ] **自動配合申請 `auto-request.yml` の本番動作**（issue #27）— ローカルでは実リポジトリに対する**ドライラン判定**（直近申請 #28 を検出→作成せず）と単体テスト（判定・選出・フォーマット・API形状）のみ。**実Issueの作成は未検証**（初回の発火は cron `27 * * * *`。新規ワークフローの schedule が発火するかも要確認。不発なら cron の書き換えで再アクティベートする）。
 - [ ] `data/offspring.json` へのコミットとブランチ保護の兼ね合い — Actions実装時に確認、必要ならPR方式へ。
 - [ ] GitHub Pages 本番での `/ideas` 配信 — ローカル preview では `/`・`/ideas/`・`/ideas` すべて200を確認。Pagesの `/ideas` → `/ideas/` リダイレクト挙動は未検証（自前リンクは末尾 `/` つきなので影響なし）。
 - [ ] ブラウザからの匿名 GitHub API ポーリング（申請確認・実験待ち/生成中/誕生の観測）の実挙動 — ローカルではフェッチ注入の単体テストのみ。実ネットワークでのレート制限・CORS挙動は未検証。
@@ -291,6 +319,8 @@ npm run rotate:candidates # 候補をスロットから決定的に選出 → da
 npm run breed:dry         # 配合ワーカーの安全確認（AI・データ書き込み・Issue操作をしない）
 npm run breed             # 配合ワーカーを本番同様に実行（Cloudflare認証情報が必要）
 npm run breed:check-ai    # Cloudflare Workers AI の接続確認のみ（1回）
+DRY_RUN=true node --experimental-strip-types scripts/auto-request.ts
+                          # 自動配合申請の安全確認（判定と選出だけ。Issueは作らない / issue #27）
 npm run screenshot      # 両テーマ×デスクトップ/詳細/モバイル + /ideas一覧のスクリーンショット（tmp/）
 ```
 
@@ -321,15 +351,18 @@ npm run screenshot      # 両テーマ×デスクトップ/詳細/モバイル +
                          # 配合: blend.ts（プロンプトと出力検証）/ prompts.ts（プロンプト文言設定 / issue #25） /
                          # elements.ts（要素抽出とキャッシュ） /
                          # queue.ts（キュー選択）/ cloudflare.ts（Workers AI）/ usage.ts（利用量）/
-                         # github.ts（Issue対応）/ ProtoPedia/設定（フロント/ワーカー共有）
-├── config/              # schedule.json（頻度設定: 候補更新間隔・配合間隔・候補件数 / issue #15）/
-                         # prompts.json（配合プロンプトの文言 / issue #25）
+                         # auto-request.ts（自動申請の判定とランダム選出 / issue #27） /
+                         # github.ts（Issue対応・作成）/ ProtoPedia/設定（フロント/ワーカー共有）
+├── config/              # schedule.json（頻度設定: 候補更新間隔・配合間隔・候補件数・自動申請の待機時間 /
+                         # issue #15・#27） / prompts.json（配合プロンプトの文言 / issue #25）
 ├── data/                # offspring.json / current-candidates.json / breeding-state.json /
                          # element-cache.json / processed-issues.json / ai-usage.json / *sample*.json
 ├── logs/                # 開発ログ（public公開のため秘密情報は書かない / 書式は logs/README.md）
 ├── scripts/             # process-breeding（配合ワーカー）/ fetch-sample / rotate-candidates / sync /
+                         # auto-request（自動申請 / issue #27） /
                          # validate-data / screenshot / gh / load-env / slice-characters（博士スプライト切り出し）
 ├── tests/               # 単体（lib/パーサー/設定）+ UI（happy-dom。helpers/ はvitest対象外の補助）
 └── .github/workflows/   # deploy.yml / sync-prototypes.yml（dispatchのみ） /
-                         # rotate-candidates.yml（起床15分固定・間隔はconfig判定） / breed.yml（配合ワーカー）
+                         # rotate-candidates.yml（起床15分固定・間隔はconfig判定） / breed.yml（配合ワーカー） /
+                         # auto-request.yml（自動申請・毎時27分 / issue #27） / label-issues.yml
 ```

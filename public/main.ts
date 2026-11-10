@@ -4,6 +4,7 @@ import {
   BLEND_MODE_DESCRIPTIONS,
   BLEND_MODE_LABELS,
   BREEDING_MODES,
+  statusLabel,
 } from '../lib/types.ts';
 import { MAX_COMMENT_LENGTH } from '../lib/issue.ts';
 import {
@@ -551,6 +552,9 @@ function thumbNode(w: ProtopediaWork): HTMLElement {
   return box;
 }
 
+/** カードに表示するタグの上限（カードが縦に伸びすぎないため）。全件は詳細パネルで見られる。 */
+const MAX_CARD_TAGS = 6;
+
 function buildCandidateCard(w: ProtopediaWork, index: number): HTMLElement {
   const card = el('article', { class: 'candidate', 'data-id': w.id });
   card.append(thumbNode(w));
@@ -573,7 +577,17 @@ function buildCandidateCard(w: ProtopediaWork, index: number): HTMLElement {
   const picks = el('div', { class: 'picks' }, btnA, btnB);
   const foot = el('div', { class: 'card-foot' }, link, picks);
 
-  const body = el('div', { class: 'card-body' }, idx, h3, author, summary, foot);
+  // 制作状態バッジ（供養/開発中/完成）+ タグ（issue #29）。どちらも無ければ行を出さない。
+  const meta = el('div', { class: 'card-meta' });
+  const statusText = statusLabel(w.status);
+  if (statusText) meta.append(el('span', { class: 'badge work-status' }, statusText));
+  for (const t of (w.tags ?? []).slice(0, MAX_CARD_TAGS)) {
+    meta.append(el('span', { class: 'tag-chip', title: t }, t));
+  }
+
+  const body = el('div', { class: 'card-body' }, idx, h3, author);
+  if (meta.childElementCount > 0) body.append(meta);
+  body.append(summary, foot);
   card.append(body);
 
   pickRegistry.set(w.id, { host: card, badge, a: btnA, b: btnB });
@@ -1231,13 +1245,31 @@ pedSection.append(legend, pedScroll, detailBox);
 wrap.append(pedSection);
 
 // 非公式プロジェクトである旨を一度だけ明示（追加指示 §4。注意書きは画面全体に繰り返さない）
-wrap.append(
-  el(
-    'footer',
-    { class: 'site-foot hint' },
-    'Mashup Oursは個人制作の非公式プロジェクトです。ProtoPediaおよびヒーローズ・リーグの公式サービスではありません。',
-  ),
+const siteFoot = el(
+  'footer',
+  { class: 'site-foot hint' },
+  'Mashup Oursは個人制作の非公式プロジェクトです。ProtoPediaおよびヒーローズ・リーグの公式サービスではありません。',
 );
+// リポジトリへのリンク（issue #30）。owner/repo は設定値から組み立てる（ハードコード禁止）。
+// 未設定時はリンクを出さない（トップの案内と同じ扱い）。
+if (repoCfg) {
+  siteFoot.append(
+    el(
+      'div',
+      { class: 'foot-links' },
+      el(
+        'a',
+        {
+          href: `https://github.com/${repoCfg.owner}/${repoCfg.repo}`,
+          target: '_blank',
+          rel: 'noopener noreferrer',
+        },
+        'GitHubリポジトリ ↗',
+      ),
+    ),
+  );
+}
+wrap.append(siteFoot);
 
 interface LayoutNode {
   id: string;
@@ -1460,6 +1492,8 @@ function renderDetail(id: string): void {
   } else {
     add('世代', '第0世代（ProtoPedia作品）');
     if (node.authors && node.authors.length > 0) add('作者', node.authors.join(' / '));
+    const stText = statusLabel(node.status);
+    if (stText) add('制作状態', stText);
     if (node.tags && node.tags.length > 0) add('タグ', node.tags.join(' / '));
     if (node.licenseType) add('ライセンス', node.licenseType);
     if (node.mainUrl) {

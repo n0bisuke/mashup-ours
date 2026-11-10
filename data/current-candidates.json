@@ -1,21 +1,61 @@
 {
   "schemaVersion": 1,
-  "slot": "2026-11-10T0215",
-  "generatedAt": "2026-11-10T02:16:40.577Z",
-  "nextSlot": "2026-11-10T0230",
+  "slot": "2026-11-10T0430",
+  "generatedAt": "2026-11-10T04:35:35.403Z",
+  "nextSlot": "2026-11-10T0445",
   "source": "data/sample-prototypes.json",
   "candidates": [
     {
-      "id": "protopedia:18",
-      "title": "ハンドクラッピナー",
-      "sourceUrl": "https://protopedia.net/prototype/18",
-      "summary": "結構よく回ります *** ** * ** *** ハンドスピナー (2枚タイプ) パチパチトールくん (赤・黄各1個) 参考URL:",
+      "id": "protopedia:22",
+      "title": "コスラッピー",
+      "sourceUrl": "https://protopedia.net/prototype/22",
+      "summary": "クラッピーのコスプレ用です参考URL:",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/035f119d-9aa9-4f5e-88b6-e49b732c1491.jpg",
+      "mainUrl": "https://protopedia.net/pic/6c255377-2995-4a7f-9ee5-77b75faeb943.jpg",
       "authors": [
         "Masawo Yamazaki@masawoyamazaki"
       ],
       "tags": [
+        "クラッピーチャレンジ"
+      ],
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:1118",
+      "title": "ボランティアを探すアプリ",
+      "sourceUrl": "https://protopedia.net/prototype/1118",
+      "summary": "スマホのGPSを使用して助けたい/助けてほしい人の場所や話せる言語を表示し、マッチング可能にします。 日本を訪れる外国人は年々増加しており、2020年にはオリンピックも開催されます。 そんな中、日本語は世界有数の難解な言語であり、多くの外国人が路頭に迷うことは火を見るよりも明らかです。 そのような状況を解決するため、誰でも持っているスマホのGPSを使用し、 地図でお互いの位置を表示することでボランティアとボランティアを必要としている人を相互検索可能とします。 \\ 1.自分の情報(助けたい/助けが必要、性別、話せる言語)を登録 2.助けが必要/助けたい人の位置が地図に表示される ※検索条件(性別、話せる言語)指定も可能",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/71d14cbf-771f-4b47-9973-11be13a6fb2a.png",
+      "authors": [
+        "@kanekoakira",
+        "@okanori",
+        "@okku",
+        "@shioyui"
+      ],
+      "tags": [
+        "android",
+        "GPS",
+        "Kivy",
+        "Mapview",
+        "Python",
+        "REST API"
+      ],
+      "status": 2,
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:1",
+      "title": "クラッピーで仮装大賞",
+      "sourceUrl": "https://protopedia.net/prototype/1",
+      "summary": "合格したい！",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/9c507193-d695-4795-b0e6-4a11daa719e9.jpg",
+      "authors": [
+        "ひさやん@hisayan"
+      ],
+      "tags": [
+        "おもちゃ",
         "クラッピーチャレンジ"
       ],
       "licenseType": "CC BY 4+"
@@ -39,35 +79,22 @@
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:4",
-      "title": "Pour or Drink",
-      "sourceUrl": "https://protopedia.net/prototype/4",
-      "summary": "一瞬で仲良くなれます。",
+      "id": "protopedia:5",
+      "title": "KENPARIS（ケンパリス）",
+      "sourceUrl": "https://protopedia.net/prototype/5",
+      "summary": "ケンケンパって昔やりましたよね？テトリスって昔やりましたよね？",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/ddf1faf1-faf5-4a70-b079-c0a0b5b9644a.jpg",
+      "mainUrl": "https://protopedia.net/pic/a7a7ae1f-5507-4c89-81c7-023aa920642e.png",
       "authors": [
         "ひさやん@hisayan",
+        "ピーターパーカー@peterparker",
         "佐田幸宏@yukihirosada",
-        "鈴木まなみ@rin2tree"
+        "山森美穂@yamamo"
       ],
       "tags": [
-        "ノーコード",
-        "飲み会が盛り上がる"
-      ],
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:22",
-      "title": "コスラッピー",
-      "sourceUrl": "https://protopedia.net/prototype/22",
-      "summary": "クラッピーのコスプレ用です参考URL:",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/6c255377-2995-4a7f-9ee5-77b75faeb943.jpg",
-      "authors": [
-        "Masawo Yamazaki@masawoyamazaki"
-      ],
-      "tags": [
-        "クラッピーチャレンジ"
+        "micro:bit",
+        "ケンケンパ",
+        "体力勝負"
       ],
       "licenseType": "CC BY 4+"
     },
@@ -82,22 +109,6 @@
         "@yuukankin",
         "ひさやん@hisayan",
         "佐田幸宏@yukihirosada"
-      ],
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:3",
-      "title": "おしゃべりパパ人形",
-      "sourceUrl": "https://protopedia.net/prototype/3",
-      "summary": "子どもが喜んでくれて、遊んでくれたら目的達成！ 小さな子どものための電子工作",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/838b69fe-fc94-4807-b6a5-223068816f9c.jpg",
-      "authors": [
-        "@erikosakashita",
-        "ひさやん@hisayan"
-      ],
-      "tags": [
-        "mash"
       ],
       "licenseType": "CC BY 4+"
     }

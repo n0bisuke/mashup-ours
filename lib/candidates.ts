@@ -192,6 +192,13 @@ export function isCandidatesFile(
     if (typeof w.title !== 'string' || w.title.length === 0) return false;
     if (typeof w.sourceUrl !== 'string' || !w.sourceUrl.startsWith('https://')) return false;
     if (w.generation !== 0) return false;
+    // 制作状態（供養/開発中/完成）。1..99 の整数のみ（normalizeWork と同じ制約）。
+    if (
+      w.status !== undefined &&
+      (typeof w.status !== 'number' || !Number.isInteger(w.status) || w.status < 1 || w.status > 99)
+    ) {
+      return false;
+    }
   }
   return true;
 }

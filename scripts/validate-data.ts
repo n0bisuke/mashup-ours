@@ -6,11 +6,15 @@ import { existsSync, readFileSync } from 'node:fs';
 import { CANDIDATES_PER_SLOT, isCandidatesFile } from '../lib/candidates.ts';
 import { computeGeneration, isAncestorDescendantPair, nextOffspringId } from '../lib/generation.ts';
 import { samePair } from '../lib/issue.ts';
-import { isBreedingState, parseScheduleConfig } from '../lib/schedule.ts';
+import {
+  DEFAULT_AUTO_REQUEST_IDLE_HOURS,
+  isBreedingState,
+  parseScheduleConfig,
+} from '../lib/schedule.ts';
 import { parsePromptsConfig } from '../lib/prompts.ts';
 import { ELEMENT_KEYS, isWorkElements } from '../lib/elements.ts';
 import { isProcessedIssues } from '../lib/queue.ts';
-import { isBreedingMode, type Offspring, type Workset } from '../lib/types.ts';
+import { isBreedingMode, statusLabel, type Offspring, type Workset } from '../lib/types.ts';
 
 const FILE = new URL('../data/offspring.json', import.meta.url);
 const WORKSET_FILE = new URL('../data/prototypes.json', import.meta.url);
@@ -32,8 +36,9 @@ try {
 const sched = parseScheduleConfig(schedRaw);
 if (!sched.ok) fail(`config/schedule.json が不正です: ${sched.reason}`);
 const scheduleCfg = sched.config;
+const idleHours = scheduleCfg.autoRequestIdleHours ?? DEFAULT_AUTO_REQUEST_IDLE_HOURS;
 console.log(
-  `✅ config/schedule.json OK（候補更新 ${scheduleCfg.candidateRotationMinutes}分 / 配合 ${scheduleCfg.breedingIntervalMinutes}分 / 最大${scheduleCfg.maxCandidates}件）`,
+  `✅ config/schedule.json OK（候補更新 ${scheduleCfg.candidateRotationMinutes}分 / 配合 ${scheduleCfg.breedingIntervalMinutes}分 / 最大${scheduleCfg.maxCandidates}件 / 自動申請 ${idleHours === 0 ? '無効' : `${idleHours}時間`}）`,
 );
 
 // --- config/prompts.json（プロンプト文言設定 / issue #25） -------------------
@@ -147,6 +152,14 @@ console.log(`✅ ${items.length}件の子作品が検証OK（次のID: ${next}�
 // --- data/prototypes.json（ProtoPedia同期データ） --------------------------
 // 未同期（works: []）は正常状態。壊れた形だけを検出する。
 
+/** 制作状態コード（供養/開発中/完成）の形チェック。未設定はOK（status未保存の旧データ対応）。 */
+function checkStatus(prefix: string, w: { id?: unknown; status?: unknown }): void {
+  if (w.status === undefined) return;
+  if (typeof w.status !== 'number' || !Number.isInteger(w.status) || w.status < 1 || w.status > 99) {
+    fail(`${prefix} ${String(w.id)}: status が不正（1..99の整数である必要があります）`);
+  }
+}
+
 let worksetRaw: unknown;
 try {
   worksetRaw = JSON.parse(readFileSync(WORKSET_FILE, 'utf8'));
@@ -179,6 +192,7 @@ for (const w of workset.works) {
     wfail(`sourceUrl が想定外: ${String(w.sourceUrl)}`);
   }
   if (w.sample) wfail('本番データに sample フラグは付かない');
+  checkStatus('prototypes.json', w);
 }
 console.log(
   `✅ prototypes.json ${workset.works.length}件 OK（同期: ${workset.syncedAt ?? '未実施'}）`,
@@ -219,6 +233,7 @@ if (existsSync(SAMPLE_FILE)) {
     if (typeof w.licenseType !== 'string' || w.licenseType.length === 0) {
       wfail('licenseType が無い（利用条件を確認できない作品）');
     }
+    checkStatus('sample-prototypes.json', w);
     poolIds.add(w.id);
   }
   console.log(`✅ sample-prototypes.json ${sample.works.length}件 OK`);
@@ -260,6 +275,7 @@ if (Number.isNaN(Date.parse(cand.generatedAt))) {
 if (cand.source.startsWith('/') || cand.source.includes('..')) {
   fail(`current-candidates.json: source がリポジトリ相対ではありません: ${cand.source}`);
 }
+const statusByLabel = new Map<string, number>();
 for (const c of cand.candidates) {
   if (c.sample) fail(`current-candidates.json: 候補 ${c.id} に sample フラグが付いています`);
   if (!poolIds.has(c.id)) {
@@ -267,9 +283,14 @@ for (const c of cand.candidates) {
       `current-candidates.json: 候補 ${c.id} が保存済み作品プールに存在しません（npm run rotate:candidates で候補を更新してください）`,
     );
   }
+  checkStatus('current-candidates.json', c);
+  const lb = statusLabel(c.status);
+  if (lb) statusByLabel.set(lb, (statusByLabel.get(lb) ?? 0) + 1);
 }
+const statusSummary =
+  [...statusByLabel.entries()].map(([lb, n]) => `${lb}${n}`).join(' / ') || '状態バッジなし';
 console.log(
-  `✅ current-candidates.json slot=${cand.slot} 候補${cand.candidates.length}件 OK（次回: ${cand.nextSlot} / source: ${cand.source}）`,
+  `✅ current-candidates.json slot=${cand.slot} 候補${cand.candidates.length}件 OK（次回: ${cand.nextSlot} / source: ${cand.source} / 制作状態: ${statusSummary}）`,
 );
 
 // --- data/breeding-state.json（配合ワーカーの実行状態 / issue #15） ----------

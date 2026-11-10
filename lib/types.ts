@@ -22,6 +22,13 @@ export interface ProtopediaWork {
   /** 作者名（クレジット表示用） */
   authors?: string[];
   tags?: string[];
+  /**
+   * 制作状態コード（ProtoPedia API の `status` 数値）。
+   * 供養/開発中/完成はタグではなくこの数値で返る（2026-11-10 実測）。
+   * 対応は PROTOPEDIA_STATUS_LABELS 参照（公式ドキュメントは未検証）。
+   * 未知のコードでも保存し、表示側は statusLabel() が空を返すだけで壊れない。
+   */
+  status?: number;
   /** ライセンス表記（実APIの数値enumをラベル化。不明な値は保存しない） */
   licenseType?: string;
   /** 技術構成（systemDescription）。生成AIへの参考資料として使う（長さ上限つき）。 */
@@ -104,6 +111,27 @@ export const BREEDING_MODES: readonly BreedingMode[] = ['fusion', 'genetic', 'mu
 
 export function isBreedingMode(v: unknown): v is BreedingMode {
   return typeof v === 'string' && (BREEDING_MODES as readonly string[]).includes(v);
+}
+
+/**
+ * ProtoPedia の制作状態コード → 表示ラベル。
+ *
+ * 2026-11-10 のAPI実測（カタログHTML `<span class="cat ...">` と status の18件照合・矛盾0）:
+ *   1 = 状態バッジなし（旧作品） / 2 = 開発中 / 3 = 完成 / 4 = 供養
+ * **公式ドキュメントでの対応は未検証。** 1 は「バッジ表示なし」なのでラベルを持たない。
+ * 件数（同日実測）: 供養 116 / 開発中 2,415 / 完成 4,012 / 状態なし 455（計 6,998）。
+ * 未知のコードはここに無くても保存はされる（表示は statusLabel() が空を返す）。
+ */
+export const PROTOPEDIA_STATUS_LABELS: Readonly<Record<number, string>> = {
+  2: '開発中',
+  3: '完成',
+  4: '供養',
+};
+
+/** 制作状態の表示ラベル。未知コード・状態なし(1)・未設定は空文字（=表示しない）。 */
+export function statusLabel(code: number | undefined): string {
+  if (code === undefined) return '';
+  return PROTOPEDIA_STATUS_LABELS[code] ?? '';
 }
 
 /** Issue本文で許可するフィールド。パーサーはこの形以外を受理しない。 */

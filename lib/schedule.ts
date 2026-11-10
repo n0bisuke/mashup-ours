@@ -24,16 +24,28 @@ export interface ScheduleConfig {
   maxCandidates: number;
   /** 任意: UTC日ごとの生成AI呼び出し回数の上限（正の整数）。未設定 = 上限なし。 */
   dailyAiCallLimit?: number;
+  /**
+   * 任意: 自動配合申請（issue #27）の待機時間（時間・0以上）。
+   * 指定時間以内に配合申請がなければ自動で1件作る。0 = 自動作成しない。
+   * 未設定 = DEFAULT_AUTO_REQUEST_IDLE_HOURS。
+   */
+  autoRequestIdleHours?: number;
 }
 
 /**
  * 設定が読めない場合の既定値（= 従来の動作）。
  * フロントは不正時にこれで描画を続ける（表示は止めない）。
  */
+/** 自動配合申請の待機時間の既定値（時間）。設定が無ければこれを使う（issue #27）。 */
+export const DEFAULT_AUTO_REQUEST_IDLE_HOURS = 8;
+/** autoRequestIdleHours の上限（時間）。1か月。 */
+const MAX_AUTO_IDLE_HOURS = 720;
+
 export const FALLBACK_SCHEDULE: ScheduleConfig = {
   candidateRotationMinutes: 15,
   breedingIntervalMinutes: 60,
   maxCandidates: 6,
+  autoRequestIdleHours: DEFAULT_AUTO_REQUEST_IDLE_HOURS,
 };
 
 /** 間隔（分）の上限。1週間。無効な巨大値でUI・スロット計算が壊れないようにする。 */
@@ -87,6 +99,25 @@ export function parseScheduleConfig(value: unknown): ScheduleParseResult {
     const daily = positiveInt(v.dailyAiCallLimit, 'dailyAiCallLimit', MAX_DAILY_AI_CALLS);
     if (typeof daily === 'string') return { ok: false, reason: daily };
     config.dailyAiCallLimit = daily;
+  }
+
+  // 自動配合申請の待機時間（issue #27）。0 は「無効」なので positiveInt を使わない。
+  // 未設定・null は既定値（DEFAULT_AUTO_REQUEST_IDLE_HOURS）として扱い、設定には書かない。
+  if (v.autoRequestIdleHours !== undefined && v.autoRequestIdleHours !== null) {
+    const hours = v.autoRequestIdleHours;
+    if (typeof hours !== 'number' || !Number.isInteger(hours)) {
+      return {
+        ok: false,
+        reason: `autoRequestIdleHours は整数（時間）である必要があります（入力: ${JSON.stringify(hours)}）`,
+      };
+    }
+    if (hours < 0 || hours > MAX_AUTO_IDLE_HOURS) {
+      return {
+        ok: false,
+        reason: `autoRequestIdleHours は 0 以上 ${MAX_AUTO_IDLE_HOURS} 以下である必要があります（入力: ${hours}）`,
+      };
+    }
+    config.autoRequestIdleHours = hours;
   }
 
   return { ok: true, config };

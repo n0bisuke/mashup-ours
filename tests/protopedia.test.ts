@@ -109,6 +109,21 @@ describe('normalizeWork', () => {
     expect(w!.licenseType).toBe('CC BY 4+');
   });
 
+  it('制作状態 status を保存し、想定外の値は保存しない（issue #29）', () => {
+    expect(normalizeWork({ ...valid, status: 4 })!.status).toBe(4); // 供養
+    expect(normalizeWork({ ...valid, status: 2 })!.status).toBe(2); // 開発中
+    expect(normalizeWork({ ...valid, status: 1 })!.status).toBe(1); // 状態バッジなし
+    expect(normalizeWork({ ...valid, status: '3' })!.status).toBe(3); // 文字列でも整数化
+    expect(normalizeWork(valid)!.status).toBeUndefined(); // 欠損は保存しない
+    expect(normalizeWork({ ...valid, status: 0 })!.status).toBeUndefined();
+    expect(normalizeWork({ ...valid, status: -4 })!.status).toBeUndefined();
+    expect(normalizeWork({ ...valid, status: 1.5 })!.status).toBeUndefined();
+    expect(normalizeWork({ ...valid, status: '供養' })!.status).toBeUndefined(); // 数値以外
+    expect(normalizeWork({ ...valid, status: null })!.status).toBeUndefined();
+    expect(normalizeWork({ ...valid, status: 100 })!.status).toBeUndefined();
+    expect(normalizeWork({ ...valid, status: {} })!.status).toBeUndefined();
+  });
+
   it('未知の licenseType 数値は捏造せず保存しない', () => {
     expect(normalizeWork({ ...valid, licenseType: 7 })!.licenseType).toBeUndefined();
     expect(normalizeWork({ ...valid, licenseType: 'CC BY 4.0' })!.licenseType).toBe('CC BY 4.0');
@@ -164,6 +179,19 @@ describe('fetchAllWorks', () => {
     expect(calls[1]).toContain('offset=2');
     // トークンはヘッダだけ（URLに入れない）
     expect(calls[0]).not.toContain('test-token');
+  });
+
+  it('status 指定で &status= を付ける。指定なしなら付けない（issue #29）', async () => {
+    const { impl, calls } = mockFetch(() => ({ status: 200, body: page([1]) }));
+    await fetchAllWorks({ token: 't', status: 4, fetchImpl: impl, pageDelayMs: 0 });
+    expect(calls[0]).toContain('&status=4'); // 4=供養（数値のみ。文字列はHTTP 500の実測あり）
+    await fetchAllWorks({ token: 't', fetchImpl: impl, pageDelayMs: 0 });
+    expect(calls[1]).not.toContain('status=');
+    // 想定外の値はAPIに送る前に拒否
+    for (const bad of [0, -1, 1.5, 100]) {
+      await expect(fetchAllWorks({ token: 't', status: bad, fetchImpl: impl })).rejects.toThrow('1..99');
+    }
+    expect(calls).toHaveLength(2); // 拒否分は1リクエストも送らない
   });
 
   it('5xxは1回だけ再試行してから成功する', async () => {

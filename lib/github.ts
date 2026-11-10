@@ -94,6 +94,18 @@ async function ghGet(path: string, opts: GhOptions): Promise<unknown> {
   throw last ?? new GitHubApiError('不明な失敗');
 }
 
+/** API行 → IssueRecord（取りこぼさず・型を通す）。値はすべて外部入力のまま保持する。 */
+function toIssueRecord(row: RawIssue): IssueRecord | null {
+  if (row && typeof row.pull_request === 'object') return null; // PRは除外
+  if (typeof row?.number !== 'number') return null;
+  return {
+    number: row.number,
+    title: typeof row.title === 'string' ? row.title : '',
+    body: typeof row.body === 'string' ? row.body : '',
+    createdAt: typeof row.created_at === 'string' ? row.created_at : '',
+  };
+}
+
 /**
  * open Issue を取得する（PRは除外）。最大2ページ（200件）まで。
  * body は外部入力のまま文字列として保持する（評価はしない）。
@@ -112,16 +124,32 @@ export async function listOpenIssues(
     if (!Array.isArray(body)) throw new GitHubApiError('Issue一覧が配列ではありません');
     const rows = body as RawIssue[];
     for (const row of rows) {
-      if (row && typeof row.pull_request === 'object') continue; // PRは除外
-      if (typeof row?.number !== 'number') continue;
-      out.push({
-        number: row.number,
-        title: typeof row.title === 'string' ? row.title : '',
-        body: typeof row.body === 'string' ? row.body : '',
-        createdAt: typeof row.created_at === 'string' ? row.created_at : '',
-      });
+      const rec = toIssueRecord(row);
+      if (rec) out.push(rec);
     }
     if (rows.length < perPage) break; // 最終ページ
+  }
+  return out;
+}
+
+/**
+ * 直近の Issue を**新しい順**に取得する（state=all・PR除外 / issue #27）。
+ * 「直近N時間以内に申請があったか」の判定用。perPage 件すべてが新しい＝N時間以内に
+ * perPage 件以上ある、という判定でも破綻しない（既定30件で十分）。
+ */
+export async function listRecentIssues(
+  opts: GhOptions & { perPage?: number },
+): Promise<IssueRecord[]> {
+  const perPage = Math.min(Math.max(opts.perPage ?? 30, 1), 100);
+  const body = await ghGet(
+    `/repos/${opts.repo}/issues?state=all&sort=created&direction=desc&per_page=${perPage}`,
+    opts,
+  );
+  if (!Array.isArray(body)) throw new GitHubApiError('Issue一覧が配列ではありません');
+  const out: IssueRecord[] = [];
+  for (const row of body as RawIssue[]) {
+    const rec = toIssueRecord(row);
+    if (rec) out.push(rec);
   }
   return out;
 }
@@ -135,11 +163,42 @@ export async function commentIssue(
   if (!Number.isInteger(issueNumber) || issueNumber <= 0) {
     throw new GitHubApiError('Issue番号が不正です');
   }
-  await ghPost(`/repos/${opts.repo}/issues/${issueNumber}/comments`, bodyText, opts);
+  await ghPost(`/repos/${opts.repo}/issues/${issueNumber}/comments`, { body: bodyText }, opts);
 }
 
-/** POST（bodyText を JSON の body フィールドに入れる。シェル介在なし）。 */
-async function ghPost(path: string, bodyText: string, opts: GhOptions): Promise<unknown> {
+/**
+ * Issue を新規作成する（自動配合申請 / issue #27）。
+ * タイトル・本文は JSON として直接送る（shell へ埋め込まない）。返り値は作成された番号。
+ */
+export async function createIssue(form: { title: string; body: string }, opts: GhOptions): Promise<number> {
+  if (!form.title.trim()) throw new GitHubApiError('タイトルが空です');
+  if (form.title.length > 256) throw new GitHubApiError('タイトルが長すぎます（256文字上限）');
+  if (form.body.length > 65_536) throw new GitHubApiError('本文が長すぎます');
+  const res = (await ghPost(`/repos/${opts.repo}/issues`, { title: form.title, body: form.body }, opts)) as {
+    number?: unknown;
+  } | null;
+  if (!res || typeof res.number !== 'number') {
+    throw new GitHubApiError('Issue作成の応答に番号がありません');
+  }
+  return res.number;
+}
+
+/**
+ * Issue へラベルを追加する（ベストエフォート / issue #27）。
+ * GITHUB_TOKEN が作成した Issue は `issues: opened` ワークフローを起動しないため、
+ * label-issues.yml が走らない代わりにここで付ける。失敗しても申請自体は成立している。
+ */
+export async function addIssueLabels(
+  issueNumber: number,
+  labels: readonly string[],
+  opts: GhOptions,
+): Promise<void> {
+  if (labels.length === 0) return;
+  await ghPost(`/repos/${opts.repo}/issues/${issueNumber}/labels`, { labels: [...labels] }, opts);
+}
+
+/** POST（payload を JSON ボディとして送る。シェル介在なし）。 */
+async function ghPost(path: string, payload: Record<string, unknown>, opts: GhOptions): Promise<unknown> {
   const { token, repo, timeoutMs = DEFAULT_TIMEOUT_MS, retries = DEFAULT_RETRIES } = opts;
   const fetchImpl = opts.fetchImpl ?? fetch;
   if (!token) throw new GitHubApiError('GITHUB_TOKEN が未設定です');
@@ -161,7 +220,7 @@ async function ghPost(path: string, bodyText: string, opts: GhOptions): Promise<
           'Content-Type': 'application/json',
           'X-GitHub-Api-Version': '2022-11-28',
         },
-        body: JSON.stringify({ body: bodyText }),
+        body: JSON.stringify(payload),
         signal: ctrl.signal,
       });
       if (!res.ok) {

@@ -1,0 +1,53 @@
+# 自動配合申請（issue #27）。
+# 直近 autoRequestIdleHours（config/schedule.json・既定8時間）に配合申請がなければ、
+# 現行の配合候補と子作品から「生成AIを使わないランダム選出」で親2件を選び、
+# 人手の申請と同じ形式の Issue を1件作る。作成した Issue は既存のキュー
+# （breed.yml）が通常どおり処理する。データ・画像のコミットは行わない。
+#
+# 権限は issues のみ。生成AIも外部APIも呼ばない（選出はスクリプト内の乱数だけ）。
+#
+# 手動実行（workflow_dispatch）の dry_run は既定 true: Issue を作らない。
+name: Auto request
+
+on:
+  schedule:
+    # 毎時27分（正時の混雑を避ける）。8時間窓の判定なので分単位の精度は要らない。
+    # 15分間隔の起床だと GitHub API を毎時4回呼叫するため、毎時1回に抑える。
+    - cron: '27 * * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'ドライラン（Issueを作成しない）'
+        type: boolean
+        default: true
+
+# Issue 作成のみ（JSON/画像のコミットはしない）。最小権限。
+permissions: {}
+
+concurrency:
+  # 直列化: 同時実行・再実行があっても自動申請を重複させない。
+  group: auto-request
+  cancel-in-progress: false
+
+jobs:
+  auto-request:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write # Issueの作成とラベル付与のみ
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 26
+
+      # 依存インストールなし（スクリプトはNode標準ライブラリのみ使用）。
+      # GITHUB_REPOSITORY は Actions が自動設定。Secrets は追加不要。
+      # DRY_RUN: schedule 実行は空文字（=本番）、dispatch は入力値 true/false。
+      - name: Create auto breeding request
+        env:
+          DRY_RUN: ${{ inputs.dry_run }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node --experimental-strip-types scripts/auto-request.ts

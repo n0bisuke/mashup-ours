@@ -132,3 +132,17 @@ it('タイトル等の外部入力をHTMLとして挿入しない（XSS）', () 
   // テキストとしてそのまま表示される
   expect(host.textContent).toContain('<img src=x onerror=alert(1)>');
 });
+
+it('フッターにGitHubリポジトリへのリンク（issue #30 / 未設定時は出さない）', () => {
+  const host = build(fixtures);
+  const link = host.querySelector<HTMLAnchorElement>('.ideas-foot .foot-links a');
+  expect(link?.getAttribute('href')).toBe('https://github.com/test-owner/test-repo');
+  expect(link?.getAttribute('target')).toBe('_blank');
+  expect(link?.getAttribute('rel')).toContain('noopener');
+  expect(link?.textContent).toContain('GitHubリポジトリ');
+  // owner/repo 未設定ならリンク行ごと出さない（ハードコードしたリンクは張らない）
+  const host2 = build(fixtures, { ...ctx, repoCfg: null });
+  expect(host2.querySelector('.ideas-foot .foot-links')).toBeNull();
+  // 非公式の注記は残る
+  expect(host2.querySelector('.ideas-foot .foot-note')?.textContent).toContain('非公式プロジェクト');
+});

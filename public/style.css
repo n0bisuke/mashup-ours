@@ -664,6 +664,39 @@ button.breed:disabled {
   overflow-wrap: anywhere;
 }
 
+/* 制作状態バッジ + タグ（issue #29）。
+   中立配色にしているのは「SAMPLE / IDEA」バッジの色意味と衝突させないため。
+   状態は文字（供養/開発中/完成）で示し、色だけに依存しない。 */
+.card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 6px;
+}
+
+.card-meta .badge.work-status {
+  margin-left: 0;
+  background: var(--window-2);
+  border: 2px solid var(--line);
+  color: var(--text);
+}
+
+.tag-chip {
+  font-family: var(--font-dot);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+  color: var(--text-dim);
+  background: var(--window-2);
+  border: 2px solid var(--inner);
+  border-radius: 999px;
+  padding: 0 8px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .summary {
   margin: 0;
   font-size: 0.85rem;
@@ -1191,6 +1224,17 @@ li.idea-item {
   border-top: 2px solid var(--line);
   font-size: 0.85rem;
   line-height: 1.6;
+}
+
+/* GitHubリポジトリへのリンク（issue #30）。トップ / 一覧 / 個別ページの共通。 */
+.foot-links {
+  margin-top: 8px;
+}
+
+.foot-links a {
+  font-family: var(--font-dot);
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
 }
 
 /* --- 博士キャラクター（issue #11 追加指示 §5〜§8） ------------------------- */

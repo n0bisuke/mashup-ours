@@ -1,5 +1,6 @@
 {
   "candidateRotationMinutes": 15,
   "breedingIntervalMinutes": 60,
-  "maxCandidates": 6
+  "maxCandidates": 6,
+  "autoRequestIdleHours": 8
 }

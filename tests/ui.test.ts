@@ -8,8 +8,9 @@ import { expect, it, vi } from 'vitest';
 import rawCandidates from '../data/current-candidates.json';
 import rawOff from '../data/offspring.json';
 import rawSampleOff from '../data/offspring.sample.json';
+import rawPool from '../data/sample-prototypes.json';
 import { isCandidatesFile } from '../lib/candidates.ts';
-import { BLEND_MODE_DESCRIPTIONS } from '../lib/types.ts';
+import { BLEND_MODE_DESCRIPTIONS, statusLabel, type ProtopediaWork } from '../lib/types.ts';
 import { parseBreedingIssue } from '../lib/issue.ts';
 import { installMemoryStorage } from './helpers/memory-storage.ts';
 
@@ -542,4 +543,50 @@ it('詳細パネルにも配合タイプと利用場面が出る（原作品とA
   expect(detail?.querySelector('.badge.idea')?.textContent).toBe(
     'AIが考えた未実装の発明アイデア',
   ); // 詳細側の表記は一覧より長い（実在の作品と誤認させない）
+});
+
+// --- 制作状態バッジ・タグの一覧表示（issue #29） ---------------------------
+
+it('候補カードに制作状態バッジとタグチップが出る', async () => {
+  const { cards } = await boot();
+  const list = candFileValid ? (rawCandidates.candidates as unknown as ProtopediaWork[]) : [];
+  expect(cards().length).toBe(list.length);
+  list.forEach((w, i) => {
+    const card = cards()[i];
+    const label = statusLabel(w.status);
+    const badge = card.querySelector('.card-meta .badge.work-status');
+    if (label) {
+      expect(badge?.textContent).toBe(label); // 色だけでなく文字で状態を示す
+      expect(card.textContent).toContain(label);
+    } else {
+      expect(badge).toBeNull(); // 状態なし(1)・未知コードは表示しない
+    }
+    const chips = Array.from(card.querySelectorAll('.tag-chip')).map((n) => n.textContent);
+    expect(chips).toEqual((w.tags ?? []).slice(0, 6)); // 上限6件（詳細パネルは全件）
+  });
+});
+
+it('候補プールに供養・開発中の実作品とタグがある（一覧表示の対象 / issue #29）', () => {
+  const pool = (rawPool as unknown as { works: ProtopediaWork[] }).works;
+  expect(pool.length).toBeGreaterThan(0);
+  expect(pool.some((w) => statusLabel(w.status) === '供養')).toBe(true);
+  expect(pool.some((w) => statusLabel(w.status) === '開発中')).toBe(true);
+  expect(pool.some((w) => (w.tags ?? []).length > 0)).toBe(true);
+});
+
+// --- フッターのGitHubリンク（issue #30） ------------------------------------
+
+it('フッターにGitHubリポジトリへのリンク（owner/repo 未設定なら出さない）', async () => {
+  await boot();
+  const owner = import.meta.env.VITE_GITHUB_OWNER;
+  const repo = import.meta.env.VITE_GITHUB_REPO;
+  const link = document.querySelector<HTMLAnchorElement>('.site-foot .foot-links a');
+  if (owner && repo) {
+    expect(link?.getAttribute('href')).toBe(`https://github.com/${owner}/${repo}`);
+    expect(link?.getAttribute('target')).toBe('_blank');
+  } else {
+    expect(link).toBeNull(); // リポジトリ名はハードコードしない
+  }
+  // 非公式プロジェクトの注記は設定に関わらず残る
+  expect(document.querySelector('.site-foot')?.textContent).toContain('非公式プロジェクト');
 });
