@@ -36,6 +36,70 @@
     "model": "@cf/openai/gpt-oss-20b",
     "status": "idea",
     "imagePrompt": "A brightly colored handheld spinner toy shaped like a friendly dad figure, with a smooth rotating core visible through a translucent body. The device features a small speaker on its chest, a touch sensor on the top, and a soft, smiling face on the front. The head can slightly tilt and the arms have small servo-driven hinges. The spinner has two distinct colored versions (red and yellow), each with a playful charmer animation on the side. The toy sits on a hardwood floor with a child happily spinning it, voice bubbles showing friendly dialogue. The background is a cozy playroom with soft lighting, emphasizing the tactile and auditory aspects of the toy.. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
-    "imagePath": "assets/inventions/mashup-000002.png"
+    "imagePath": "assets/inventions/mashup-000002.png",
+    "requestHash": "3af8fa3b46d90d9a5ed61e232d971b1dc21dfbddc7a19c627f2cc06a32999d19"
+  },
+  {
+    "id": "mashup-000003",
+    "schemaVersion": 1,
+    "title": "雪山ドリンク・ミートアップBOT",
+    "summary": "スキー場のLINE Beaconと飲酒ゲームを融合し、正確な位置情報で友人とのミートアップを自動提案し、ドリンクを楽しみつつ楽しいゲームで交流を促進します。",
+    "concept": "雪山での友人や家族との再会をよりスムーズに、かつ楽しい体験に変える新感覚サービスです。まずユーザーはスマートフォンのLINEアプリで雪山内のBeaconに接続し、位置情報と現在の飲酒レベルを入力します。BOTがリアルタイムで周囲の他ユーザーの位置を共有し、最適な集合ポイント（たとえば暖房付きのロッジや氷点下の温泉）を提案。さらに、ゲームモード「ドリンクマスター」が起動し、実際に飲酒しているユーザーのみが参加可能となります。ゲームでは各プレイヤーが雪山を舞台にしたクイズやミニアクションに挑戦し、得点に応じて地元岩手の名産物（温かいそばや日本酒）を仮想で獲得できるシステムです。これにより、寒さに負けない、会いに行く楽しみと飲み過ぎの注意が同時に楽しめる画期的な体験を提供します。",
+    "mechanism": "1. 位置情報連携：LINE Beaconを用いてユーザーの正確な位置を取得。2. BOTスケジューリング：BOTがユーザーの入力時間帯と飲酒レベルを解析し、近隣ユーザーの集合日時・場所を自動調整。3. 飲酒レベル検知：スマートフォンカメラで飲酒状態を判定（顔の赤み、ゆらぎ）、ある程度の酔いレベルに達したらゲームモードが解除。4. ゲームロジック：ゲームはクイズと小型アクションが組み合わされ、ポイント制でアイテム（地元食材カードなど）を獲得。5. 文化的要素：岩手県産の温かいそばや日本酒の仮想アイテムをゲーム内報酬として配置し、実際の雪山体験に葉を加える。",
+    "useCases": [
+      "1. スキー場で混乱している友人同士、Beaconで位置共有し、BOTが最適なロッジへ誘導。",
+      "2. 友人が来るまで時間がある時にゲームを開始し、酔いレベルの確認と交流を促進。",
+      "3. イベントや大会前に参加者を円滑に集めるため、自動集合ポイント提案機能を利用。",
+      "4. 旅行者が屋外で温かいそばを仮想獲得し、ゲーム内マップで次の食事場所を検索。",
+      "5. 友人グループが飲み会を開催し、ゲームが始まるまで酔いチェックで安全に配慮。",
+      "6. 観光客が雪山での飲み会を楽しみつつ、地元の文化を学ぶ場として活用。"
+    ],
+    "inheritedTraits": [
+      {
+        "parentId": "protopedia:6",
+        "trait": "LINE Beaconを利用した位置検知とBOTによるスケジュール調整、リアルタイム位置共有、会合場所の提案機能を継承。"
+      },
+      {
+        "parentId": "protopedia:12",
+        "trait": "ゲーム開始の条件として酔った状態を必要とする設計、飲酒を通じたコミュニケーション促進とゲーム内でのスコアや勝敗を通じた楽しさを継承。"
+      }
+    ],
+    "parents": [
+      "protopedia:6",
+      "protopedia:12"
+    ],
+    "generation": 1,
+    "mode": "genetic",
+    "sourceIssue": 28,
+    "slot": "2026-11-10T19",
+    "createdAt": "2026-11-10T19:39:46.120Z",
+    "model": "@cf/openai/gpt-oss-20b",
+    "status": "idea",
+    "imagePrompt": "A stylized smartphone screen showing a snowy mountain map with bright beacon icons, a LINE chat bubble with a playful ski character, a warm hut with sake mugs, and a fun game overlay featuring a moving snowflake character. Clear view of Iwate mountain scenery, red lanterns, and a user holding the phone with a friendly expression.. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
+    "imagePath": "assets/inventions/mashup-000003.png",
+    "requestHash": "c4fbf5d1213e5cc117fa859a286652ffee6bc7dbb2604608fd8e3c4ada4cf3ea",
+    "requester": {
+      "login": "n0bisuke",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/2968926?v=4"
+    },
+    "technologies": [
+      "LINE Beacon",
+      "BOT",
+      "Mobile Game",
+      "Location-based Services"
+    ],
+    "domains": [
+      "観光・地域",
+      "エンターテインメント",
+      "日常生活"
+    ],
+    "keywords": [
+      "位置情報連携",
+      "飲酒ゲーム",
+      "スキー場",
+      "LINE",
+      "Beacon",
+      "ミートアップ"
+    ]
   }
 ]
