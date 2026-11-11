@@ -11,7 +11,7 @@ import rawOff from '../data/offspring.json';
 import rawSampleOff from '../data/offspring.sample.json';
 import rawPool from '../data/sample-prototypes.json';
 import { isCandidatesFile } from '../lib/candidates.ts';
-import { BLEND_MODE_DESCRIPTIONS, statusLabel, type ProtopediaWork } from '../lib/types.ts';
+import { BLEND_MODE_DESCRIPTIONS, blendModeLabel, statusLabel, type ProtopediaWork } from '../lib/types.ts';
 import { repoConfigFromEnv } from '../lib/config.ts';
 import { parseBreedingIssue } from '../lib/issue.ts';
 import { installMemoryStorage } from './helpers/memory-storage.ts';
@@ -569,7 +569,17 @@ it('子作品の行にサムネイル枠と配合タイプバッジがある（i
     expect(img.getAttribute('loading')).toBe('lazy');
     expect((img.alt ?? '').length).toBeGreaterThan(0);
   }
-  expect(li?.querySelector('.badge.mode')?.textContent).toBe('単純配合'); // サンプルは fusion
+  // バッジは実データの mode を blendModeLabel() で表示する（issue #44）。
+  // 期待値を実データから導出する = **実データの配合タイプ値には依存しない**
+  //（「単純配合」の固定値比較だと、実データに genetic 等の子が生まれた瞬間に壊れる）。
+  expect(li?.querySelector('.badge.mode')?.textContent).toBe(
+    blendModeLabel(
+      [...(rawOff as unknown as { mode: unknown; createdAt: string }[])].sort(
+        // 一覧は createdAt 降順（main.ts と同じ並び）→ 先頭 = 最新の子作品
+        (a, b) => b.createdAt.localeCompare(a.createdAt),
+      )[0]?.mode,
+    ),
+  );
   expect(li?.querySelector('.badge.idea')?.textContent).toBe('未実装のアイデア');
 });
 

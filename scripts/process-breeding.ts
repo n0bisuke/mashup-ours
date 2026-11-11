@@ -112,7 +112,9 @@ const IMAGE_STEPS = 4; // flux-1-schnell の既定（最大8）
 const IMAGE_SIZE = 512;
 
 /** AI呼び出しの上限（1実行あたり。日次上限は config/schedule.json の dailyAiCallLimit）。 */
-const MAX_TEXT_ATTEMPTS = 2; // パース失敗を含めた再試行の上限（無限リトライしない）
+// パース失敗を含めた再試行の上限（無限リトライしない）。3回: Workers AI が
+// 断続的に空応答を返す実測（issue #45 / 24時間で3件中2件の枠を消費）に1回分の余裕を足した。
+const MAX_TEXT_ATTEMPTS = 3;
 const EXTRACT_MAX_TOKENS = 1200;
 const GENERATE_MAX_TOKENS = 2500;
 const GEN_TEMPERATURE = 0.9;
