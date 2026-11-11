@@ -232,5 +232,67 @@
       "友人再会",
       "スキー場"
     ]
+  },
+  {
+    "id": "mashup-000006",
+    "schemaVersion": 1,
+    "title": "雪山オーディオゴルフ・ミーティングBOT",
+    "summary": "スキー場内で位置情報と酔い判定に基づき、VRヘッドセットと音響誘導で視覚障害者も楽しめるゴルフ風飲みゲームを自動連携し、LINE Botでリアルタイム進行を共有するシステム。",
+    "concept": "雪山のスキー場で、参加者はスマートフォンを通じてLINE Beaconから位置情報を送信。飲酒量や酔いレベルはスマホのカメラとウェアラブルから取得し、サーバー側のアルゴリズムでリアルタイムに判定。酔いレベルが事前設定の閾値を超えると、自動的にBOTが集まった位置で「オーディオゴルフ」イベントを提案し、参加者を招待。参加者はVRヘッドセットを装着し、音響誘導とハプティックフィードバックでゴルフコースを体験。音声でボール位置・方向を知らせ、スイング動作はモーションセンサーが検知。各プレイヤーのスコアはサーバーに集計され、LINE Messaging APIを介してチャット上で共有される。これにより、酔った状態でも楽しく安全にゴルフを楽しめ、視覚障害者や一般人にとってもアクセスしやすい体験が実現する。",
+    "mechanism": "1) 位置情報連携：LINE Beacon（BLE）で現在位置をサーバーへ送信。2) 酔い判定：スマートフォンカメラとウェアラブルから飲酒量・酔いレベルを取得し、モーフィングアルゴリズムで自動判定。3) BOT自動スケジュール：酔い判定が閾値を超えると、Node.jsベースサーバーがLINE Messaging API経由で参加者へメッセージを送信し、イベント開始を通知。4) VR/オーディオ誘導：参加者がVRヘッドセットを装着すると、サーバーから音響誘導ストリームが送られ、モーションセンサーでスイングを解析。5) スコア計算・共有：各プレイヤーのスコアはサーバー側で集計され、LINEチャットでリアルタイムに表示。6) フィードバック：ハプティックフィードバックと音声でプレイ中の状態を即座に伝達し、酔いに応じてゲーム難易度を調整。",
+    "useCases": [
+      "雪山リゾートのスキー客が午後の休憩時に酔いレベルを自動判定され、友人と集まって音声ゴルフを楽しむ。",
+      "視覚障害者がゴルフ体験を求め、音響誘導とVRで雪上のゴルフコースを探索。",
+      "企業のチームビルディングイベントで、アウトドアとテクノロジーを融合した飲みゲームを実施。",
+      "雪季限定の慈善イベントで、参加者が音声ゴルフで競い、寄付額と結びつける。",
+      "個人が一人で雪山に登った際に、自動でBOTが仲間を招待し、音声誘導でゴルフを試す。",
+      "雪山の温泉地で、酔った状態の観光客が安定したゴルフ体験を即座に開始できる便利サービス。"
+    ],
+    "inheritedTraits": [
+      {
+        "parentId": "mashup-000004",
+        "trait": "位置情報と酔い判定に基づく自動集約・BOTによる到着通知・ゲーム進行共有。"
+      },
+      {
+        "parentId": "protopedia:1140",
+        "trait": "完全視覚遮断モードの音響誘導・VRヘッドセットとモーションセンサーによるハプティックフィードバック付きゴルフ体験。"
+      }
+    ],
+    "parents": [
+      "mashup-000004",
+      "protopedia:1140"
+    ],
+    "generation": 2,
+    "mode": "fusion",
+    "sourceIssue": 46,
+    "slot": "2026-11-11T09",
+    "createdAt": "2026-11-11T09:16:19.650Z",
+    "model": "@cf/openai/gpt-oss-20b",
+    "status": "idea",
+    "imagePrompt": "A snow-covered ski slope at sunset, with several people wearing modern VR headsets and colorful winter gear. Above them, a sleek, holographic LINE Bot interface floats, displaying a dynamic map, audio waveforms, and playful drinking icons. Glowing lines indicate BLE beacons and motion sensor nodes, while an audible signal icon hovers near each user. In the background, a stylized golf course layout is drawn across the mountain, reflecting the fusion of snow and golf. The scene captures a playful yet futuristic vibe, emphasizing real-time social interaction and immersive audio-guided gameplay.. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
+    "imagePath": "assets/inventions/mashup-000006.png",
+    "requestHash": "94a86b529d0e95bf1f816275076a40b348a6dc11e90fa2e20be20a7118eb7b5d",
+    "technologies": [
+      "LINE Beacon",
+      "LINE Messaging API",
+      "Node.js",
+      "VR headset",
+      "audio guidance",
+      "motion sensor"
+    ],
+    "domains": [
+      "エンターテインメント",
+      "アウトドア"
+    ],
+    "keywords": [
+      "音声誘導",
+      "位置情報",
+      "酔い判定",
+      "リアルタイム共有",
+      "VRゴルフ",
+      "ハプティックフィードバック",
+      "スキー場",
+      "LINE BOT"
+    ]
   }
 ]
