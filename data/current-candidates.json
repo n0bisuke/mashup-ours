@@ -1,34 +1,22 @@
 {
   "schemaVersion": 1,
-  "slot": "2026-11-10T2300",
-  "generatedAt": "2026-11-10T23:10:34.251Z",
-  "nextSlot": "2026-11-10T2315",
+  "slot": "2026-11-11T0245",
+  "generatedAt": "2026-11-11T02:51:30.660Z",
+  "nextSlot": "2026-11-11T0300",
   "source": "data/sample-prototypes.json",
   "candidates": [
     {
-      "id": "protopedia:3351",
-      "title": "IRリモコン",
-      "sourceUrl": "https://protopedia.net/prototype/3351",
-      "summary": "エアコンの自動制御のテストとして、既製品のベッドランプのリモコンをM5StackのIRsensorで実装してみました。",
+      "id": "protopedia:12",
+      "title": "DrunkenMaster byDrunker5",
+      "sourceUrl": "https://protopedia.net/prototype/12",
+      "summary": "お酒の場を楽しくするゲームです。酔っ払ってないとゲームはできません。",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/",
+      "mainUrl": "https://protopedia.net/pic/88dc4f01-de60-4ad9-969c-a6f31f48451d.png",
       "authors": [
-        "えりな@erina000"
+        "@yuukankin",
+        "ひさやん@hisayan",
+        "佐田幸宏@yukihirosada"
       ],
-      "status": 4,
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:101",
-      "title": "鯖江夕景",
-      "sourceUrl": "https://protopedia.net/prototype/101",
-      "summary": "鯖江夕景は鯖江市のオープンデータの鯖江百景を基に制作しています。夕景はその日ごとに違う顔を見せてくれて、季節ごとにも変化をもたらします。鯖江市の観光地の魅力を引き出すため、鯖江夕景を活用してください。",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/4c30e575-7c24-42be-b318-3b00c001f7b1.png",
-      "authors": [
-        "ひで@blue_islands"
-      ],
-      "status": 4,
       "licenseType": "CC BY 4+"
     },
     {
@@ -40,6 +28,24 @@
       "mainUrl": "https://protopedia.net/pic/43957060-cc22-4a9d-90c3-f4a9c6e60db7.png",
       "authors": [
         "@junokabe"
+      ],
+      "tags": [
+        "NRIハッカソン"
+      ],
+      "status": 2,
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:1138",
+      "title": "Prace - キミの走りで制圧セヨ(ランニング × 道場破り)",
+      "sourceUrl": "https://protopedia.net/prototype/1138",
+      "summary": "ランニングの新しい世界観を作り上げます!ぜひタッチ&トライなどで御覧ください!",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/63e708bb-d380-4fe7-9b35-37a23c185d4e.png",
+      "authors": [
+        "@izumiwatanabe",
+        "@jonghyochang",
+        "@wataruyamaguchi"
       ],
       "tags": [
         "NRIハッカソン"
@@ -83,6 +89,6 @@
     }
   ],
   "offspringCandidates": [
-    "mashup-000003"
+    "mashup-000002"
   ]
 }
