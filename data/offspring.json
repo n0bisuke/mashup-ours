@@ -101,5 +101,72 @@
       "Beacon",
       "ミートアップ"
     ]
+  },
+  {
+    "id": "mashup-000004",
+    "schemaVersion": 1,
+    "title": "雪山ドリンクミーティングBOT",
+    "summary": "LINE Beaconと酔い判定ゲームを組み合わせ、スキー場内で酔った人同士を自動で集めて楽しい飲みゲームを開始し、LINE内でリアルタイムに位置とゲーム進行を共有するサービス。",
+    "concept": "スキーリゾートのリゾートロッジで、友人や家族が寄り集まる場面を想像してください。アプリを起動した瞬間、LINE Beaconにより2023年の地域内の位置情報がリアルタイムで検知され、各ユーザーの現在位置がBOTに送られます。さらに、アプリ内の飲酒量登録機能やウェアラブルからの酔いレベルデータを受信すると、BOTは酔い判定ロジックを実行。酔いレベルが設定閾値に達した瞬間、ゲームが自動で起動し、LINEチャットにゲームステータスやスコア、次の飲みタイミングが表示されます。ゲームは酔った状態でしか進行せず、酔いを楽しむひとときに合わせたタスクやチャレンジが配布され、参加者同士が自然に交流を始めるよう設計。さらにBOTは会うべき場所を提案し、到着通知とともにゲーム進行を同期させることで、アプリ内だけで完結するマルチプレイヤー体験を提供します。冬場の寒さの中で仲間と楽しむためのエンターテインメントを、テクノロジーとゲームデザインの両面から統合したソリューションです。",
+    "mechanism": "本発明は3つの主要コンポーネントで構成されます。1)位置情報連携層：LINE Beaconを利用し、Bluetooth Low Energy（BLE）で位置情報を検知・送信。Beaconはロッジ内に複数設置し、スキー場での対象エリアをカバー。2)酔い判定層：スマートフォンのカメラやウェアラブルデバイスから飲酒量・酔いレベル（血中アルコール濃度）を取得し、モーフィングアルゴリズムでリアルタイム判定。酔いレベルが閾値を超えると「ゲーム開始」トリガーを発火。3)ゲーム・BOT層：LINE BOTがチャットUIを生成し、ゲーム進行を管理。各プレイヤーはLINEメッセージでゲーム指示を送受信。ゲームはシンプルなシーバスやカードリミット、酔いをテーマにしたミニタスクで構成され、酔いの度合いに応じた難易度調整を行う。ゲーム終了時、BOTはスコア・勝敗を集計し、次のゲームへの誘導やリミックスを提案。これら3層はリアルタイム通信を前提とし、Node.jsベースのサーバーとLINE Messaging APIで統合。",
+    "useCases": [
+      "1. スキー場内のリゾートロッジで、グループが集まるドリンクパーティー。",
+      "2. スキーイベントや大会の後、参加者が飲みながら交流する場面。",
+      "3. 企業の社内研修・チームビルディングで、アウトドア活動後の忘年会に組み込む。",
+      "4. 雪山の観光客が地元のクラフトビールやジンジャーで楽しむアクティビティ。",
+      "5. スキーヤーのための新しい集いの形式で、アプリを通じて自然に近づく。",
+      "6. 四季を問わずウェアラブルデバイスでデータ共有し、酔いの上限を超えるとゲームが自動開始するイベント。"
+    ],
+    "inheritedTraits": [
+      {
+        "parentId": "protopedia:6",
+        "trait": "位置情報の正確な検知とリアルタイム共有、LINE Beaconによる環境適応、BOTによる自動スケジュール調整と到着通知機能を継承。"
+      },
+      {
+        "parentId": "protopedia:12",
+        "trait": "酔いレベルがゲーム開始条件となる斬新なゲーム設計、参加者間のコミュニケーション促進と盛り上がりを生むインタラクティブなタスクを継承。"
+      }
+    ],
+    "parents": [
+      "protopedia:6",
+      "protopedia:12"
+    ],
+    "generation": 1,
+    "mode": "fusion",
+    "sourceIssue": 34,
+    "slot": "2026-11-11T04",
+    "createdAt": "2026-11-11T04:27:32.393Z",
+    "model": "@cf/openai/gpt-oss-20b",
+    "status": "idea",
+    "imagePrompt": "A vibrant illustration of a ski lodge interior during dusk, with a warm glow from a large window overlooking snowy mountains. In the center, a group of friends in ski attire stands around a glowing tablet or smartphone screen displaying a colorful, animated game interface. The interface shows a round counter, dice icons, and “Ready!” prompts. On the wall, a sleek LINE Beacon emits a subtle blue light, indicating its presence. The characters laugh, holding cocktails and wearing headsets. Above them, floating speech bubbles and emoji icons like hearts and glasses depict a lively conversation. The scene captures real-time location sharing with map pins, the game’s start triggered by a toast, and the integration of LINE chat. The style is semi-realistic with a warm palette, emphasizing a fun, social, tech-savvy atmosphere of a ski party. The image conveys the fusion of cold mountain adventure and interactive drinking game with LINE’s technology.. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
+    "imagePath": "assets/inventions/mashup-000004.png",
+    "requestHash": "a7408f291f03937eb1a2af64f1157394bfe58a2cc2309c898fe203a99de0f55e",
+    "requester": {
+      "login": "n0bisuke",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/2968926?v=4"
+    },
+    "technologies": [
+      "LINE",
+      "LINE Beacon",
+      "BOT",
+      "Bluetooth LE",
+      "Mobile App",
+      "Game Engine"
+    ],
+    "domains": [
+      "エンターテインメント",
+      "アウトドア",
+      "日常生活"
+    ],
+    "keywords": [
+      "Beacon",
+      "LINE",
+      "Ski",
+      "Drinking Game",
+      "Social",
+      "Location-based",
+      "Alcohol detection",
+      "Interactive"
+    ]
   }
 ]
