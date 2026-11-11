@@ -228,5 +228,69 @@
       "LINE BOT"
     ],
     "requesterAuto": true
+  },
+  {
+    "id": "mashup-000007",
+    "schemaVersion": 1,
+    "title": "ミートアップ・スピンバー",
+    "summary": "ハンドスピナーと自動注ぎビアステーションを統合したインタラクティブ社交デバイス。子どもや若者が回転と話し声で制御し、顔認証で年齢確認、LINE Beaconで友人を探し、AIアバターが案内しつつノンアルコール飲料を自動注ぎます。",
+    "concept": "ミートアップ・スピンバーは、フェスティバル、スポーツイベント、会社のチームビルディングや学校行事などの屋外・屋内イベントで、参加者が集まる集結点に設置されるデバイスです。子どもの手で回すハンドスピナーのスムーズな回転に加えて、音声入力で「パパ」やAIアバターと対話でき、微弱なタッチでステージの応答を起動します。被写体の顔をHVC‑Cセンサーでスキャンし、年齢判定を行い、未成年者にはノンアルコール飲料のみを自動注ぎ。LINE Beaconを利用して周囲のデバイスと位置情報を共有し、親しい友人のリストを自動生成、Botが再会案内を送信します。結果として、参加者は安全に飲料を楽しみながら、友人との再会をスムーズにかつ楽しく体験できます。",
+    "mechanism": "1. ハードウェア構成：ESP32マイクロコントローラにサーボモーター、タッチセンサー、マイク＆スピーカー、LCDディスプレイ、HVC‑C顔認証センサー、LINE Beaconアンテナ、AIアバターエンジン用GPU、ノンアルコール飲料注ぎ機構を盛り込んだ3Dプリント軽量ボディ。2. 回転制御：ユーザーが手でスピナーを回転させると、磁気/光学エンコーダが回転速度を計測し、サーボで軽量ヘッドをリモート操作。3. 音声認識：マイク入力をESP32で低遅延に処理し、音声シグナルがトリガーとなると、AIアバターが音声応答。4. 顔認証：ユーザー接近時にHVC‑Cで顔を撮り、年齢・性別を即時判定。5. LINE Beacon：デバイスは周囲のBeaconと通信し、近くにいる他ユーザーのビーコンIDを収集。6. AIアバター＆Bot：受信した情報をAIエンジンで解析し、画面にアバター表示、LINE Bot APIで友人リストを生成し、再会案内メッセージを送信。7. 自動注ぎ：年齢判定が成人の場合は非アルコールビール、未成年の場合はソフトドリンクを小型注ぎユニットが自動で供給。全デバイスは低消費電力設計でバッテリー1日以上持続。",
+    "useCases": [
+      "1. フェスティバルの出店コーナーで、参加者が回転と対話で友人の位置を確認しながらノンアルコール飲料を楽しむ。",
+      "2. 大学祭で、学生が注ぎ機能で飲み物をシェアしつつ、LINE Beaconで友達を探す社交スペースとして活用。",
+      "3. スポーツイベントの歓声エリアで、観客がスピンバーを回し、AIアバターが試合情報を提供し、飲料が自動注ぎ。",
+      "4. 会社のチームビルディングイベントで、社員が集まりながらスピナーでリラックスし、飲料と共に再会を促進。",
+      "5. 柔らかいテレビイベントやパーティー会場に設置し、参加者が音声で案内を受けながら飲み物を取得。",
+      "6. いわゆる「友人再会スペース」として、LINE連携により異なる場所にいる友人を一瞬で見つける案内デバイス。"
+    ],
+    "inheritedTraits": [
+      {
+        "parentId": "mashup-000002",
+        "trait": "ハンドスピナーの高精度回転とサーボモーターによる軽量ボディ、タッチ感知で即応する制御、音声入力による双方向対話、FSMで状態管理を行いリアルタイムで体と声で反応するインタラクティブ体験。"
+      },
+      {
+        "parentId": "mashup-000005",
+        "trait": "HVC‑C顔認証センサーによる即時年齢・性別判定、LINE Beaconで高精度位置検知、LINE Bot APIによる友人リスト生成とメッセージ送信、AIアバターエンジンで視覚的案内、TASPO決済端末との連携（必要に応じてNFC決済へ置換）、自動注ぎビアサーバーとビールタンク・注ぎ装置。"
+      }
+    ],
+    "parents": [
+      "mashup-000002",
+      "mashup-000005"
+    ],
+    "generation": 2,
+    "mode": "fusion",
+    "sourceIssue": 53,
+    "slot": "2026-11-11T19",
+    "createdAt": "2026-11-11T19:32:22.474Z",
+    "model": "@cf/openai/gpt-oss-20b",
+    "status": "idea",
+    "imagePrompt": "A vibrant outdoor event setting featuring a handheld spinning toy that doubles as a beverage dispenser. The device is sleek and lightweight, with a metallic finish and soft LED lighting. Children and teens are gathered around, spinning the toy and interacting with a digital avatar projected onto a screen. The avatar, a friendly, stylized character, speaks and gestures. Near the device, a subtle beacon icon glows, indicating location sharing. The scene conveys excitement, social connection, and the blend of play, technology, and safe drinking options.. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
+    "imagePath": "assets/inventions/mashup-000007.png",
+    "requestHash": "17e027923523d19d4a90e6574ca36e703a867c87ea09fc816aafa1bcfc19cb6c",
+    "requesterAuto": true,
+    "technologies": [
+      "ESP32",
+      "HVC-C顔認証センサー",
+      "LINE Beaconアンテナ",
+      "LINE Bot API",
+      "AIアバターエンジン",
+      "LCDディスプレイ"
+    ],
+    "domains": [
+      "エンターテインメント",
+      "アウトドア",
+      "日常生活"
+    ],
+    "keywords": [
+      "ハンドスピナー",
+      "音声対話",
+      "顔認証",
+      "LINE Beacon",
+      "AIアバター",
+      "自動注ぎ",
+      "ソーシャル",
+      "ノンアルコール"
+    ]
   }
 ]
