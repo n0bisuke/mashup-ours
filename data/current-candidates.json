@@ -1,17 +1,35 @@
 {
   "schemaVersion": 1,
-  "slot": "2026-11-11T1030",
-  "generatedAt": "2026-11-11T10:44:27.144Z",
-  "nextSlot": "2026-11-11T1045",
+  "slot": "2026-11-11T1800",
+  "generatedAt": "2026-11-11T18:08:47.493Z",
+  "nextSlot": "2026-11-11T1815",
   "source": "data/sample-prototypes.json",
   "candidates": [
     {
-      "id": "protopedia:101",
-      "title": "鯖江夕景",
-      "sourceUrl": "https://protopedia.net/prototype/101",
-      "summary": "鯖江夕景は鯖江市のオープンデータの鯖江百景を基に制作しています。夕景はその日ごとに違う顔を見せてくれて、季節ごとにも変化をもたらします。鯖江市の観光地の魅力を引き出すため、鯖江夕景を活用してください。",
+      "id": "protopedia:4",
+      "title": "Pour or Drink",
+      "sourceUrl": "https://protopedia.net/prototype/4",
+      "summary": "一瞬で仲良くなれます。",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/4c30e575-7c24-42be-b318-3b00c001f7b1.png",
+      "mainUrl": "https://protopedia.net/pic/ddf1faf1-faf5-4a70-b079-c0a0b5b9644a.jpg",
+      "authors": [
+        "ひさやん@hisayan",
+        "佐田幸宏@yukihirosada",
+        "鈴木まなみ@rin2tree"
+      ],
+      "tags": [
+        "ノーコード",
+        "飲み会が盛り上がる"
+      ],
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:93",
+      "title": "ドライブメモ for くるくるピ",
+      "sourceUrl": "https://protopedia.net/prototype/93",
+      "summary": "ドライブ中の気になる場所を見つけた時にくるくるピっと記録する 。",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/bf6338ec-5205-413a-bbaf-2239b34fae07.png",
       "authors": [
         "ひで@blue_islands"
       ],
@@ -19,78 +37,57 @@
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:2",
-      "title": "プロジェクターをIoTしてみた",
-      "sourceUrl": "https://protopedia.net/prototype/2",
-      "summary": "昨年(2016年)に開催中止になった for Pro ハッカソンでつくりたかったアイデア。1年寝かせたけど、世に出てこなかったようなので、今回、締め切り前の1泊2日でつくってみました。",
+      "id": "protopedia:1137",
+      "title": "ボルダリング×IoT 〜ボルダーとセッターが高め合う世界へ〜",
+      "sourceUrl": "https://protopedia.net/prototype/1137",
+      "summary": "新たな技術に挑戦します。",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/8d0c7a7e-0a87-416d-98a2-8bad511e6a89.png",
+      "mainUrl": "https://protopedia.net/pic/95c3afb9-6581-45b0-9326-0ceba9db41d9.png",
       "authors": [
-        "ひさやん@hisayan"
+        "@yoshihiromaeda"
       ],
       "tags": [
-        "FPGA"
-      ],
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:1118",
-      "title": "ボランティアを探すアプリ",
-      "sourceUrl": "https://protopedia.net/prototype/1118",
-      "summary": "スマホのGPSを使用して助けたい/助けてほしい人の場所や話せる言語を表示し、マッチング可能にします。 日本を訪れる外国人は年々増加しており、2020年にはオリンピックも開催されます。 そんな中、日本語は世界有数の難解な言語であり、多くの外国人が路頭に迷うことは火を見るよりも明らかです。 そのような状況を解決するため、誰でも持っているスマホのGPSを使用し、 地図でお互いの位置を表示することでボランティアとボランティアを必要としている人を相互検索可能とします。 \\ 1.自分の情報(助けたい/助けが必要、性別、話せる言語)を登録 2.助けが必要/助けたい人の位置が地図に表示される ※検索条件(性別、話せる言語)指定も可能",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/71d14cbf-771f-4b47-9973-11be13a6fb2a.png",
-      "authors": [
-        "@kanekoakira",
-        "@okanori",
-        "@okku",
-        "@shioyui"
-      ],
-      "tags": [
-        "android",
-        "GPS",
-        "Kivy",
-        "Mapview",
-        "Python",
-        "REST API"
+        "NRIハッカソン"
       ],
       "status": 2,
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:3676",
-      "title": "メカノによる高精度機械式ジャイロ実験台",
-      "sourceUrl": "https://protopedia.net/prototype/3676",
-      "summary": "Meccano Based High-Precision Gyroscope Platform",
+      "id": "protopedia:2500",
+      "title": "M5StickVで金のウンコを動かしてガキを驚かす",
+      "sourceUrl": "https://protopedia.net/prototype/2500",
+      "summary": "Let's make a demo that will surprise the kid who was sucked by the poop!",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/290cc5ef-dee1-41eb-9621-191bac4e384d.jpg",
+      "mainUrl": "https://protopedia.net/pic/55a484aa-716f-45a7-9b7d-878a4409f35f.jpg",
       "authors": [
-        "Liem Peng Hong@liemph"
+        "kinneko@kinneko"
       ],
       "tags": [
-        "ジャイロ"
+        "NT名古屋"
       ],
       "status": 4,
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:3",
-      "title": "おしゃべりパパ人形",
-      "sourceUrl": "https://protopedia.net/prototype/3",
-      "summary": "子どもが喜んでくれて、遊んでくれたら目的達成！ 小さな子どものための電子工作",
+      "id": "protopedia:6",
+      "title": "スキー場での「会えない」を解決し「会いたい」を叶える雪山BOT with LINE Beacon",
+      "sourceUrl": "https://protopedia.net/prototype/6",
+      "summary": "全力でハッカソン！1%のアイデアと99%の実証実験！！",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/838b69fe-fc94-4807-b6a5-223068816f9c.jpg",
+      "mainUrl": "https://protopedia.net/pic/09de39fd-554f-4c27-bc72-4f80267d9150.jpg",
       "authors": [
-        "@erikosakashita",
-        "ひさやん@hisayan"
+        "ひさやん@hisayan",
+        "佐田幸宏@yukihirosada"
       ],
       "tags": [
-        "mash"
+        "LINE Beacon",
+        "ゲレンデ",
+        "新幹線"
       ],
       "licenseType": "CC BY 4+"
     }
   ],
   "offspringCandidates": [
-    "mashup-000005"
+    "mashup-000003"
   ]
 }
