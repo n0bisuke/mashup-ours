@@ -9,10 +9,12 @@
  *   却下されていくため、不正Issueの大量投稿でもAI呼び出しは増えない。
  * - 同じ配合条件（親A・親B・配合タイプ・コメント）の発明がすでに生まれていれば
  *   `reuse` を返す = **却下ではなく正常な再利用**（AIは呼び出さない / issue #37）。
- *   親の組が同じでも条件が1つでも違えば通常どおり新規生成する。
+ *   それより広く、**同じ親の組（順序無視）がすでに生まれていれば `reject`** で戻す
+ *   （配合タイプ・コメントが違っても親ペア同じなら内容が似るため重複生成しない /
+ *   AGENTS.md「同じ親の組を重複生成しない方針を推奨」/ issue #47）。
  * - このモジュールは純関数（暗号は lib/breed-key.ts、Node依存）。フロントは呼ばない。
  */
-import { parseBreedingIssue, validateParents } from './issue.ts';
+import { parseBreedingIssue, parentPairKey, validateParents } from './issue.ts';
 import { requestHashOf } from './breed-key.ts';
 import { isAncestorDescendantPair } from './generation.ts';
 import type { BreedingRequest } from './types.ts';
@@ -113,6 +115,13 @@ export interface QueueOptions {
    * 親ペアだけの重複判定はしない: 配合タイプやコメントが違っていれば新規生成できる。
    */
   existingByRequestHash: ReadonlyMap<string, string>;
+  /**
+   * 既存の子作品の親ペア（順序無視・`parentPairKey`）→ 子作品ID。
+   * 一致したら `reject`（同じ親の組は重複生成しない / issue #47）。
+   * requestHash の `reuse`（4項目完全一致）の方が先に判定されるため、
+   * 完全一致はいわゆる「既存の発明を案内する」処理のまま変わらない。
+   */
+  existingByParentPair: ReadonlyMap<string, string>;
   /** 系譜のエッジ（parent → child）。近親交配（祖先×子孫）の検出に使う。 */
   edges: ReadonlyArray<readonly [string, string]>;
 }
@@ -170,6 +179,20 @@ export function selectBreedingIssue(
     const existingId = opts.existingByRequestHash.get(requestHashOf(parsed.request));
     if (existingId !== undefined) {
       return { action: 'reuse', issue, request: parsed.request, existingId, key };
+    }
+    // 同じ親の組（順序無視）は配合タイプ・コメントが違っても重複生成しない（issue #47）。
+    // 内容が似た発明が量産されるのを防ぐための却下（AIは呼ばない）。
+    const existingPairId = opts.existingByParentPair.get(parentPairKey(pair[0], pair[1]));
+    if (existingPairId !== undefined) {
+      return {
+        action: 'reject',
+        issue,
+        request: parsed.request,
+        reason:
+          `親の組み合わせ ${pair[0]} × ${pair[1]} はすでに配合済みです（${existingPairId}）。` +
+          '同じ親の組は重複生成しない方針です。別の親との組み合わせで再申請してください。',
+        key,
+      };
     }
     return { action: 'process', issue, request: parsed.request, key };
   }

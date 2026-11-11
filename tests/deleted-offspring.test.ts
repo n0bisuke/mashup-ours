@@ -10,6 +10,8 @@ import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { afterAll, describe, expect, it } from 'vitest';
 import { readDeletedOffspringIds } from '../lib/deleted-offspring.ts';
+import rawDeleted from '../data/deleted-offspring.json';
+import rawOffspring from '../data/offspring.json';
 
 const dir = mkdtempSync(join(tmpdir(), 'mashup-deleted-'));
 afterAll(() => rmSync(dir, { recursive: true, force: true }));
@@ -21,8 +23,15 @@ function write(name: string, content: string): URL {
 }
 
 describe('readDeletedOffspringIds', () => {
-  it('実台帳から削除済みIDを読む（mashup-000001）', () => {
-    expect(readDeletedOffspringIds()).toEqual(['mashup-000001']);
+  it('実台帳から削除済みIDを読む（実データから期待値を導出 / issue #44の教訓）', () => {
+    // 期待値を固定のID一覧で書かず、台帳そのものから導出する。
+    // 追加の整合チェック: 削除済みIDが現行 offspring.json に残っていないこと。
+    const deleted = readDeletedOffspringIds();
+    expect(deleted).toEqual([...rawDeleted.deletedIds]);
+    const currentIds = (rawOffspring as ReadonlyArray<{ id: string }>).map((o) => o.id);
+    for (const id of deleted) {
+      expect(currentIds).not.toContain(id);
+    }
   });
 
   it('ファイルが無ければ []', () => {

@@ -7,6 +7,7 @@
 import { readFileSync } from 'node:fs';
 import { expect, it, vi } from 'vitest';
 import rawCandidates from '../data/current-candidates.json';
+import rawDeleted from '../data/deleted-offspring.json';
 import rawOff from '../data/offspring.json';
 import rawSampleOff from '../data/offspring.sample.json';
 import rawPool from '../data/sample-prototypes.json';
@@ -223,7 +224,7 @@ it('Issue作成URLに親ID・元作品URL・slotが含まれる（設定済み�
     breedButton().click();
     // 押した直後は GitHub へ移動しない（案内ダイアログが開くだけ / issue #35）
     expect(spy).not.toHaveBeenCalled();
-    expect(document.querySelector('.guide[role="dialog"]')).toBeTruthy();
+    expect(document.querySelector('dialog.guide')).toBeTruthy();
     document.querySelector<HTMLElement>('.guide-open')?.click();
     expect(spy).toHaveBeenCalledTimes(1);
     const url = new URL(String(spy.mock.calls[0][0]));
@@ -253,17 +254,27 @@ it('系譜図SVGとノードが描画される（子とその親が必ず出る 
   const shown: { id: string; parents: string[] }[] = rawOff.length === 0 ? rawSampleOff : rawOff;
   expect(shown.length).toBeGreaterThan(0);
 
+  // 削除済みID台帳（#44教訓: 期待値はデータから導出）。削除済みの親は
+  // 系譜に載らない = 子の親参照が残っている場合（mashup-000006 等）がある。
+  const deletedIds: ReadonlySet<string> = new Set(rawDeleted.deletedIds);
+
   for (const c of shown) {
     expect(nodeIds()).toContain(c.id); // 子は必ず出る
     for (const p of c.parents) {
+      if (deletedIds.has(p)) continue; // 削除済み親はノードが解決しない（系譜は参照のみ保持）
       // 親が候補ローテで外れても消えないこと（本バグの再発検出）
       expect(nodeIds(), `親 ${p} が系譜図から消えている`).toContain(p);
     }
   }
 
-  // 辺は子ごとに親2本（両端のノードがともに解決しているときだけ描かれる）
+  // 辺は「解決できる親ごとに1本」（削除済みの親はノードが無いので辺も出ない。
+  // #44教訓: 期待値はデータから導出する）
   const edges = document.querySelectorAll('.pedigree-scroll .edge');
-  expect(edges.length).toBe(shown.length * 2);
+  const resolvable = shown.reduce(
+    (n, c) => n + c.parents.filter((p) => !deletedIds.has(p)).length,
+    0,
+  );
+  expect(edges.length).toBe(resolvable);
 
   // 未接続ノードは出さない（サンプルの protopedia:9003 など）
   const connected = new Set(shown.flatMap((c) => [c.id, ...c.parents]));
@@ -429,7 +440,7 @@ it('Issue作成画面を開いた直後はFV装置も「申請手続き中」（
     expect(status()).toContain('配合準備完了');
     breedButton().click();
     // 案内ダイアログが開いただけでは申請手続き中にならない（まだGitHubへ行っていない / issue #35）
-    expect(document.querySelector('.guide[role="dialog"]')).toBeTruthy();
+    expect(document.querySelector('dialog.guide')).toBeTruthy();
     expect(status()).toContain('配合準備完了');
     document.querySelector<HTMLElement>('.guide-open')?.click();
     expect(status()).toContain('申請手続き中');
@@ -543,7 +554,7 @@ it('Issue本文に mode: と comment: が行として入る（設定済み環境
     commentInput().value = '子どもが遊べる発明にしてほしい！';
     breedButton().click();
     // 案内ダイアログを経てから Issue作成URLが生成される（issue #35）。入力内容は維持される。
-    expect(document.querySelector('.guide[role="dialog"]')).toBeTruthy();
+    expect(document.querySelector('dialog.guide')).toBeTruthy();
     document.querySelector<HTMLElement>('.guide-open')?.click();
     expect(spy).toHaveBeenCalledTimes(1);
 
@@ -717,7 +728,7 @@ it('AI生成アイデアを親Aにした申請URLが生成され、ワーカー�
   const spy = vi.spyOn(window, 'open').mockReturnValue(null);
   if (!breedButton().disabled) {
     breedButton().click();
-    expect(document.querySelector('.guide[role="dialog"]')).toBeTruthy(); // 案内ダイアログを経る（issue #35）
+    expect(document.querySelector('dialog.guide')).toBeTruthy(); // 案内ダイアログを経る（issue #35）
     document.querySelector<HTMLElement>('.guide-open')?.click();
     expect(spy).toHaveBeenCalledTimes(1);
 

@@ -236,6 +236,7 @@ open Issue の最古1件（ラベル非信用・タイトル/本文で判定）
     復元できない場合は推測せず、実行ログに「重複判定できない既存データ」として明示します（その件は重複判定の対象外）。
   - キャッシュヒット時は**間隔ゲートも消費しません**（生成を行わないため）。
   - 祖先×子孫の近親交配禁止は、条件が一致しても維持します。
+  - **同じ親ペア（順序無視）の再配合は却下します**（issue #47）。配合タイプやコメントが違っても親ペアが一致すれば内容が似た発明になるため、AIを呼ばず既存の子作品へのリンク付きで却下します（4項目が完全一致する申請は上記の案内処理 `reuse` が優先）。自動申請も既に生まれた親ペアは選びません。
 - **利用量とコスト**: `data/ai-usage.json` に**実行回数とトークン数は実測**で記録し、Neurons は公開料金表からの**試算**として記録します（**試算を実測値として扱わない**）。Cloudflareの利用量APIは公式ドキュメントに存在しない（**未検証**）ため、上限判定は実呼び出し回数（`dailyAiCallLimit`）で行います。**「1時間に1回なら無料枠内」とは断定しません**（無料枠・料金は変動するため、使う前に公式情報を確認してください）。
 - **失敗時**: 認証失敗・予算超過・一時障害を分類してログに残し、自動の無限リトライはしません（テキスト生成3回・画像再試行1回まで。3回は Workers AI の断続的な空応答への余裕 / issue #45）。エラーにトークンを含めません。
 - **権限**: ワークフローは `permissions: {}` から始まり、該当ジョブだけ `contents: write`（JSONコミット）と `issues: write`（コメント・クローズ）を付与。**AI出力はshellへ埋め込まず `tmp/breed-report.md` 経由**でコメントします。
@@ -317,7 +318,15 @@ open Issue の最古1件（ラベル非信用・タイトル/本文で判定）
 - **書式検証（`lib/types.ts`）**: `login` はGitHubの書式（英数とハイフン・39文字まで・ハイフン始終端不可）。`avatarUrl` は **`https://avatars.githubusercontent.com/u/<数字>` 形のみ受理**（任意URLは信用しない）。
 - **fail-safe**: user 無し・書式不正・`avatar_url` がGitHubのCDN以外なら**表示ごと省く**（保存・生成処理は止めない）。表示前にも `isRequester` で再検証するため、手書き編集したデータも壊さない。
 - **互換性**: `requester` は**任意**。既存データ・開発用サンプルには表示が出ないだけ。
+- **自動申請との区別（issue #49）**: 自動申請（issue #27・本文マーカーで判定）由来の生成では `requesterAuto: true` を保存し、人の `requester` は保存しない。表示は @login チップの代わりに「システムが自動で申し込みました（候補からランダム選出）」（個別ページ）/「自動申請」（一覧）。
+- **削除済みの親（issue #32・#49）**: 子作品は削除済みIDを親として持ち続けてよい（系譜の記録）。個別ページはリンクを出さず「削除済みの親」と表示し、`validate-data` は台帳のIDを親として受理する（世代は台帳に無いため保存値を信頼する）。
 - アバターの`<img>`はGitHubのCDNのみを指し、読み込み失敗時は画像だけ外れる（`@login` の表示は残る）。login はURLエンコードしてプロフィールリンク（新規タブ・`rel="noopener noreferrer"`）にする。
+
+## 個別ページのシェアボタン（issue #50）
+
+- **Xへのポスト**: `https://twitter.com/intent/tweet` のURLリンク（APIなし）。テキストは「未実装の発明アイデア（AIが考えました）」と分かる接頭辞 + タイトル（AI出力は上限180字）。URLは `searchParams`（自動エンコード）で組み立てる。
+- **リンクコピー**: `navigator.clipboard` でページURLをコピー（失敗・非対応なら「コピーできませんでした」を1回だけ表示。無限リトライなし）。
+- ページURLは実行時の `location.href` から（カスタムドメイン・GitHub Pages両対応）。表示文言はDOM text のみでHTML/URLへ無検証に組み込まない。
 
 ## ID名前空間の決定事項
 
@@ -326,7 +335,7 @@ open Issue の最古1件（ラベル非信用・タイトル/本文で判定）
   - **内部では `lib/parent-ref.ts` の `{ source: 'protopedia' | 'mashup-ours', id }` として種類を区別する**（issue #36）。`parseParentRef()` が形式を判定し、読めない形式は「未知のID名前空間」として却下。**文字列ID形式そのものは変更していない**ため、過去のIssue・既存JSON・系譜図はそのまま扱える。ProtoPedia親だけが出典URL・API参照を持ち、AI生成親は `data/offspring.json` から読む（AI生成親にProtoPedia APIは呼ばない）。
   - AGENTS.mdのIssue例は `mashup:<生成ID>`（コロン）だが、データモデル例は `mashup-000001`（ハイフン）。**誤導入を避けるためデータモデル例のハイフン形式に統一**した。
 - 先祖と子孫の組み合わせ（近親交配）は拒否する。共通の子を持つだけのダイヤモンド形状は許可。
-- **削除した子作品IDは再利用しない**（issue #32）。`data/deleted-offspring.json`（`schemaVersion: 1` + `deletedIds`）に削除済みIDを記録し、`nextOffspringId(existing, retired)` が**既存IDと削除済みIDの最大値**から次IDを決める（採番は連番の続き = 過去の最大ID基準）。台帳が壊れているとワーカーと `validate-data` は停止する（無視するとIDが再利用されるため）。現状の削除済みID: `mashup-000001`（初期テストデータ）。
+- **削除した子作品IDは再利用しない**（issue #32）。`data/deleted-offspring.json`（`schemaVersion: 1` + `deletedIds`）に削除済みIDを記録し、`nextOffspringId(existing, retired)` が**既存IDと削除済みIDの最大値**から次IDを決める（採番は連番の続き = 過去の最大ID基準）。台帳が壊れているとワーカーと `validate-data` は停止する（無視するとIDが再利用されるため）。現状の削除済みID: `mashup-000001`（初期テストデータ）・`mashup-000004`（同じ親ペアの `mashup-000003` と内容が重複したため 2026-11-11 に削除 / issue #47）。削除済みIDを親として持つ子作品は系譜の記録として残る（issue #49）。
   - なお開発用サンプル `data/offspring.sample.json` の `mashup-000001` は**別のサンプルレコード**で残している（本番データとは無関係。参照している同名画像は削除済みのため画面は「画像なし」プレースホルダ。`validate-data` は本番のみ画像実在を必須とし、サンプルは警告）。
 
 ## ステータス / 検証済みと未検証
@@ -391,6 +400,20 @@ DRY_RUN=true node --experimental-strip-types scripts/auto-request.ts
                           # 自動配合申請の安全確認（判定と選出だけ。Issueは作らない / issue #27）
 npm run screenshot      # 両テーマ×デスクトップ/詳細/モバイル + /ideas一覧のスクリーンショット（tmp/）
 ```
+
+## データの同時更新とコンフリクト防止（issue #52）
+
+`data/*.json` は GitHub Actions（配合ワーカー・候補ローテート）がほぼ毎時コミットする。
+ローカルで同じファイルを編集してから push すると rebase でコンフリクトになり得るため、
+`npm run gitpush` は **fetch 後・コミット前に `scripts/sync-data.mjs --apply` で data を
+origin/main と自動 union してからコミット・pull する**（コンフリクトをコミット前に消す）。
+
+- union の規則: `offspring.json` は id 単位（削除台帳のIDは再追加しない・同一ID内容違いはローカル優先+警告）、
+  `processed-issues.json` は Issue番号単位、`ai-usage.json`/`breeding-state.json` はカウンタ最大値、
+  `current-candidates.json` は リモートの再生成結果を採用（remote-wins）。
+- `npm run gitpush` 以外で data を編集した直後も `git fetch origin` →
+  `node scripts/sync-data.mjs --apply` を実行してから push する。
+- 非データファイル（コード）のコンフリクトは手動解決の方針を維持する。
 
 ## ディレクトリ
 

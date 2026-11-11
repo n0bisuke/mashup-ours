@@ -57,7 +57,8 @@ import {
   type WorkElements,
 } from '../lib/elements.ts';
 import { commentIssue, getIssue, listOpenIssues, type GhOptions } from '../lib/github.ts';
-import { parseBreedingIssue } from '../lib/issue.ts';
+import { parseBreedingIssue, parentPairKey } from '../lib/issue.ts';
+import { isAutoRequestIssue } from '../lib/auto-request.ts';
 import { parseParentRef } from '../lib/parent-ref.ts';
 import { isRequestHash, requestHashOf } from '../lib/breed-key.ts';
 import { detectLanguageRequest } from '../lib/language.ts';
@@ -383,6 +384,18 @@ async function main(): Promise<void> {
   const knownOffspringIds = new Set<string>(offspringById.keys());
   const edges = offspring.flatMap((o) => o.parents.map((p): [string, string] => [p, o.id]));
 
+  // --- 0. 既存親ペアのインデックス（同じ親の組を重複生成しない / issue #47） -----
+  // 順序無視の親ペア → 子作品ID。配合タイプ・コメントが違う再申請は
+  // requestHash（4項目一致）では拾えないため、ペア単位で別途判定する。
+  // 削除済みの子（deleted-offspring.json）はここに載らない = ペアの解放を許す。
+  const existingByParentPair = new Map<string, string>();
+  for (const o of offspring) {
+    const [pa, pb] = o.parents;
+    if (typeof pa !== 'string' || typeof pb !== 'string') continue;
+    const pairKey = parentPairKey(pa, pb);
+    if (!existingByParentPair.has(pairKey)) existingByParentPair.set(pairKey, o.id);
+  }
+
   // --- 1. 配合条件インデックス（重複判定 / issue #37） --------------------------
   // 同じ条件（親A・親B・配合タイプ・コメント）の発明がすでにあれば、AIを呼ばずに
   // 既存の発明を返す。requestHash の無い既存データは**元のIssue本文から復元**し、
@@ -444,6 +457,7 @@ async function main(): Promise<void> {
     knownProtopediaIds,
     knownOffspringIds,
     existingByRequestHash,
+    existingByParentPair,
     edges,
   });
 
@@ -833,6 +847,8 @@ async function main(): Promise<void> {
   }
 
   const createdAt = now.toISOString();
+  // 自動申請由来か（issue #49）。本文のマーカーで判定（login やタイトルは信用しない）。
+  const issueAutoRequest = isAutoRequestIssue(issue.body);
   const newChild: Offspring = {
     id,
     schemaVersion: 1,
@@ -857,9 +873,13 @@ async function main(): Promise<void> {
     imagePath,
     // 配合条件のキー（issue #37）。同じ条件の次回申請からAI呼び出しを省く。
     requestHash: requestHashOf(request),
+    // 自動申請由来のときは `requesterAuto` を立て、人の `requester` は保存しない
+    // （自動と人手で「申し込んだ人」の表示を分ける / issue #49）。
+    // 判定は本文マーカー（isAutoRequestIssue）。login の文字列で推測しない。
+    ...(issueAutoRequest ? { requesterAuto: true as const } : {}),
     // 申請者の公開情報（issue #42）。GitHub APIのIssue件から、書式を通った
     // login / avatar_url の2項目だけ。無い・不正なら省く（= 表示も出さない）。
-    requester: issue.user,
+    requester: issueAutoRequest ? undefined : issue.user,
     // 検索用メタデータ（issue #38）。**この生成と同じAI出力**から取る
     // （検索のためだけの追加リクエストは無い）。空なら付けない
     // （= 判断できなかったことを隠さず、既存データと同じ「テキストから検索」に戻る）。

@@ -5,6 +5,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { CANDIDATES_PER_SLOT, isCandidatesFile } from '../lib/candidates.ts';
 import { computeGeneration, isAncestorDescendantPair, nextOffspringId } from '../lib/generation.ts';
+import { readDeletedOffspringIds } from '../lib/deleted-offspring.ts';
 import { isRequestHash } from '../lib/breed-key.ts';
 import {
   DEFAULT_AUTO_REQUEST_IDLE_HOURS,
@@ -90,6 +91,8 @@ try {
 if (!Array.isArray(data)) fail('offspring.json は配列である必要があります');
 
 const items = data as Offspring[];
+// 削除済みID台帳（issue #32・#49）。子作品は削除済みの親を「系譜の記録」として持ち続ける。
+const deletedIds = new Set<string>(readDeletedOffspringIds());
 const ids = new Set<string>();
 const edges: [string, string][] = [];
 let expectedNextId: string[] = [];
@@ -152,9 +155,13 @@ for (const item of items) {
       );
     }
   }
+  if (item.requesterAuto !== undefined && item.requesterAuto !== true) {
+    fail(`${item.id}: requesterAuto は省略するか true のみ（自動申請の印 / issue #49）`);
+  }
 
   for (const p of item.parents) {
     if (p.startsWith('mashup-') && !ids.has(p)) {
+      if (deletedIds.has(p)) continue; // 削除済みの親（系譜の記録として保持 / issue #32・#49）
       fail(`${item.id}: 未登録の子作品を親にしています: ${p}（並び順が世代順ではありませんか）`);
     }
     edges.push([p, item.id]);
@@ -162,16 +169,26 @@ for (const item of items) {
   expectedNextId.push(item.id);
 }
 
-// 世代計算の再検証
+// 世代計算の再検証（削除済みの親は世代を解決できない / issue #49）。
+// 削除済みの親がいなければ 1+max(親) を厳密検証。削除済みの親がいる場合は
+// 台帳に世代が無いため「1+残る親の世代の下限」だけを検証する（上限は検証不能）。
 const genOf = new Map<string, number>();
 for (const item of items) {
-  const parentGens = item.parents.map((p) =>
-    p.startsWith('protopedia:') ? 0 : genOf.get(p) ?? -1,
-  );
-  if (parentGens.some((g) => g < 0)) fail(`${item.id}: 親の世代が未解決`);
-  const expected = computeGeneration(parentGens);
-  if (expected !== item.generation) {
-    fail(`${item.id}: generation が不正（${item.generation} ≠ 期待値 ${expected}）`);
+  const parentGens = item.parents.map((p): number | null => {
+    if (p.startsWith('protopedia:')) return 0;
+    if (deletedIds.has(p)) return null; // 削除済みの親 = 世代不明（保存値を信頼）
+    return genOf.get(p) ?? -1;
+  });
+  if (parentGens.some((g) => g === -1)) fail(`${item.id}: 親の世代が未解決`);
+  const known = parentGens.filter((g): g is number => g !== null);
+  const hasDeletedParent = parentGens.some((g) => g === null);
+  if (!hasDeletedParent) {
+    const expected = computeGeneration(known);
+    if (expected !== item.generation) {
+      fail(`${item.id}: generation が不正（${item.generation} ≠ 期待値 ${expected}）`);
+    }
+  } else if (item.generation < computeGeneration(known)) {
+    fail(`${item.id}: generation が削除済み親を含む世代として低すぎます（${item.generation}）`);
   }
   genOf.set(item.id, item.generation);
 }

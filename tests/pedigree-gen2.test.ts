@@ -57,6 +57,29 @@ vi.mock('../data/offspring.json', () => ({
   ],
 }));
 
+// 候補ファイルは実データ（build-time import）に依存させない（issue #44の教訓）。
+// フィクスチャの第2世代が子候補カードに出る状態へ固定する（isCandidatesFile で
+// はじかれない完全な形）。
+vi.mock('../data/current-candidates.json', () => ({
+  default: {
+    schemaVersion: 1,
+    slot: '2026-11-09T1200',
+    nextSlot: '2026-11-09T1215',
+    generatedAt: '2026-11-09T12:05:00Z',
+    source: 'data/sample-prototypes.json',
+    candidates: [
+      {
+        id: 'protopedia:93',
+        title: '系譜図テスト用の候補作品',
+        sourceUrl: 'https://protopedia.net/prototype/93',
+        summary: 'テスト用の親作品',
+        generation: 0,
+      },
+    ],
+    offspringCandidates: ['mashup-000002'],
+  },
+}));
+
 const SVG_NS = 'http://www.w3.org/2000/svg';
 const COL_W = 300;
 const NODE_W = 240;

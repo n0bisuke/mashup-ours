@@ -15,6 +15,7 @@ import {
   ideaDetailHref,
   ideaIdFromPath,
   siteBaseFor,
+  xPostUrl,
   type IdeaDetailContext,
 } from '../public/idea.ts';
 
@@ -345,4 +346,78 @@ it('requester が無い・不正な既存データでは表示しない（issue 
   ] as unknown as Offspring[];
   const host3 = build('mashup-000001', badLogin);
   expect(host3.querySelector('.requester-chip')).toBeNull();
+});
+
+it('シェアボタン（Xへのポスト・リンクコピー）を表示する（issue #50）', () => {
+  const host = build('mashup-000002');
+  const share = host.querySelector('.det-share');
+  expect(share).not.toBeNull();
+  const x = share?.querySelector<HTMLAnchorElement>('a.share-btn');
+  expect(x).not.toBeNull();
+  expect(x?.getAttribute('href')).toContain('twitter.com/intent/tweet');
+  const u = new URL(x?.getAttribute('href') ?? '');
+  expect(u.searchParams.get('text')).toContain('未実装の発明アイデア');
+  // url パラメータはテスト環境の location.href から組み立てられる
+  expect(u.searchParams.get('url')).toBeTruthy();
+  expect(share?.querySelector('button.share-btn')?.textContent).toBe('URLをコピー');
+});
+
+it('xPostUrl はテキストとURLをエンコードし、非httpのURLは組み立てない', () => {
+  const raw = xPostUrl(
+    'https://mashup-ours.suke.dev/ideas/mashup-000005/',
+    'タイトル&記号<> "quote"',
+    'Mashup Ours',
+  );
+  expect(raw).not.toBeNull();
+  const parsed = new URL(raw ?? '');
+  expect(parsed.searchParams.get('url')).toBe('https://mashup-ours.suke.dev/ideas/mashup-000005/');
+  expect(parsed.searchParams.get('text')).toContain('タイトル&記号<> "quote"');
+  expect(xPostUrl('javascript:alert(1)', 'x', 'y')).toBeNull();
+});
+
+it('自動申請は人手と区別した表示になる（requesterを保存しない / issue #49）', () => {
+  const autoItem: Offspring = {
+    ...fixtures[0],
+    id: 'mashup-000090',
+    requester: undefined,
+    requesterAuto: true,
+  };
+  const manualItem: Offspring = {
+    ...fixtures[0],
+    id: 'mashup-000091',
+    requester: { login: 'octocat', avatarUrl: 'https://avatars.githubusercontent.com/u/2968926?v=4' },
+    requesterAuto: undefined,
+  };
+  const autoHost = build('mashup-000090', [...fixtures, autoItem]);
+  expect(autoHost.textContent).toContain('システムが自動で申し込みました');
+  // 自動申請はアイコン・loginを出さない
+  const autoChip = autoHost.querySelector('.requester-chip');
+  expect(autoChip?.querySelector('img')).toBeNull();
+  expect(autoChip?.textContent).not.toContain('@');
+
+  const manualHost = build('mashup-000091', [...fixtures, manualItem]);
+  expect(manualHost.textContent).toContain('@octocat');
+
+  // 旧データ（requester も flag も無し）は何も表示しない（現行互換）
+  const legacyHost = build('mashup-000092', [{ ...fixtures[0], id: 'mashup-000092' }]);
+  expect(legacyHost.querySelectorAll('.requester-chip').length).toBe(0);
+});
+
+it('削除済みの親（台帳あり）はリンクを出さず削除済みと表示する（issue #49・#32）', () => {
+  const item: Offspring = {
+    ...fixtures[0],
+    id: 'mashup-000093',
+    parents: ['mashup-000004', 'protopedia:1'],
+    generation: 2,
+  };
+  const host = build('mashup-000093', [...fixtures, item], {
+    ...ctx,
+    deletedIds: new Set(['mashup-000004']),
+  });
+  expect(host.textContent).toContain('削除済みの親');
+  // 削除済みIDへのリンク（404相当画面への誘導）は出さない
+  expect(host.querySelectorAll('a[href*="mashup-000004"]').length).toBe(0);
+  // 台帳に無い存在しないIDは現行どおりIDリンクで示す
+  const host2 = build('mashup-000093', [...fixtures, item], ctx);
+  expect(host2.querySelectorAll('a[href*="mashup-000004"]').length).toBe(1);
 });

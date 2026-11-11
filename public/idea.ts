@@ -5,6 +5,7 @@ import { repoConfigFromEnv } from '../lib/config.ts';
 import { formatDateTimeJSTWithNote } from '../lib/datetime.ts';
 import { searchHref, type SearchQuery } from '../lib/search.ts';
 import rawOffspring from '../data/offspring.json';
+import rawDeleted from '../data/deleted-offspring.json';
 import rawPool from '../data/sample-prototypes.json';
 import rawSampleWorks from '../data/protopedia-sample.json';
 import rawCandidates from '../data/current-candidates.json';
@@ -67,6 +68,11 @@ export interface IdeaDetailContext {
   base: string;
   /** 親（ProtoPedia作品）のメタデータ参照元。無い親はID+出典URLだけで表示する。 */
   works: ProtopediaWork[];
+  /**
+   * 削除済みID台帳（issue #32・#49）。子作品が削除済みの親を親として持つとき
+   * （系譜の記録は残す）に、存在しない子作品と区別した表示にする。任意。
+   */
+  deletedIds?: ReadonlySet<string>;
 }
 
 /** 個別ページのURL（サイトルート基点）。 */
@@ -89,6 +95,74 @@ export function ideaIdFromPath(pathname: string): string | null {
 export function siteBaseFor(pathname: string, baseUrl: string): string {
   if (baseUrl.startsWith('/')) return baseUrl; // 絶対base（VITE_BASE指定時）
   return /\/ideas\/[^/]+\/?$/.test(pathname) ? '../../' : './';
+}
+
+/**
+ * XへのポストURL（issue #50）。文字列は `encodeURIComponent` 相当（searchParams）で
+ * 渡す。AI出力は表示文言そのまま（「未実装のアイデア」と分かる接頭辞つき）。
+ * 組み立てに失敗したら null（呼び出し側はボタンを出さない）。
+ */
+export function xPostUrl(pageUrl: string, title: string, siteName: string): string | null {
+  try {
+    if (!/^https?:\/\//.test(pageUrl)) return null;
+    const u = new URL('https://twitter.com/intent/tweet');
+    const text = `【${siteName}｜未実装の発明アイデア（AIが考えました）】${title}`.slice(0, 180);
+    u.searchParams.set('text', text);
+    u.searchParams.set('url', pageUrl);
+    return u.toString();
+  } catch {
+    return null;
+  }
+}
+
+/** シェアボタンの行（issue #50）。Xへのポスト（リンク）とリンクコピー（clipboard）。 */
+function detShareRow(c: Offspring): HTMLElement {
+  const row = el('div', { class: 'det-share' });
+  let pageUrl: string | null = null;
+  try {
+    pageUrl = new URL(location.href).toString();
+  } catch {
+    pageUrl = null;
+  }
+  const xUrl = pageUrl !== null ? xPostUrl(pageUrl, c.title, 'Mashup Ours') : null;
+  if (xUrl !== null) {
+    row.append(
+      el(
+        'a',
+        {
+          class: 'share-btn hint',
+          href: xUrl,
+          target: '_blank',
+          rel: 'noopener noreferrer',
+        },
+        'Xでシェア',
+      ),
+    );
+  }
+  const copyBtn = el('button', { class: 'share-btn hint', type: 'button' }, 'URLをコピー');
+  copyBtn.addEventListener('click', () => {
+    if (pageUrl === null || typeof navigator === 'undefined') return;
+    const clipboard = navigator.clipboard;
+    if (clipboard?.writeText === undefined) {
+      copyBtn.textContent = 'コピーできませんでした';
+      return;
+    }
+    clipboard
+      .writeText(pageUrl)
+      .then(() => {
+        copyBtn.textContent = 'コピーしました';
+      })
+      .catch(() => {
+        copyBtn.textContent = 'コピーできませんでした';
+      })
+      .finally(() => {
+        setTimeout(() => {
+          copyBtn.textContent = 'URLをコピー';
+        }, 2_000);
+      });
+  });
+  row.append(copyBtn);
+  return row;
 }
 
 /** サムネイル（大きめ）。画像なし・読み込み失敗は共通プレースホルダで枠を保つ。 */
@@ -185,6 +259,17 @@ function parentCard(
     }
     card.append(
       el('p', {}, el('a', { href: ideaDetailHref(ctx.base, id) }, 'この発明の個別ページへ →')),
+    );
+  } else if (ctx.deletedIds?.has(id)) {
+    // 削除済みの親（issue #32台帳・#49）。系譜の記録は保持するが、実体は無いので
+    // 個別ページへのリンクは出さない（404相当への誘導をしない）。
+    card.append(el('h3', {}, id));
+    card.append(
+      el(
+        'p',
+        { class: 'det-parent-kind hint' },
+        '削除済みの親（子作品）。この発明の継承の記録として残っています。',
+      ),
     );
   } else {
     // データ不在でもIDだけは示す（壊さない・リンクは404相当画面へ）
@@ -381,7 +466,21 @@ export function buildIdeaDetail(
               );
             })(),
           ]
-        : []),
+        : c.requesterAuto
+          ? // 自動申請（issue #27・#49）。人手申請と分かる表示（login・リンクなし）。
+            [
+              el(
+                'span',
+                {
+                  class: 'requester-chip hint',
+                  title: '候補からランダムに選び、システムが自動で申し込みました（issue #27）',
+                },
+                'システムが自動で申し込みました（候補からランダム選出）',
+              ),
+            ]
+          : []),
+      // シェアボタン（issue #50）。Xへのポストは組み立てたURLのリンク（APIなし）。
+      detShareRow(c),
     ),
   );
   wrap.append(el('section', {}, el('div', { class: 'lab-panel' }, hero)));
@@ -594,5 +693,10 @@ if (hostEl) {
     ideaIdFromPath(window.location.pathname) ??
     new URLSearchParams(window.location.search).get('id') ??
     '';
-  buildIdeaDetail(hostEl, id, offspring, { repoCfg, base, works });
+  buildIdeaDetail(hostEl, id, offspring, {
+    repoCfg,
+    base,
+    works,
+    deletedIds: new Set(rawDeleted.deletedIds),
+  });
 }

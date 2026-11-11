@@ -127,6 +127,11 @@ export interface Offspring {
   keywords?: string[];
   /** 配合申請者の公開情報（issue #42 / 任意。無い旧データ・サンプルには表示を出さない）。 */
   requester?: Requester;
+  /**
+   * 自動申請（issue #27・#49）由来か。任意・true のみ。
+   * 申請Issue本文の自動マーカーで判定し、`requester` は保存しない（表示を分けるため）。
+   */
+  requesterAuto?: boolean;
 }
 
 /**

@@ -1,5 +1,11 @@
 {
   "schemaVersion": 1,
-  "deletedIds": ["mashup-000001"],
-  "note": "初期テストデータ mashup-000001（Clappy Sipster）を 2026-11-10 に削除。採番で再利用しないためIDを記録して残す（issue #32）。"
+  "deletedIds": [
+    "mashup-000001",
+    "mashup-000004"
+  ],
+  "notes": [
+    "初期テストデータ mashup-000001（Clappy Sipster）を 2026-11-10 に削除。採番で再利用しないためIDを記録して残す（issue #32）。",
+    "mashup-000004（雪山ドリンクミーティングBOT）を 2026-11-11 に削除。親ペア protopedia:6 × protopedia:12 は mashup-000003 と同じで、生成内容が重複するため。生成Issue #34 は既に処理済み。"
+  ]
 }

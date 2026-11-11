@@ -108,6 +108,15 @@ export function samePair(a: readonly [string, string], b: readonly [string, stri
 }
 
 /**
+ * 親ペアを順序無視で1つの文字列に潰したキー。
+ * 「同じ親の組の重複生成をしない」（issue #47）のMapキーに使う。
+ * requestHash（4項目完全一致・親順序は区別）とは別物。
+ */
+export function parentPairKey(a: string, b: string): string {
+  return a < b ? `${a}|${b}` : `${b}|${a}`;
+}
+
+/**
  * 親として参照できるのは「ProtoPediaの実在作品」か「すでに生まれた子作品」のみ。
  * 未来の親・存在しないIDを拒否する（循環参照防止の第一歩）。
  */

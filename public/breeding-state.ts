@@ -159,6 +159,14 @@ export function parseBreedIssueTitle(title: string): Pair | null {
   return { parentA, parentB };
 }
 
+/**
+ * 待機中の配合申請数（open な配合申請Issueの件数 / issue #48）。
+ * 直近30件の観測から数える**近似値**（古い申請は反映されない・追加API呼び出しはしない）。
+ */
+export function countWaitingRequests(issues: readonly SeenIssue[]): number {
+  return issues.filter((i) => i.state === 'open' && parseBreedIssueTitle(i.title) !== null).length;
+}
+
 export interface ObserveViews {
   /** 配合マシンの実験担当の博士 */
   higedaruma: CharView;

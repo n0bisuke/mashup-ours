@@ -4,7 +4,7 @@
  * - 実通信しない（フェッチを注入する）
  * - 失敗しても無限リトライしない
  */
-import { afterEach, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   fetchSeenIssues,
   watchApplyConfirmation,
@@ -12,7 +12,12 @@ import {
   type FetchLike,
   type JsonResponse,
 } from '../public/github-watch.ts';
-import { breedTitle, CONFIRM_DELAYS_MS } from '../public/breeding-state.ts';
+import {
+  CONFIRM_DELAYS_MS,
+  breedTitle,
+  countWaitingRequests,
+  type SeenIssue,
+} from '../public/breeding-state.ts';
 
 const CFG = { owner: 'test-owner', repo: 'test-repo' };
 const PAIR = { parentA: 'protopedia:1234', parentB: 'protopedia:5678' };
@@ -168,4 +173,24 @@ it('キャンセル後はフェッチも結果通知も止まる', async () => {
   await vi.advanceTimersByTimeAsync(10 * 60_000);
   expect(fetchImpl).not.toHaveBeenCalled();
   expect(results).toEqual([]);
+});
+
+describe('countWaitingRequests（issue #48・待機中の配合申請数）', () => {
+  it('open な [Breed] 申請だけを数える', () => {
+    const issues: SeenIssue[] = [
+      { number: 1, title: '[Breed] protopedia:1 x protopedia:2', body: '', state: 'open', createdAt: '2026-11-10T00:00:00Z' },
+      { number: 2, title: '[Breed] mashup-000002 x protopedia:3', body: '', state: 'open', createdAt: '2026-11-10T01:00:00Z' },
+      { number: 3, title: '[Breed] protopedia:4 x protopedia:5', body: '', state: 'closed', createdAt: '2026-11-10T02:00:00Z' },
+      { number: 4, title: '[Fix] 雑談Issue', body: '', state: 'open', createdAt: '2026-11-10T03:00:00Z' },
+      { number: 5, title: '別件', body: 'parent_a: protopedia:1', state: 'open', createdAt: '2026-11-10T04:00:00Z' },
+    ];
+    expect(countWaitingRequests(issues)).toBe(2);
+  });
+
+  it('配合理で検出できない申請（タイトル非準拠・本文のみ）は数えない（表示は近似値）', () => {
+    const issues: SeenIssue[] = [
+      { number: 6, title: '本文だけの申請', body: 'parent_a: protopedia:1\nparent_b: protopedia:2', state: 'open', createdAt: '2026-11-10T00:00:00Z' },
+    ];
+    expect(countWaitingRequests(issues)).toBe(0);
+  });
 });

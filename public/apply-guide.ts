@@ -11,6 +11,13 @@ import { createCharacter } from './character.ts';
  *   このダイアログは「GitHubで配合を申し込む」を押されたときの通知だけを行う）
  * - 「戻る」/ Esc / 背面クリックで閉じる。閉じても選択状態・入力は触らない
  * - GitHubへ移動しただけを申請完了にしない（phase の切り替えは main.ts の既存ロジック）
+ *
+ * issue #51（modern-web-guidance の dialog ガイド準拠）:
+ * - 手作りオーバーレイ（role=dialog + aria-modal + 自前フォーカス管理）から
+ *   ネイティブ `<dialog>` + `showModal()` へ移行。最上層・フォーカス包含・
+ *   Esc・フォーカス復帰はブラウザが提供する（自前で再実装しない）
+ * - 背面クリックで閉じるのは `closedby="any"`。未対応（Safari）だけガイド記載の
+ *   ヒットテストのフォールバックを入れる
  */
 
 /** 吹き出しの本文（指定文言）。 */
@@ -37,7 +44,7 @@ export const GUIDE_STEP_NOTE =
   'ボタンの文字が「Submit new issue」などになっている画面もありますが、やることは同じです。';
 
 export interface ApplyGuideHandle {
-  readonly el: HTMLElement;
+  readonly el: HTMLDialogElement;
   open(): void;
   close(): void;
   isOpen(): boolean;
@@ -80,18 +87,19 @@ export function createApplyGuide(onOpenGithub: () => void): ApplyGuideHandle {
   const backBtn = el('button', { class: 'guide-back', type: 'button' }, '戻る');
   const openBtn = el(
     'button',
-    { class: 'guide-open', type: 'button' },
+    { class: 'guide-open', type: 'button', autofocus: '' },
     'GitHubで配合を申し込む',
   );
 
+  // ネイティブ <dialog>（issue #51）。role/aria-modal/自前フォーカストラップは不要:
+  // showModal() が最上層・フォーカス包含・Esc・フォーカス復帰をブラウザ側で提供する。
   const dialog = el(
-    'div',
+    'dialog',
     {
       class: 'guide window',
-      role: 'dialog',
-      'aria-modal': 'true',
+      // 背面クリックでも閉じる（Safari は未対応 → 後段のフォールバックで補う）
+      closedby: 'any',
       'aria-labelledby': 'guide-title',
-      tabindex: '-1',
     },
     el(
       'div',
@@ -103,47 +111,50 @@ export function createApplyGuide(onOpenGithub: () => void): ApplyGuideHandle {
     el('div', { class: 'guide-actions' }, backBtn, openBtn),
   );
 
-  const overlay = el('div', { class: 'guide-overlay', hidden: '' }, dialog);
-  overlay.hidden = true;
+  let pressedOutside = false;
 
-  let returnFocus: HTMLElement | null = null;
+  /** closedby 非対応環境向け: 背面クリックで閉じる（ガイド記載のヒットテスト）。
+   * target ではなく座標で判定する — dialog 自体も padding や隙間の click の
+   * target になるため、target 比較では中のクリックまで閉じてしまう。 */
+  function outside(e: PointerEvent): boolean {
+    const r = dialog.getBoundingClientRect();
+    return (
+      e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom
+    );
+  }
+  dialog.addEventListener('pointerdown', (e) => {
+    pressedOutside = outside(e);
+  });
+  dialog.addEventListener('pointerup', (e) => {
+    // 押した瞬間と離した瞬間の両方が外側のときだけ閉じる（選択ドラッグ誤爆の防止）
+    if (pressedOutside && outside(e)) handle.close();
+    pressedOutside = false;
+  });
 
   const handle: ApplyGuideHandle = {
-    el: overlay,
+    el: dialog,
     open() {
-      if (!overlay.hidden) return;
-      returnFocus =
-        document.activeElement instanceof HTMLElement ? document.activeElement : null;
-      overlay.hidden = false;
-      document.body.classList.add('guide-locked');
-      // 読み上げ・フォーカスをダイアログへ（選択中の値は変更しない）
-      dialog.focus({ preventScroll: true });
+      if (dialog.open) return;
+      // showModal(): 最上層・フォーカス包含・Esc・フォーカス復帰はブラウザ側。
+      // 初期フォーカスは autofocus 属性の「GitHubで配合を申し込む」へ移る。
+      dialog.showModal();
     },
     close() {
-      if (overlay.hidden) return;
-      overlay.hidden = true;
-      document.body.classList.remove('guide-locked');
-      returnFocus?.focus({ preventScroll: true });
-      returnFocus = null;
+      if (!dialog.open) return;
+      dialog.close(); // フォーカス復帰もブラウザが行う（ガイド: 自前で戻さない）
     },
-    isOpen: () => !overlay.hidden,
+    isOpen: () => dialog.open,
   };
 
   backBtn.addEventListener('click', () => handle.close());
-  overlay.querySelector('.guide-x')?.addEventListener('click', () => handle.close());
-  // 背面クリックでも閉じる（ダイアログ本体のクリックでは閉じない）
-  overlay.addEventListener('click', (e) => {
-    if (e.target === overlay) handle.close();
-  });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && handle.isOpen()) handle.close();
-  });
+  dialog.querySelector('.guide-x')?.addEventListener('click', () => handle.close());
+  // Esc / 背面クリックはネイティブ（closedby）に任せる → 自前ハンドラは置かない
   openBtn.addEventListener('click', () => {
     // ここでのみ GitHub へ進む。閉じてから main.ts の既存処理（URL生成・phase）を実行する。
     handle.close();
     onOpenGithub();
   });
 
-  document.body.append(overlay);
+  document.body.append(dialog);
   return handle;
 }

@@ -37,6 +37,7 @@ import { createCharacter } from './character.ts';
 import { createApplyGuide } from './apply-guide.ts';
 import {
   applyView,
+  countWaitingRequests,
   observeBreeding,
   observeView,
   OBSERVE_INTERVAL_MS,
@@ -206,7 +207,8 @@ function currentTheme(): Theme {
 // 描画
 // ---------------------------------------------------------------------------
 
-const app = document.querySelector<HTMLDivElement>('#app')!;
+// ページの主要ランクは <main> ランドマークに（issue #51: modern-web-guidance）
+const app = document.querySelector<HTMLElement>('#app')!;
 const wrap = el('div', { class: 'wrap' });
 app.append(wrap);
 
@@ -766,6 +768,15 @@ const statusNote = el(
     nextBreedingHint,
   ),
   el('div', {}, breedingShareText(scheduleCfg)),
+  // 待機中の配合申請の件数（issue #48）。観測（refreshObservation）で更新する。
+  // 観測しない環境（テスト・リポジトリ設定なし）では「—」のまま。
+  el(
+    'div',
+    {},
+    '待機中の配合: ',
+    el('span', { id: 'waiting-count' }, '—'),
+    ' 件（公開Issueの観測・3分ごとに更新）',
+  ),
   repoCfg
     ? el(
         'div',
@@ -1150,6 +1161,10 @@ async function refreshObservation(): Promise<void> {
       fetchRuntimeOffspring(),
     ]);
     observeFailures = 0;
+    // 待機中の配合申請数を表示（issue #48）。直近30件の観測からの近似値。
+    const waiting = countWaitingRequests(issues);
+    const waitingEl = document.querySelector<HTMLElement>('#waiting-count');
+    if (waitingEl) waitingEl.textContent = String(waiting);
     applyObservation(
       observeBreeding({ issues, offspring: runtimeOffspring, nowMs: Date.now() }),
     );

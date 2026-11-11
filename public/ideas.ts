@@ -189,6 +189,18 @@ function buildIdeaItem(
         `@${r.login}`,
       ),
     );
+  } else if (c.requesterAuto) {
+    // 自動申請（issue #49）。人手申請の @login チップと区別する（リンクなし）。
+    foot.append(
+      el(
+        'span',
+        {
+          class: 'requester-chip hint',
+          title: 'システムが自動で申し込みました（候補からランダム選出・issue #27）',
+        },
+        '自動申請',
+      ),
+    );
   }
 
   // サムネイル（issue #16 §12）。ctx.base はサイトルートへの基点（相対base時は '../'）。

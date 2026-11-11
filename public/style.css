@@ -2187,6 +2187,32 @@ a.idea-open .idea-thumb {
   text-decoration: underline;
 }
 
+/* --- シェアボタン（個別ページ / issue #50） -------------------------------- */
+.det-share {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border: 1px solid var(--inner);
+  border-radius: 999px;
+  background: var(--inner);
+  color: inherit;
+  font: inherit;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  text-decoration: none;
+  cursor: pointer;
+}
+.share-btn:hover {
+  text-decoration: underline;
+}
+
 /* --- 詳細セクション ------------------------------------------------------- */
 .det-panel {
   margin-top: 16px;
@@ -2614,31 +2640,30 @@ a.idea-open .idea-thumb {
    「GitHubにログインして緑色のボタンを押すだけ」を、吹き出しで案内する。
    ========================================================================= */
 
-body.guide-locked {
-  /* ダイアログ表示中の背景スクロールを止める */
-  overflow: hidden;
+/* モーダルスクロールの封じ込め（modern-web-guidance「dialog」ガイドの必須CSS）。
+   背景スクロールの固定は overflow: hidden では行わない（ルートスクロールバーが
+   消えてレイアウトシフトするため。最上層の ::backdrop 側で止める）。 */
+dialog.guide {
+  /* ネイティブ <dialog>（issue #51）。中央寄せは UA 既定（position: fixed + margin: auto）。
+     旧オーバーレイ実装と同じ見た目にするため UA 既定の余白を消す。 */
+  padding: 0;
+  overscroll-behavior: contain; /* ダイアログ内スクロールが背景へ飛び漏れないように */
 }
 
-.guide-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 60;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
+dialog.guide::backdrop {
+  /* モーダルスクロールの封じ込め（modern-web-guidance「dialog」ガイドの必須CSS）。
+     背景スクロールの固定は overflow: hidden では行わない（ルートスクロールバーが
+     消えてレイアウトシフトするため）。::backdrop は既定でスクロールコンテナではない
+     ため overflow も併せて指定する。 */
+  overflow: hidden;
+  overscroll-behavior: contain;
   background: rgba(16, 21, 31, 0.55);
 }
 
-.guide-overlay[hidden] {
-  display: none;
-}
-
 .guide {
-  width: min(660px, 100%);
+  width: min(660px, calc(100% - 32px));
   max-height: calc(100dvh - 32px);
   overflow: auto;
-  outline: none;
 }
 
 .guide .titlebar #guide-title {

@@ -5,7 +5,7 @@
  * - 処理済みIssue（resolved/rejected は永却下、failed は上限まで再試行）を再処理しない
  * - 存在しないID・祖先×子孫は AI呼び出し前に却下
  * - 同じ配合条件（親A/親B/配合タイプ/コメント）は reuse（再利用・AIなし）。
- *   親が同じでも条件が1つでも違えば新規生成（issue #37）
+ *   さらに同じ親ペア（順序無視）は配合タイプ・コメント違いでも却下（issue #47）。
  */
 import { describe, expect, it } from 'vitest';
 import {
@@ -16,6 +16,7 @@ import {
   type IssueRecord,
   type ProcessedIssues,
 } from '../lib/queue.ts';
+import { parentPairKey } from '../lib/issue.ts';
 import { requestHashOf } from '../lib/breed-key.ts';
 
 const proto = new Set(['protopedia:1', 'protopedia:2', 'protopedia:3']);
@@ -39,6 +40,7 @@ const baseOpts = (
   knownProtopediaIds: proto,
   knownOffspringIds: kids,
   existingByRequestHash: new Map<string, string>(),
+  existingByParentPair: new Map<string, string>(),
   edges: [] as ReadonlyArray<readonly [string, string]>,
   ...extra,
 });
@@ -155,7 +157,7 @@ describe('selectBreedingIssue', () => {
     if (r.action === 'reuse') expect(r.existingId).toBe('mashup-000001');
   });
 
-  it('親が同じでもコメントが違えば新規生成する', () => {
+  it('4項目完全一致を除くと、親が同じでもコメントが違えば新規生成できる（既存ペアがなければ）', () => {
     const hash = requestHashOf({
       parentA: 'protopedia:1',
       parentB: 'protopedia:2',
@@ -168,6 +170,47 @@ describe('selectBreedingIssue', () => {
       baseOpts({}, { existingByRequestHash: new Map([[hash, 'mashup-000001']]) }),
     );
     expect(r.action).toBe('process');
+  });
+
+  it('同じ親ペア（順序無視）の配合タイプ違いは却下する（issue #47）', () => {
+    const body = 'parent_a: protopedia:1\nparent_b: protopedia:2\nmode: genetic\ncomment: 別趣旨';
+    const r = selectBreedingIssue(
+      [issue(9, '2026-11-10T00:00:00Z', body)],
+      baseOpts(
+        {},
+        {
+          // 実データと同じ: protopedia:2 × protopedia:1（逆順）で生まれたペア
+          existingByParentPair: new Map([
+            [parentPairKey('protopedia:2', 'protopedia:1'), 'mashup-000001'],
+          ]),
+        },
+      ),
+    );
+    expect(r.action).toBe('reject');
+    if (r.action === 'reject') expect(r.reason).toContain('mashup-000001');
+  });
+
+  it('同じ親ペアでも4項目が完全一致なら reuse が優先（既存の発明を案内）', () => {
+    const hash = requestHashOf({
+      parentA: 'protopedia:1',
+      parentB: 'protopedia:2',
+      mode: 'fusion',
+    });
+    const body = 'parent_a: protopedia:1\nparent_b: protopedia:2\nmode: fusion';
+    const r = selectBreedingIssue(
+      [issue(10, '2026-11-10T00:00:00Z', body)],
+      baseOpts(
+        {},
+        {
+          existingByRequestHash: new Map([[hash, 'mashup-000001']]),
+          existingByParentPair: new Map([
+            [parentPairKey('protopedia:1', 'protopedia:2'), 'mashup-000001'],
+          ]),
+        },
+      ),
+    );
+    expect(r.action).toBe('reuse');
+    if (r.action === 'reuse') expect(r.existingId).toBe('mashup-000001');
   });
 
   it('コメントなしと空白だけのコメントは同じ配合として reuse される', () => {
