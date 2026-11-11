@@ -168,5 +168,69 @@
       "Alcohol detection",
       "Interactive"
     ]
+  },
+  {
+    "id": "mashup-000005",
+    "schemaVersion": 1,
+    "title": "ビア・ミートアップ・ビーコンステーション",
+    "summary": "若者がコンビニやスキー場で手軽かつ安全にビールを楽しみながら、LINE Beaconと連携した位置情報共有で友人とスムーズに再会できる自動注ぎビアサーバー。バーチャルアイドルが案内し、TASPO決済で年齢確認と楽しい体験を実現する。",
+    "concept": "この発明は、若者の飲み会の敷居を下げるコンビニビアサーバーと、スキー場での再会を円滑にするLINE Beaconを組み合わせた全く新しい体験を提供する。ユーザーは、コンビニやスキー場に設置された専用ステーションに接近すると、HVC‑C認識により性別・年齢が判定され、20歳未満は自動でサービスが停止する。TASPOカードをタッチすると決済が完了し、同時にバーチャルアイドルがスマートディスプレイに登場。アイドルが「ビールが注がれました」と声掛け、楽しさと安全を両立。さらに、LINE Beaconが周囲のビーコンを検知し、同じステーションにいる友人を自動でリスト化。ユーザーと友人は、LINEアプリ内で簡単に位置情報を共有し、会合場所の提案や到着通知をBOTが行う。これにより、ビールを楽しみつつ友人と簡単に再会できる環境を整える。特にアウトドアのスキー場では、広い雪場での位置情報精度が高く、友人を見失うリスクが軽減される。",
+    "mechanism": "1) 物理的ステーション：ビールタンク、注ぎ装置、HVC‑Cセンサー、TASPO端末、LCDディスプレイ、LINE Beaconアンテナ。2) ソフトウェア：HVC‑Cアルゴリズムによる顔認識で性別・年齢判定、TASPO APIによる決済、LINE Beacon SDKで位置情報取得、LINE Bot APIでメッセージ・スケジュール管理、AIアバター（バーチャルアイドル）エンジン。3) ワークフロー：接近→顔認識→年齢確認→TASPO決済→自動注ぎ→アイドル案内→BOTが友人位置取得→会合提案・到着通知。4) データ安全：顔データは一時保持し、デバイス内で即時破棄。決済情報はTASPOに送信のみ。",
+    "useCases": [
+      "1. コンビニ内で友人会合を計画し、スムーズにビールを注文し、再会を楽しむ。",
+      "2. スキー場で滑走中に友人の位置を確認し、同じビアステーションで合流。",
+      "3. バーチャルアイドルの会話で記念撮影やイベント情報を共有。",
+      "4. 当日予定が変更した場合でもBOTがリスケジュールを提案。",
+      "5. 大人数の集まりで各自が自動注ぎを行い、スタッフ不要。",
+      "6. 学生の休暇前に遠方から来た友人を迎える際の再会支援。"
+    ],
+    "inheritedTraits": [
+      {
+        "parentId": "protopedia:10",
+        "trait": "本発明は、ビアサーバーに搭載されたバーチャルアイドル、HVC‑Cによる性別・年齢認識、TASPOカードによる年齢確認と決済機能を取り入れ、若者が手軽かつ安全にビールを楽しめるようにした点を継承。"
+      },
+      {
+        "parentId": "protopedia:6",
+        "trait": "LINE Beaconによる高精度位置検知とLINE Botを用いたリアルタイムの位置共有・スケジュール調整機能を取り入れ、アウトドアのスキー場で友人と再会する際の課題を解決する仕組みを継承。"
+      }
+    ],
+    "parents": [
+      "protopedia:10",
+      "protopedia:6"
+    ],
+    "generation": 1,
+    "mode": "fusion",
+    "sourceIssue": 43,
+    "slot": "2026-11-11T04",
+    "createdAt": "2026-11-11T04:33:08.327Z",
+    "model": "@cf/openai/gpt-oss-20b",
+    "status": "idea",
+    "imagePrompt": "A sleek, modern beer dispensing station with a transparent glass front and a digital screen displaying an animated virtual idol avatar. The station is mounted on a stable base with embedded LINE Beacon antennas emitting subtle light. In the background, a bustling convenience store or snowy ski resort environment is visible, indicating versatile placement. The scene conveys an inviting, tech-savvy atmosphere where users tap their TASPO cards, and the station automatically pours beer while the virtual idol greets them. Nearby, a faint holographic map shows friend locations being tracked by the Beacon, and a smartphone displays a LINE Bot interface proposing meet-up spots. The overall visual showcases the fusion of entertainment, convenience, and connectivity.. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
+    "imagePath": "assets/inventions/mashup-000005.png",
+    "requestHash": "8a76982d991b5bf6b14031e3509fc85e2b8db4052c319a1fc3bf76c0a2161b3b",
+    "requester": {
+      "login": "n0bisuke",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/2968926?v=4"
+    },
+    "technologies": [
+      "HVC‑C",
+      "TASPO",
+      "LINE Beacon",
+      "LINE Bot"
+    ],
+    "domains": [
+      "エンターテインメント",
+      "日常生活",
+      "アウトドア"
+    ],
+    "keywords": [
+      "ビール自動注ぎ",
+      "バーチャルアイドル",
+      "TASPO決済",
+      "LINE Beacon",
+      "位置情報共有",
+      "友人再会",
+      "スキー場"
+    ]
   }
 ]
