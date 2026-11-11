@@ -66,7 +66,7 @@ breed.yml（時間帯別起床）──> process-breeding.ts:
 4. **生成**: Cloudflare Workers AI・テキスト `@cf/openai/gpt-oss-20b`（JSON構造化出力）→ 検証（不正・危険・根拠なし主張は公開しない・日本語出力ルール / issue #23）→ 画像 `@cf/black-forest-labs/flux-1-schnell`（512×512・**失敗してもテキストは保存** = `imagePath: null`）。
 5. **保存と返答**: Issue番号・親ID・モデル・日時・世代（`generation = 1 + max(親)`）・配合枠・`requestHash`・申請者情報を一意IDで `offspring.json` に追記 → Issueに生成結果URLをコメントしてクローズ。途中失敗しても再実行で重複保存しない。
 6. **コスト管理**: `data/ai-usage.json` に実測回数・トークン数、Neuronsは**試算**として記録。上限判定は実呼び出し回数（`dailyAiCallLimit`）。**無料枠内とは断定しない**。自動無限リトライなし（テキスト3回・画像1回。3回は Workers AI の空応答対策 / issue #45）。
-7. **自動申請（issue #27）**: 直近 `autoRequestIdleHours`（既定8h）申請がなければ自動で1件Issue作成（**選出にAIは使わない**・Fisher–Yatesで有効ペア選出・生成済みペアは避ける）。`0` で停止。
+7. **自動申請（issue #27）**: 直近 `autoRequestIdleHours`（既定8h）申請がなければ自動で1件Issue作成（**選出にAIは使わない**・Fisher–Yatesで有効ペア選出・生成済みペアは避ける）。`0` で停止。= **申請が0件の日は自働分で1日最大3件**（8時間ごと。生成が消化できれば毎日最低3件）。**未処理のopen申請がある間は積み増さない**（AI失敗で詰まったキューを悪化させない設計。failed 3回で見込み完了扱いして再開する）。予算側のガードは `dailyAiCallLimit`（現在**未設定**）で、生成側の実呼び出し回数が上限判定に使う。
 
 ## 7. データモデル（lib/types.ts）
 

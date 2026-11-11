@@ -193,7 +193,7 @@ slot: 2026-11-09T1715                                ← 申請時の候補ス�
 
 ## 自動配合申請（issue #27）
 
-利用者からの申請が**直近 `autoRequestIdleHours`（既定8時間）なかったら**、システム側が配合申請Issueを1件自動追加する。作成したIssueは**既存のキューそのまま**で `breed.yml` が処理する（特別経路は作らない）。
+利用者からの申請が**直近 `autoRequestIdleHours`（既定8時間）なかったら**、システム側が配合申請Issueを1件自動追加する。作成したIssueは**既存のキューそのまま**で `breed.yml` が処理する（特別経路は作らない）。 = **申請が0件の日は自働分で1日最大3件**（8時間ごと。生成が順調に消化されれば毎日最低3件が「自動申請→配合」として生まれる設計）。
 
 `.github/workflows/auto-request.yml`（cron `27 * * * *` = 毎時27分 + `workflow_dispatch`）→ `scripts/auto-request.ts`。
 
