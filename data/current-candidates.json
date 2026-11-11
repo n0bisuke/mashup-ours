@@ -1,94 +1,96 @@
 {
   "schemaVersion": 1,
-  "slot": "2026-11-11T0245",
-  "generatedAt": "2026-11-11T02:51:30.660Z",
-  "nextSlot": "2026-11-11T0300",
+  "slot": "2026-11-11T1030",
+  "generatedAt": "2026-11-11T10:44:27.144Z",
+  "nextSlot": "2026-11-11T1045",
   "source": "data/sample-prototypes.json",
   "candidates": [
     {
-      "id": "protopedia:12",
-      "title": "DrunkenMaster byDrunker5",
-      "sourceUrl": "https://protopedia.net/prototype/12",
-      "summary": "お酒の場を楽しくするゲームです。酔っ払ってないとゲームはできません。",
+      "id": "protopedia:101",
+      "title": "鯖江夕景",
+      "sourceUrl": "https://protopedia.net/prototype/101",
+      "summary": "鯖江夕景は鯖江市のオープンデータの鯖江百景を基に制作しています。夕景はその日ごとに違う顔を見せてくれて、季節ごとにも変化をもたらします。鯖江市の観光地の魅力を引き出すため、鯖江夕景を活用してください。",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/88dc4f01-de60-4ad9-969c-a6f31f48451d.png",
+      "mainUrl": "https://protopedia.net/pic/4c30e575-7c24-42be-b318-3b00c001f7b1.png",
       "authors": [
-        "@yuukankin",
-        "ひさやん@hisayan",
-        "佐田幸宏@yukihirosada"
+        "ひで@blue_islands"
+      ],
+      "status": 4,
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:2",
+      "title": "プロジェクターをIoTしてみた",
+      "sourceUrl": "https://protopedia.net/prototype/2",
+      "summary": "昨年(2016年)に開催中止になった for Pro ハッカソンでつくりたかったアイデア。1年寝かせたけど、世に出てこなかったようなので、今回、締め切り前の1泊2日でつくってみました。",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/8d0c7a7e-0a87-416d-98a2-8bad511e6a89.png",
+      "authors": [
+        "ひさやん@hisayan"
+      ],
+      "tags": [
+        "FPGA"
       ],
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:1142",
-      "title": "観客が試合にコミット",
-      "sourceUrl": "https://protopedia.net/prototype/1142",
-      "summary": "なんで選手交代しないんだ、 なんでそこで交代するんだ、記録がかかってるのに。 ファンはいつもやきもきするものです。 試合は監督が動かすもの？ 観戦している観客が試合にコミットする。そんな観戦の新しい**顧客体験**を提供します。",
+      "id": "protopedia:1118",
+      "title": "ボランティアを探すアプリ",
+      "sourceUrl": "https://protopedia.net/prototype/1118",
+      "summary": "スマホのGPSを使用して助けたい/助けてほしい人の場所や話せる言語を表示し、マッチング可能にします。 日本を訪れる外国人は年々増加しており、2020年にはオリンピックも開催されます。 そんな中、日本語は世界有数の難解な言語であり、多くの外国人が路頭に迷うことは火を見るよりも明らかです。 そのような状況を解決するため、誰でも持っているスマホのGPSを使用し、 地図でお互いの位置を表示することでボランティアとボランティアを必要としている人を相互検索可能とします。 \\ 1.自分の情報(助けたい/助けが必要、性別、話せる言語)を登録 2.助けが必要/助けたい人の位置が地図に表示される ※検索条件(性別、話せる言語)指定も可能",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/43957060-cc22-4a9d-90c3-f4a9c6e60db7.png",
+      "mainUrl": "https://protopedia.net/pic/71d14cbf-771f-4b47-9973-11be13a6fb2a.png",
       "authors": [
-        "@junokabe"
+        "@kanekoakira",
+        "@okanori",
+        "@okku",
+        "@shioyui"
       ],
       "tags": [
-        "NRIハッカソン"
+        "android",
+        "GPS",
+        "Kivy",
+        "Mapview",
+        "Python",
+        "REST API"
       ],
       "status": 2,
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:1138",
-      "title": "Prace - キミの走りで制圧セヨ(ランニング × 道場破り)",
-      "sourceUrl": "https://protopedia.net/prototype/1138",
-      "summary": "ランニングの新しい世界観を作り上げます!ぜひタッチ&トライなどで御覧ください!",
+      "id": "protopedia:3676",
+      "title": "メカノによる高精度機械式ジャイロ実験台",
+      "sourceUrl": "https://protopedia.net/prototype/3676",
+      "summary": "Meccano Based High-Precision Gyroscope Platform",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/63e708bb-d380-4fe7-9b35-37a23c185d4e.png",
+      "mainUrl": "https://protopedia.net/pic/290cc5ef-dee1-41eb-9621-191bac4e384d.jpg",
       "authors": [
-        "@izumiwatanabe",
-        "@jonghyochang",
-        "@wataruyamaguchi"
+        "Liem Peng Hong@liemph"
       ],
       "tags": [
-        "NRIハッカソン"
+        "ジャイロ"
       ],
-      "status": 2,
+      "status": 4,
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:1140",
-      "title": "BlindGolf",
-      "sourceUrl": "https://protopedia.net/prototype/1140",
-      "summary": "ナイスショット!",
+      "id": "protopedia:3",
+      "title": "おしゃべりパパ人形",
+      "sourceUrl": "https://protopedia.net/prototype/3",
+      "summary": "子どもが喜んでくれて、遊んでくれたら目的達成！ 小さな子どものための電子工作",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/1effacab-d5f9-46da-9f0b-04e4173e223f.jpg",
+      "mainUrl": "https://protopedia.net/pic/838b69fe-fc94-4807-b6a5-223068816f9c.jpg",
       "authors": [
-        "@eigokainai",
-        "@kazumayasuda",
-        "@kendoi",
-        "@takerusunahase"
+        "@erikosakashita",
+        "ひさやん@hisayan"
       ],
       "tags": [
-        "NRIハッカソン"
-      ],
-      "status": 2,
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:22",
-      "title": "コスラッピー",
-      "sourceUrl": "https://protopedia.net/prototype/22",
-      "summary": "クラッピーのコスプレ用です参考URL:",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/6c255377-2995-4a7f-9ee5-77b75faeb943.jpg",
-      "authors": [
-        "Masawo Yamazaki@masawoyamazaki"
-      ],
-      "tags": [
-        "クラッピーチャレンジ"
+        "mash"
       ],
       "licenseType": "CC BY 4+"
     }
   ],
   "offspringCandidates": [
-    "mashup-000002"
+    "mashup-000005"
   ]
 }
