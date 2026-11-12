@@ -292,5 +292,69 @@
       "ソーシャル",
       "ノンアルコール"
     ]
+  },
+  {
+    "id": "mashup-000008",
+    "schemaVersion": 1,
+    "title": "GyroBeacon Meetupシステム",
+    "summary": "モジュール式Meccano構造に組み込んだ高精度ジャイロ台とLINE Beaconで位置情報を取得し、スマートフォンカメラで酔い判定を行うことで、山岳トレッキング中に安全・楽しいミートアップを自動提案・ゲーム化する新型アウトドア社会化システム。",
+    "concept": "GyroBeacon Meetupシステムは、登山・スキー中に持ち運べるモジュール式ジャイロ台を利用し、現在位置と姿勢をリアルタイムに取得。LINE Beaconと連携したスマートフォンアプリが位置情報を集約し、BOTが最適な集合ポイントを提案します。さらに、スマートフォンカメラで飲酒レベルを検出し、過度な飲酒を抑えつつ、クイズやミニアクションゲームを通じて自然に交流を促進。ゲームで獲得した仮想報酬（温かいそばや日本酒）を表示し、地域文化と安全意識を同時に楽しめます。参加者はジャイロ台を簡単に組み立て調整でき、姿勢データがアプリに送信されるとスコアが即時更新。山岳環境に特化した設計で、限られた電力でも長時間利用可能で、防塵・防水機能を備えた携帯ケースに収納します。",
+    "mechanism": "本システムは三つの主要コンポーネントで構成されます。第一に、Meccanoレベルのモジュール式ジャイロ台は、微調整用スクリューとレベラーで姿勢を高精度に制御し、スマートフォンのBluetooth経由でジャイロ角速度・姿勢データを転送。第二に、LINE Beaconが設置された山頂・標高付近で位置情報を取得し、BeaconのRSSIで距離を推定。第三に、スマートフォンアプリはカメラで飲酒レベルをAI判定し、BOTが各ユーザーのスコアを集計。アプリはゲームサーバーへデータを送信し、ジャイロ台から取得した姿勢情報とBeacon位置情報を組み合わせて、最適な集合ポイントとゲームモードをリアルタイムに算出。ゲームはクイズとミニアクションを組み合わせ、装備の使用感や姿勢安定性を応用した問題を出題。仮想アイテムはゲーム内通貨で報酬され、アプリ内の仮想ショップで温かいそばや日本酒を購入可能。全ての通信はTLSで暗号化され、個人情報保護を徹底します。",
+    "useCases": [
+      "登山隊が山麓で集まる時間を効率化し、ジャイロ台で姿勢データを共有して体調管理を行いながら、LINE BOTが集合ポイントを提案。",
+      "スキーリゾートでスキー場内の飲酒管理を行い、酔い判定とゲームで安全啓発を促進。",
+      "ログハウスイベントで、参加者がジャイロ台を使い姿勢競争を行い、クイズで山岳安全知識を学びながら報酬を獲得。",
+      "登山ガイドが事前に設定したラインで位置合わせを行い、会合時に自動で報酬の発行を通知。",
+      "家族が遠距離からでもBeaconを併設したGPSツアーで、各自の位置と姿勢を共有し、仮想飲み会を開催。",
+      "アウトドアフェスで、参加者がジャイロ台を持ち込むことで、姿勢データを基にバッジ取得イベントを実装。"
+    ],
+    "inheritedTraits": [
+      {
+        "parentId": "protopedia:3676",
+        "trait": "Meccanoベースのモジュール式構造により、組み立て・調整が容易で高精度ジャイロ台を実現した点を継承。ジャイロセンサーと微調整機構がプレイヤーの姿勢をリアルタイムで測定し、精密データをベースに安全管理を行う。"
+      },
+      {
+        "parentId": "mashup-000003",
+        "trait": "LINE Beaconによる正確な位置情報取得とBOTによるスケジューリング、スマートフォンカメラでの酔い判定、クイズとミニアクションを組み合わせたゲームロジック、仮想アイテム報酬を統合した点を継承。"
+      }
+    ],
+    "parents": [
+      "protopedia:3676",
+      "mashup-000003"
+    ],
+    "generation": 2,
+    "mode": "fusion",
+    "sourceIssue": 54,
+    "slot": "2026-11-12T12",
+    "createdAt": "2026-11-12T12:34:40.016Z",
+    "model": "@cf/openai/gpt-oss-20b",
+    "status": "idea",
+    "imagePrompt": "A compact, portable gyro apparatus built from colorful Meccano parts, featuring a small gyroscope sensor, adjustable screws, and a built-in LED display. It sits on a rugged outdoor platform with a snow-covered backdrop. In front, a smartphone with a LINE app open shows a map pinpointing a mountain trail and a Beacon indicator. A user in a warm jacket adjusts the gyro, while a friend watches a quiz game on the phone screen. The scene conveys real-time position sharing, orientation measurement, and a fun, safe meetup vibe. The arrangement emphasizes the integration of mechanical precision, location-based technology, and interactive gaming in an outdoor setting. The visual is clear, vibrant, and showcases the throttle of gameplay with digital rewards displayed. The overall aesthetic is inviting and tech-savvy, blending sharp engineering with playful user experience.. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
+    "imagePath": "assets/inventions/mashup-000008.png",
+    "requestHash": "90404d0fca947c78d2a0e94f87ccb38f493f26a105c763fc8f5a9be03c6fd6c2",
+    "requesterAuto": true,
+    "technologies": [
+      "Meccano",
+      "LINE Beacon",
+      "LINE Bot",
+      "Smartphone Camera",
+      "Gyroscope Sensor",
+      "Quiz Game Engine"
+    ],
+    "domains": [
+      "アウトドア",
+      "エンターテインメント",
+      "日常生活"
+    ],
+    "keywords": [
+      "モジュール式ジャイロ",
+      "位置情報",
+      "飲酒ゲーム",
+      "仮想報酬",
+      "安全管理",
+      "クイズ",
+      "LINE",
+      "Meccano"
+    ]
   }
 ]
