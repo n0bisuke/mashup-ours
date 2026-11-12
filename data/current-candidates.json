@@ -1,50 +1,22 @@
 {
   "schemaVersion": 1,
-  "slot": "2026-11-11T1800",
-  "generatedAt": "2026-11-11T18:08:47.493Z",
-  "nextSlot": "2026-11-11T1815",
+  "slot": "2026-11-12T0045",
+  "generatedAt": "2026-11-12T00:50:44.199Z",
+  "nextSlot": "2026-11-12T0100",
   "source": "data/sample-prototypes.json",
   "candidates": [
     {
-      "id": "protopedia:4",
-      "title": "Pour or Drink",
-      "sourceUrl": "https://protopedia.net/prototype/4",
-      "summary": "一瞬で仲良くなれます。",
+      "id": "protopedia:1147",
+      "title": "EEEEEカバディ",
+      "sourceUrl": "https://protopedia.net/prototype/1147",
+      "summary": "楽しいプロダクトを楽しく開発しました！",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/ddf1faf1-faf5-4a70-b079-c0a0b5b9644a.jpg",
+      "mainUrl": "https://protopedia.net/pic/a7dc4dad-ef01-48c7-b7ce-202b2a3b9c53.jpg",
       "authors": [
-        "ひさやん@hisayan",
-        "佐田幸宏@yukihirosada",
-        "鈴木まなみ@rin2tree"
-      ],
-      "tags": [
-        "ノーコード",
-        "飲み会が盛り上がる"
-      ],
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:93",
-      "title": "ドライブメモ for くるくるピ",
-      "sourceUrl": "https://protopedia.net/prototype/93",
-      "summary": "ドライブ中の気になる場所を見つけた時にくるくるピっと記録する 。",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/bf6338ec-5205-413a-bbaf-2239b34fae07.png",
-      "authors": [
-        "ひで@blue_islands"
-      ],
-      "status": 4,
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:1137",
-      "title": "ボルダリング×IoT 〜ボルダーとセッターが高め合う世界へ〜",
-      "sourceUrl": "https://protopedia.net/prototype/1137",
-      "summary": "新たな技術に挑戦します。",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/95c3afb9-6581-45b0-9326-0ceba9db41d9.png",
-      "authors": [
-        "@yoshihiromaeda"
+        "@kojikumanami",
+        "Hiroyoshi Takahashi@hirotakahashi",
+        "岡田雄太@yutaokada",
+        "萩村卓也@takuyahagimura"
       ],
       "tags": [
         "NRIハッカソン"
@@ -53,17 +25,31 @@
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:2500",
-      "title": "M5StickVで金のウンコを動かしてガキを驚かす",
-      "sourceUrl": "https://protopedia.net/prototype/2500",
-      "summary": "Let's make a demo that will surprise the kid who was sucked by the poop!",
+      "id": "protopedia:12",
+      "title": "DrunkenMaster byDrunker5",
+      "sourceUrl": "https://protopedia.net/prototype/12",
+      "summary": "お酒の場を楽しくするゲームです。酔っ払ってないとゲームはできません。",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/55a484aa-716f-45a7-9b7d-878a4409f35f.jpg",
+      "mainUrl": "https://protopedia.net/pic/88dc4f01-de60-4ad9-969c-a6f31f48451d.png",
       "authors": [
-        "kinneko@kinneko"
+        "@yuukankin",
+        "ひさやん@hisayan",
+        "佐田幸宏@yukihirosada"
+      ],
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:3676",
+      "title": "メカノによる高精度機械式ジャイロ実験台",
+      "sourceUrl": "https://protopedia.net/prototype/3676",
+      "summary": "Meccano Based High-Precision Gyroscope Platform",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/290cc5ef-dee1-41eb-9621-191bac4e384d.jpg",
+      "authors": [
+        "Liem Peng Hong@liemph"
       ],
       "tags": [
-        "NT名古屋"
+        "ジャイロ"
       ],
       "status": 4,
       "licenseType": "CC BY 4+"
@@ -85,9 +71,24 @@
         "新幹線"
       ],
       "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:10",
+      "title": "また、会いに行きたくなるビアサーバー by No Beer No Life",
+      "sourceUrl": "https://protopedia.net/prototype/10",
+      "summary": "若者の飲み文化をつくるため、舞い降りたビアサーバーバーチャルアイドル。 若者はお金がないのです。だから飲みに行きけないのです。 居酒屋よりも安く楽しめる「コンビニ飲み」の文化をつくる仕組みです。 ビアサーバーにバーチャルアイドル（売り子）がついて、お話しします。 (HVC-C認識) 誰かが前を通ったら、「冷えてますよ、飲みませんか？」と声をかけ（人体検出） ビアサーバー側を向いたら、「おにいさん、よってってよ〜」（性別・世代認識） 20歳未満には売ってはいけないので、 TASPOをつかって、シャリーン。するとビールを注ぎます（ここの機械連携は未実装） ↑もちろん、TASPOの電子マネーで決済も完了します。 コンビニ店員さんの手をわずらわせることなく、ビアサーバーがコンビニに。 セブンイレブンがコーヒードリッパーで、とてつもなく売上を上げたように、 ビアサーバーもいきますよ！ たのしいアイドルと共に、ビアサーバーを全国展開します。 参考URL:",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/a7112b01-07ad-4508-ba8a-ebd074a53386.png",
+      "authors": [
+        "@erikosakashita",
+        "kazu@kazu2112",
+        "TakuKobayashi@takukobayashi",
+        "ひさやん@hisayan"
+      ],
+      "licenseType": "CC BY 4+"
     }
   ],
   "offspringCandidates": [
-    "mashup-000003"
+    "mashup-000005"
   ]
 }
