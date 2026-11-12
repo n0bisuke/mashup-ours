@@ -1,22 +1,25 @@
 {
   "schemaVersion": 1,
-  "slot": "2026-11-12T1645",
-  "generatedAt": "2026-11-12T16:53:13.442Z",
-  "nextSlot": "2026-11-12T1700",
+  "slot": "2026-11-12T2230",
+  "generatedAt": "2026-11-12T22:41:34.748Z",
+  "nextSlot": "2026-11-12T2245",
   "source": "data/sample-prototypes.json",
   "candidates": [
     {
-      "id": "protopedia:22",
-      "title": "コスラッピー",
-      "sourceUrl": "https://protopedia.net/prototype/22",
-      "summary": "クラッピーのコスプレ用です参考URL:",
+      "id": "protopedia:9",
+      "title": "ゆずったー 〜新たなつり革を創造する〜",
+      "sourceUrl": "https://protopedia.net/prototype/9",
+      "summary": "おばあちゃんに優しい乗り物とは何か、 そんなコンセプトで、作品を作りました。 ＊ おばあちゃんがつり革に掴まる → 座っている誰か一人の座席がブルブルッ！！ → 思わず立ち上がります → 「譲り」 → 「日本も捨てたもんじゃないねぇ、ありがとう」と「譲られる」 そんな、おもてなしを実現します。 ※ 構想の過程で、つり革のコミュニケーション能力の高さに気づき、 パーソナルメディアとしてのつり革の可能性に目覚めました。 （「あと何駅で降りるかを震えで伝える」「今日ヒマなら飲み行かない？と、呼びかける」とか。） でもそれは、未来の話。 ここでは、その第一歩、今回作ったものについて。 《登場人物》 1. おばあちゃん 2. つり革＋温湿度センサ＋BLEモジュール powered by Konashi + Uzuki (MACNICA) 3. iPhone 4. Mac Book Air 5. IDCFサーバ 6. MyThings by Yahoo! 7. LittleBit （Arduinoボード含む） 8. テクタイルデバイス（音→震え） 9. 善意の第三者（ゆずってくれる人たち） 《流れ詳細》 a. おばあちゃんがつり革に掴まると、温度が計測されます → このデータは無線でiPhoneに飛びます b. 温度が一定以上になると、IDCFサーバにMyThingsのトリガーとして記録されま…",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/6c255377-2995-4a7f-9ee5-77b75faeb943.jpg",
+      "mainUrl": "https://protopedia.net/pic/cab3aa3d-de0a-45a1-a872-8722f59ad8dd.jpg",
       "authors": [
-        "Masawo Yamazaki@masawoyamazaki"
+        "ひさやん@hisayan"
       ],
       "tags": [
-        "クラッピーチャレンジ"
+        "arduino",
+        "Bluetooth",
+        "ショッカソン2015",
+        "社会課題を解決するデザイン"
       ],
       "licenseType": "CC BY 4+"
     },
@@ -41,59 +44,57 @@
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:18",
-      "title": "ハンドクラッピナー",
-      "sourceUrl": "https://protopedia.net/prototype/18",
-      "summary": "結構よく回ります *** ** * ** *** ハンドスピナー (2枚タイプ) パチパチトールくん (赤・黄各1個) 参考URL:",
+      "id": "protopedia:2500",
+      "title": "M5StickVで金のウンコを動かしてガキを驚かす",
+      "sourceUrl": "https://protopedia.net/prototype/2500",
+      "summary": "Let's make a demo that will surprise the kid who was sucked by the poop!",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/035f119d-9aa9-4f5e-88b6-e49b732c1491.jpg",
+      "mainUrl": "https://protopedia.net/pic/55a484aa-716f-45a7-9b7d-878a4409f35f.jpg",
       "authors": [
-        "Masawo Yamazaki@masawoyamazaki"
+        "kinneko@kinneko"
       ],
       "tags": [
-        "クラッピーチャレンジ"
-      ],
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:101",
-      "title": "鯖江夕景",
-      "sourceUrl": "https://protopedia.net/prototype/101",
-      "summary": "鯖江夕景は鯖江市のオープンデータの鯖江百景を基に制作しています。夕景はその日ごとに違う顔を見せてくれて、季節ごとにも変化をもたらします。鯖江市の観光地の魅力を引き出すため、鯖江夕景を活用してください。",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/4c30e575-7c24-42be-b318-3b00c001f7b1.png",
-      "authors": [
-        "ひで@blue_islands"
+        "NT名古屋"
       ],
       "status": 4,
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:1118",
-      "title": "ボランティアを探すアプリ",
-      "sourceUrl": "https://protopedia.net/prototype/1118",
-      "summary": "スマホのGPSを使用して助けたい/助けてほしい人の場所や話せる言語を表示し、マッチング可能にします。 日本を訪れる外国人は年々増加しており、2020年にはオリンピックも開催されます。 そんな中、日本語は世界有数の難解な言語であり、多くの外国人が路頭に迷うことは火を見るよりも明らかです。 そのような状況を解決するため、誰でも持っているスマホのGPSを使用し、 地図でお互いの位置を表示することでボランティアとボランティアを必要としている人を相互検索可能とします。 \\ 1.自分の情報(助けたい/助けが必要、性別、話せる言語)を登録 2.助けが必要/助けたい人の位置が地図に表示される ※検索条件(性別、話せる言語)指定も可能",
+      "id": "protopedia:1",
+      "title": "クラッピーで仮装大賞",
+      "sourceUrl": "https://protopedia.net/prototype/1",
+      "summary": "合格したい！",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/71d14cbf-771f-4b47-9973-11be13a6fb2a.png",
+      "mainUrl": "https://protopedia.net/pic/9c507193-d695-4795-b0e6-4a11daa719e9.jpg",
       "authors": [
-        "@kanekoakira",
-        "@okanori",
-        "@okku",
-        "@shioyui"
+        "ひさやん@hisayan"
       ],
       "tags": [
-        "android",
-        "GPS",
-        "Kivy",
-        "Mapview",
-        "Python",
-        "REST API"
+        "おもちゃ",
+        "クラッピーチャレンジ"
+      ],
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:1138",
+      "title": "Prace - キミの走りで制圧セヨ(ランニング × 道場破り)",
+      "sourceUrl": "https://protopedia.net/prototype/1138",
+      "summary": "ランニングの新しい世界観を作り上げます!ぜひタッチ&トライなどで御覧ください!",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/63e708bb-d380-4fe7-9b35-37a23c185d4e.png",
+      "authors": [
+        "@izumiwatanabe",
+        "@jonghyochang",
+        "@wataruyamaguchi"
+      ],
+      "tags": [
+        "NRIハッカソン"
       ],
       "status": 2,
       "licenseType": "CC BY 4+"
     }
   ],
   "offspringCandidates": [
-    "mashup-000003"
+    "mashup-000006"
   ]
 }
