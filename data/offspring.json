@@ -356,5 +356,67 @@
       "LINE",
       "Meccano"
     ]
+  },
+  {
+    "id": "mashup-000009",
+    "schemaVersion": 1,
+    "title": "スピントレイルガイド",
+    "summary": "手で回すハンドスピナーとBLEビーコンを組み合わせ、位置に応じて音声案内とハプティックフィードバックを提供する対話型子供向けトレイルガイド。",
+    "concept": "スピントレイルガイドは、子供が手で回すスピナーを使って自然や学校のフィールドトリップ、探検遊びをより楽しく安全に楽しむためのデバイスです。デバイスはESP32搭載で低消費電力を実現し、サーボモータで頭や手を動かすことで方向や情景を示します。BLEビーコンが設置されたエリア内で位置を検知し、子供がどの場所にいるかをリアルタイムで把握。位置情報に合わせて音声案内が流れ、子供が好きなスピン速度でゲーム感覚で進むストーリーテリングが行われます。さらに、ハプティック振動モータが障害物やポイントを感知して触覚情報を提供し、親や先生は安全に子供をサポートできます。音声認識により子供が「次」「戻る」「止まれ」といった音声コマンドを出すと、デバイスは即座に反応。FSM（状態遷移制御）で回転・音声・振動の状態を統合し、子供の興味を引き続き保ちます。教育現場では学習内容を音声で説明し、日常生活では散歩やキャンプのナビゲーションとして活用。全体として子供の感覚と学びを同時に刺激し、親子のコミュニケーションを支援します。",
+    "mechanism": "ハンドスピナー本体は3Dプリント軽量ボディに高精度軸を装備。ESP32がBluetooth LEビーコンと通信し、周囲のビーコンIDと信号強度から位置を判定。サーボモータは前面に設置し、角度を制御して頭部や手を動かす。音声合成はESP32に内蔵された音声合成モジュール（WAV/TTS）で行い、スピン速度に応じて速度感や音量を変える。ハプティック振動モータは小型サーボに組み込まれ、位置情報に関わるイベント時に振動。状態制御はC++で構築したFSMで、スピン・停止・音声応答・振動の各状態を管理し、タッチセンサーで入力を受け取り、音声認識はMicrophoneとTensorFlow Liteを使用。デバイスは100mA以下で動作し、2週間以上の連続使用が可能。",
+    "useCases": [
+      "学校の自然観察学習で、児童がスピンして場所を探しながら音声で動植物情報を収集する。",
+      "幼稚園の公園遊びで、スピンしながら楽しいストーリーを聞き、親子で探検。",
+      "夏祭りの屋台巡りで、子供がスピンで次の屋台を見つけ、音声で説明を受ける。",
+      "キャンプで、デバイスを持って森の中を探検し、ハプティックで出口や水場を知らせる。",
+      "自宅の庭で、スピンを回しながら庭の動物や植物を音声で学ぶ。"
+    ],
+    "inheritedTraits": [
+      {
+        "parentId": "mashup-000002",
+        "trait": "本発明はパパスピンからハンドスピナー本体、サーボモータでの頭・手動作、タッチセンサーでの即時応答、低電圧バッテリーで長時間使用できる設計、およびFSMによる状態管理を継承し、子供の触覚と音声対話を実現する基盤を提供しています。"
+      },
+      {
+        "parentId": "mashup-000006",
+        "trait": "雪山オーディオゴルフ・ミーティングBOTからはBLEビーコンによる位置情報送信、LINE Beacon／BLE連携、音響誘導とハプティックフィードバック、Node.jsサーバーによるイベントスケジューリングとリアルタイムスコア更新・情報共有機能を取り入れ、位置に応じた音声案内と触覚情報提供を可能にしています。"
+      }
+    ],
+    "parents": [
+      "mashup-000002",
+      "mashup-000006"
+    ],
+    "generation": 3,
+    "mode": "fusion",
+    "sourceIssue": 55,
+    "slot": "2026-11-12T19",
+    "createdAt": "2026-11-12T19:50:43.304Z",
+    "model": "@cf/openai/gpt-oss-20b",
+    "status": "idea",
+    "imagePrompt": "A child is holding a sleek, lightweight hand spinner toy with a polished metal shaft and a colorful, translucent body in a sunny park setting. The spinner is rotating in the child's hands, and tiny motion sensors glow subtly. The device emits a soft, blue light along its axis. A small, built-in speaker is visible on the side. On the background, a clear Bluetooth beacon icon floats above a path of child-friendly icons such as a tree, a question mark, and a tiny compass. The device is connected to a separate, small handheld companion controlling screen displaying a map view with an animated cursor indicating the child's current location. There is a gentle vibration icon floating above the device, and a voice waveform shape visualizes the audio guide, with a friendly message \"Welcome to the forest adventure!\" in bold letters. The overall scene is vibrant, inviting, and clearly showcases the blending of spinning mechanics, audio guidance, and haptic feedback, all within a playful educational context.. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
+    "imagePath": "assets/inventions/mashup-000009.png",
+    "requestHash": "128a670c743459778c992849b0ab7f1a3d223f83800d6c75015c18b48ede87fb",
+    "requesterAuto": true,
+    "technologies": [
+      "ESP32",
+      "BLE Beacon",
+      "サーボモータ",
+      "タッチセンサー",
+      "音声合成モジュール",
+      "ハプティック振動モータ"
+    ],
+    "domains": [
+      "教育・学習",
+      "日常生活",
+      "エンターテインメント"
+    ],
+    "keywords": [
+      "ハンドスピナー",
+      "BLEビーコン",
+      "音声案内",
+      "ハプティックフィードバック",
+      "位置情報",
+      "対話型学習",
+      "低電圧バッテリー"
+    ]
   }
 ]
