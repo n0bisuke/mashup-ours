@@ -240,6 +240,22 @@
       },
       "extractedAt": "2026-11-13T09:27:02.596Z",
       "model": "@cf/openai/gpt-oss-20b"
+    },
+    "protopedia:1147": {
+      "id": "protopedia:1147",
+      "version": "aadb7afcdc15",
+      "elements": {
+        "technology": "情報が不足しています",
+        "purpose": "情報が不足しています",
+        "problem": "情報が不足しています",
+        "input": "情報が不足しています",
+        "output": "情報が不足しています",
+        "experience": "情報が不足しています",
+        "feature": "情報が不足しています",
+        "uniqueness": "情報が不足しています"
+      },
+      "extractedAt": "2026-11-13T12:06:16.303Z",
+      "model": "@cf/openai/gpt-oss-20b"
     }
   }
 }

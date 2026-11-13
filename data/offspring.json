@@ -479,5 +479,68 @@
       "道場制圧",
       "音響誘導"
     ]
+  },
+  {
+    "id": "mashup-000011",
+    "schemaVersion": 1,
+    "title": "酔いカバディ・アドベンチャー",
+    "summary": "酔った状態の参加者が、リアルタイムモーションセンサーでカバディ型の身体接触ゲームを行い、液体消費量と酔い度をスコア化する飲み会専用ゲーム。",
+    "concept": "酔いカバディ・アドベンチャーは、友人同士の居酒屋や自宅パーティーでの飲み会を以前よりも面白く、交流を深めることを目的とした全く新しいゲームです。参加者は各自に装着した軽量モーションセンサー（スマートフォンの加速度計や専用ウェア）と、鏡面に組み込まれたブレスアラーレイを使用します。システムはまず各人の酔いレベルをリアルタイムで測定し、最低酔い閾値に達した時点でゲームが自動的に開始します。ゲーム中は、プレイヤーが「タッチ＆カバー」動作を行うことで相手を倒すか、一定距離内でリデンプションを行うと得点が入り、リアルタイムで点数がスクリーンに表示されます。全体の流れは、1スイング＝1ゲームになるように設計され、酔いによる時間延長効果や、仲間同士での応援・指示がゲームの戦略に影響します。酔った状態でも安全に実施できるよう、動作の検知はパーソナル空間を超えないように制限され、急激な体勢変更を検知した際は警告音が鳴る仕組みも備えています。ゲーム終了後は、総酔い度とスコアの統計をまとめたレポートが提供され、次回の飲み会で改善点を話し合う助けとなります。また、飲み会の雰囲気を一層盛り上げるため、画面には可愛いアニメキャラクターが酔いレベルに応じてカバーアップをするクオリティがあります。",
+    "mechanism": "酔いカバディ・アドベンチャーは、以下の三要素を統合することで実現されます。1) 酔い判定モジュール：各プレイヤーの呼気を検知するブレスアラーレイにより、アルコール度数と呼気量から酔いレベルを算出。酔いレベルが設定閾値を下回るとゲームは開始できません。2) モーションセンサーとリアルタイム動作解析：Bluetoothで接続されたウェアラブルセンサー（加速度計・ジャイロ）を通じて、プレイヤーの身体動作を高頻度で取得。独自の動作認識アルゴリズムにより、カバディのタッチ＆カバー動作やバウンド・ブロックをリアルタイムに判定し、得点や失点を計算。3) 画面・音響インターフェース：Unityベースのゲームエンジンで構築され、スマートTVやPCモニターに映し出されるUIは、酔い度、得点、現在のゲーム状態を一目で把握できるように設計。サウンドエフェクトは酔い状態に合わせて変化し、全体の臨場感を高めます。これにより、酔った状態でも安全かつエンターテイメント性の高い身体活動が継続できます。",
+    "useCases": [
+      "1. 居酒屋のパーティーで、酔った友人同士が身体を使ったゲームで盛り上がる。",
+      "2. 大学生の飲み会で、ゲームを通じて共通の話題を作り、交流を促進する。",
+      "3. カラオケ帰りに酒場で酔い度を測定し、ゲームを開始。仲間外れを減らす。",
+      "4. 同窓会で、楽しい思い出を作るために旧友が協力してゲームに挑戦。",
+      "5. 仕事帰りに同僚が飲み会を企画、酔いを利用したゲームでストレス発散。",
+      "6. 家族の集まりで、全員が参加できる酔い判定付きゲームを通じて絆を深める。"
+    ],
+    "inheritedTraits": [
+      {
+        "parentId": "protopedia:12",
+        "trait": "この親は、酔いの状態を必須条件としてゲーム開始を制御し、飲酒量・酔いレベルを入力としてゲーム進行を決定する点を継承。酔いによるコミュニケーションの活性化と、酔いがゲーム体験の核心であるという独自性を保持。"
+      },
+      {
+        "parentId": "protopedia:1147",
+        "trait": "この親は、身体接触型のカバディを想起させるリアルタイムモーションコントロールと瞬間判定の要素を取り入れ、対人競技のダイナミックさを新しい文脈へ移植した。"
+      }
+    ],
+    "parents": [
+      "protopedia:12",
+      "protopedia:1147"
+    ],
+    "generation": 1,
+    "mode": "fusion",
+    "sourceIssue": 57,
+    "slot": "2026-11-13T12",
+    "createdAt": "2026-11-13T12:06:16.303Z",
+    "model": "@cf/openai/gpt-oss-20b",
+    "status": "idea",
+    "imagePrompt": "A vibrant living room scene with a group of four friends standing in a circle. In the center, a large digital scoreboard displays '酔いカバディ・アドベンチャー' with scores and an alcohol level gauge. One participant, wearing a traditional kabaddi-style bandana and holding a small Korean flag, is mid-motion, arms extended as if attempting a touch. Motion sensor icons line the perimeter of the room, glowing softly. A handheld breathalyzer sensor is held by another friend, with a digital readout showing a clear 'Ready' status. In the background, a soft Bluetooth speaker emits rhythmic beats. The image exudes a lively, playful atmosphere, illustrating the blend of physical movement, alcohol detection, and interactive scoring in a casual social setting.. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
+    "imagePath": "assets/inventions/mashup-000011.png",
+    "requestHash": "bb571821dd1d7ec1522e675d14a7f435534d7f38ed30749706b4d07db627e8ee",
+    "requester": {
+      "login": "n0bisuke",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/2968926?v=4"
+    },
+    "technologies": [
+      "Game Engine",
+      "Motion Sensors",
+      "Alcohol Breathalyzer"
+    ],
+    "domains": [
+      "エンターテインメント",
+      "日常生活"
+    ],
+    "keywords": [
+      "酔い判定",
+      "モーションセンサー",
+      "リアルタイム",
+      "飲み会ゲーム",
+      "身体活動",
+      "協力プレイ",
+      "瞬間判定",
+      "楽しい飲み会"
+    ]
   }
 ]
