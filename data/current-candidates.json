@@ -1,21 +1,56 @@
 {
   "schemaVersion": 1,
-  "slot": "2026-11-13T1815",
-  "generatedAt": "2026-11-13T18:29:08.353Z",
-  "nextSlot": "2026-11-13T1830",
+  "slot": "2026-11-13T2345",
+  "generatedAt": "2026-11-13T23:50:00.811Z",
+  "nextSlot": "2026-11-14T0000",
   "source": "data/sample-prototypes.json",
   "candidates": [
     {
-      "id": "protopedia:1138",
-      "title": "Prace - キミの走りで制圧セヨ(ランニング × 道場破り)",
-      "sourceUrl": "https://protopedia.net/prototype/1138",
-      "summary": "ランニングの新しい世界観を作り上げます!ぜひタッチ&トライなどで御覧ください!",
+      "id": "protopedia:2042",
+      "title": "ケッセ鬼を滅するMRチャンバラ運動アプリ",
+      "sourceUrl": "https://protopedia.net/prototype/2042",
+      "summary": "刀を振り回すチャンバラゲームによって有酸素運動を日々行い、減量を支援します。",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/63e708bb-d380-4fe7-9b35-37a23c185d4e.png",
+      "mainUrl": "https://protopedia.net/pic/1e83aa14-13a5-4df4-a9e7-a559122dd98e.png",
       "authors": [
-        "@izumiwatanabe",
-        "@jonghyochang",
-        "@wataruyamaguchi"
+        "HideG@hideg"
+      ],
+      "tags": [
+        "MagicLeap",
+        "MR",
+        "ゲーミフィケーション",
+        "呼吸"
+      ],
+      "status": 4,
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:18",
+      "title": "ハンドクラッピナー",
+      "sourceUrl": "https://protopedia.net/prototype/18",
+      "summary": "結構よく回ります *** ** * ** *** ハンドスピナー (2枚タイプ) パチパチトールくん (赤・黄各1個) 参考URL:",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/035f119d-9aa9-4f5e-88b6-e49b732c1491.jpg",
+      "authors": [
+        "Masawo Yamazaki@masawoyamazaki"
+      ],
+      "tags": [
+        "クラッピーチャレンジ"
+      ],
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:1140",
+      "title": "BlindGolf",
+      "sourceUrl": "https://protopedia.net/prototype/1140",
+      "summary": "ナイスショット!",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/1effacab-d5f9-46da-9f0b-04e4173e223f.jpg",
+      "authors": [
+        "@eigokainai",
+        "@kazumayasuda",
+        "@kendoi",
+        "@takerusunahase"
       ],
       "tags": [
         "NRIハッカソン"
@@ -24,71 +59,39 @@
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:2500",
-      "title": "M5StickVで金のウンコを動かしてガキを驚かす",
-      "sourceUrl": "https://protopedia.net/prototype/2500",
-      "summary": "Let's make a demo that will surprise the kid who was sucked by the poop!",
+      "id": "protopedia:3676",
+      "title": "メカノによる高精度機械式ジャイロ実験台",
+      "sourceUrl": "https://protopedia.net/prototype/3676",
+      "summary": "Meccano Based High-Precision Gyroscope Platform",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/55a484aa-716f-45a7-9b7d-878a4409f35f.jpg",
+      "mainUrl": "https://protopedia.net/pic/290cc5ef-dee1-41eb-9621-191bac4e384d.jpg",
       "authors": [
-        "kinneko@kinneko"
+        "Liem Peng Hong@liemph"
       ],
       "tags": [
-        "NT名古屋"
+        "ジャイロ"
       ],
       "status": 4,
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:3",
-      "title": "おしゃべりパパ人形",
-      "sourceUrl": "https://protopedia.net/prototype/3",
-      "summary": "子どもが喜んでくれて、遊んでくれたら目的達成！ 小さな子どものための電子工作",
+      "id": "protopedia:1142",
+      "title": "観客が試合にコミット",
+      "sourceUrl": "https://protopedia.net/prototype/1142",
+      "summary": "なんで選手交代しないんだ、 なんでそこで交代するんだ、記録がかかってるのに。 ファンはいつもやきもきするものです。 試合は監督が動かすもの？ 観戦している観客が試合にコミットする。そんな観戦の新しい**顧客体験**を提供します。",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/838b69fe-fc94-4807-b6a5-223068816f9c.jpg",
+      "mainUrl": "https://protopedia.net/pic/43957060-cc22-4a9d-90c3-f4a9c6e60db7.png",
       "authors": [
-        "@erikosakashita",
-        "ひさやん@hisayan"
+        "@junokabe"
       ],
       "tags": [
-        "mash"
+        "NRIハッカソン"
       ],
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:4",
-      "title": "Pour or Drink",
-      "sourceUrl": "https://protopedia.net/prototype/4",
-      "summary": "一瞬で仲良くなれます。",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/ddf1faf1-faf5-4a70-b079-c0a0b5b9644a.jpg",
-      "authors": [
-        "ひさやん@hisayan",
-        "佐田幸宏@yukihirosada",
-        "鈴木まなみ@rin2tree"
-      ],
-      "tags": [
-        "ノーコード",
-        "飲み会が盛り上がる"
-      ],
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:12",
-      "title": "DrunkenMaster byDrunker5",
-      "sourceUrl": "https://protopedia.net/prototype/12",
-      "summary": "お酒の場を楽しくするゲームです。酔っ払ってないとゲームはできません。",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/88dc4f01-de60-4ad9-969c-a6f31f48451d.png",
-      "authors": [
-        "@yuukankin",
-        "ひさやん@hisayan",
-        "佐田幸宏@yukihirosada"
-      ],
+      "status": 2,
       "licenseType": "CC BY 4+"
     }
   ],
   "offspringCandidates": [
-    "mashup-000002"
+    "mashup-000011"
   ]
 }
