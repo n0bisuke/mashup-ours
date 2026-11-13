@@ -418,5 +418,66 @@
       "対話型学習",
       "低電圧バッテリー"
     ]
+  },
+  {
+    "id": "mashup-000010",
+    "schemaVersion": 1,
+    "title": "山岳VRランニングクエスト・アラートBOT",
+    "summary": "山道走行とVR音響誘導・ハプティックフィードバック、酔い検知を組み合わせ、LINEボットでリアルタイム進行・友人共有を可能にする、アウトドアランニングゲーム",
+    "concept": "山岳リゾートやトレイルで、ランナーはスマホとウェアラブルを装着し、BLEビーコンで位置情報を取得。VRヘッドセットに映し出される仮想山道は音響誘導のみで進むため視覚障害者や酔った状態でも安全に走行できる。走行中に心拍数・距離・速度がリアルタイムで記録され、ゲーム内では「道場」と呼ばれる挑戦が自動生成される。道場を制圧するには特定の歩幅やリズムで腕振りを行うなど、身体データを活用したアクションが必要。酔いレベルが上がるとゲーム難易度が自動調整され、LINEボットが安全確認メッセージやヒントを送信。走行終了後はサーバーでスコア統合、LINEチャットで友人と共有できる。これにより、運動不足解消とゲーム感覚の楽しみ、さらに安全性が同時に向上する。",
+    "mechanism": "ビーコンは走行者のX/Y座標をBLEで送信し、サーバーは経路情報をもとにVR音響トラックを生成。スマホのカメラは顔認識で酒精濃度を推定し、ウェアラブルは心拍・歩幅をリアルタイム測定。Node.jsサーバーがこれらを統合し、ゲームエンジンにプレイヤー状態を送る。ゲーム内では予め設定された道場がランダムに配置され、ランニングパターンが合致すると点数が付与される。ハプティックバックパックはモーションセンサーと同期し、スイング感覚に似た振動で身体へのフィードバックを行う。全てのデータはLINE Messaging APIを通じて参加者に通知し、リアルタイムでスコア＆イベント情報を共有。",
+    "useCases": [
+      "１．スキー場でのアフターパーティーで、酔っても安全に山歩きゲームを楽しむ",
+      "２．アウトドアイベントでランナーを集めて道場制圧競争を開催",
+      "３．日常のトレイルランで友人とスコアを競い合い、LINEで結果をシェア",
+      "４．視覚障害者のための音響誘導ランニング体験を提供",
+      "５．フィットネスジムで屋外トレーニングをVR化したトレーニングプログラム"
+    ],
+    "inheritedTraits": [
+      {
+        "parentId": "mashup-000006",
+        "trait": "位置情報取得、酔い検知、VR音響誘導、ハプティックフィードバック、LINEボットでのリアルタイム通知とスコア共有"
+      },
+      {
+        "parentId": "protopedia:1138",
+        "trait": "ランニングデータ取得、ゲーム化された道場制圧要素、タッチ操作でのインタラクション"
+      }
+    ],
+    "parents": [
+      "mashup-000006",
+      "protopedia:1138"
+    ],
+    "generation": 3,
+    "mode": "fusion",
+    "sourceIssue": 56,
+    "slot": "2026-11-13T09",
+    "createdAt": "2026-11-13T09:27:02.596Z",
+    "model": "@cf/openai/gpt-oss-20b",
+    "status": "idea",
+    "imagePrompt": "A sleek, futuristic VR headset rests on a rugged mountain trail. A cyclist in a bright, reflective jacket holds a smartphone up to their face, scanning their lips for alcohol detection. A wearable haptic vest emits gentle vibrations. In the background, a translucent digital overlay of a winding path flickers with glowing waypoints labeled \"Dojo.\" A LINE messaging bubble floats beside a mountain peak, displaying \"Score: 8,345\" in bright orange. The scene captures the blend of outdoor adventure, gaming excitement, and real-time safety alerts.. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
+    "imagePath": "assets/inventions/mashup-000010.png",
+    "requestHash": "f022b03f38852d41264f48aafd442accd4455b6187dea57535913116bc325dae",
+    "requesterAuto": true,
+    "technologies": [
+      "BLE",
+      "LINE Messaging API",
+      "VR Headset",
+      "Haptic Feedback",
+      "Motion Sensor",
+      "Node.js Server"
+    ],
+    "domains": [
+      "アウトドア",
+      "エンターテインメント",
+      "日常生活"
+    ],
+    "keywords": [
+      "VRランニング",
+      "酔い検知",
+      "ハプティックフィードバック",
+      "LINEボット",
+      "道場制圧",
+      "音響誘導"
+    ]
   }
 ]
