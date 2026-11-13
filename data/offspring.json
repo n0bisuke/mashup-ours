@@ -542,5 +542,67 @@
       "瞬間判定",
       "楽しい飲み会"
     ]
+  },
+  {
+    "id": "mashup-000012",
+    "schemaVersion": 1,
+    "title": "Gyro‑Kabbadi 360: 3Dモーショングラフィティゲーム",
+    "summary": "Meccano ベースの高精度ジャイロ実験台と、未知のゲーム『EEEEEカバディ』を融合させ、手持ちで操作しながら体感できる3Dモーション・ゲームを実現するアイデア。",
+    "concept": "この発明は、低コストで組み立てやすい Meccano フレームに高精度ジャイロセンサーを搭載し、モジュール式に調整できる機構を備えたポータブルデバイスを作り出します。ユーザーは手で複数の方向へデバイスを揺らしたり、回転させたりすると、内蔵マイクロコントローラがジャイロデータをリアルタイムで解析し、ゲーム内のキャラクターや障害物に影響を与えます。例えば、上方向に速く回転させるとキャラクターがジャンプし、左右に傾けると敵をかわす動きを実装。さらに、LED スクリーンにゲーム進行状況を表示し、友人同士で対戦できるようにします。親子で遊んだり、友人とのパーティーゲームとしても活躍し、体を動かしながら協調性と反射神経を鍛える手段として普及が期待されます。",
+    "mechanism": "1) Meccano ベース：可動部品と微調整用スクリューで台の姿勢を高精度に設定。2) ジャイロセンサー：3軸角速度データを取得し、Arduino でフィルタリング。3) マイクロコントローラ：加速度・角速度を組み合わせ、ゲームロジック（得点、ペナルティ、キャラアクション）を決定。4) LED ディスプレイ：スコアとゲーム状態を表示。5) ワイヤレス送信：必要に応じてスマートフォンへデータ送信し、外部アプリで解析。5段階のモーションクリティカルポイントを設け、感度を微調整可能。",
+    "useCases": [
+      "1. 週末の家族ゲームタイム：リビングで簡単に組み立て、手軽にモーションゲームを楽しむ。",
+      "2. 友人同士のパーティー：高得点を競い合う対戦モードで盛り上がる。",
+      "3. 教育ツールとして：学校の物理実習でジャイロの原理を実感しつつ、ゲームで学習効果を高める。",
+      "4. フィットネス補助：デバイスを手持ちで動かす運動をゲーム化し、体力向上を促進。",
+      "5. アートインスタレーション：LED 表示とモーションを組み合わせたインタラクティブ作品として展示。",
+      "6. リハビリテーション：微細な手首運動をゲーム化し、モビリティ回復を楽しく支援。"
+    ],
+    "inheritedTraits": [
+      {
+        "parentId": "protopedia:3676",
+        "trait": "Meccano ベースのモジュール式構造、精密ジャイロセンサー、微調整用スクリュー・レベラー、振動抑制設計、リアルタイム姿勢データ出力。"
+      },
+      {
+        "parentId": "protopedia:1147",
+        "trait": "情報が不足しているため特定の機能を継承していない。"
+      }
+    ],
+    "parents": [
+      "protopedia:3676",
+      "protopedia:1147"
+    ],
+    "generation": 1,
+    "mode": "mutation",
+    "sourceIssue": 58,
+    "slot": "2026-11-13T19",
+    "createdAt": "2026-11-13T19:35:33.578Z",
+    "model": "@cf/openai/gpt-oss-20b",
+    "status": "idea",
+    "imagePrompt": "A colorful, compact handheld gadget sitting on a wooden tabletop, built from interlocking Meccano metal rods in bright red and blue colors. The frame holds a small, sleek gyroscope unit with an exposed sensor chip and a tiny 7‑segment LED display glowing green in the center. A transparent plastic shell covers the electronics, showcasing a miniature spinning top in the middle that rotates as the device is moved. Around the device, there are light‑up arrows rotating in 3D, indicating motion directions, and a human hand holding the device, gracefully turning it to demonstrate gameplay. The background shows a casual living room setting, hinting at family game night, while subtle shadows reveal the precise mechanical construction and the device’s interactive nature. The image captures both the rugged Meccano aesthetic and the modern gaming interface, highlighting the fusion of precision engineering and playful motion.. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
+    "imagePath": "assets/inventions/mashup-000012.png",
+    "requestHash": "35b84e5d692b0d6fd1a7187d6bd86de2f34d0c07fc7349eb688f2d62c51c14f3",
+    "requester": {
+      "login": "n0bisuke",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/2968926?v=4"
+    },
+    "technologies": [
+      "Meccano",
+      "gyroscope sensor",
+      "Arduino",
+      "LED display"
+    ],
+    "domains": [
+      "エンターテインメント"
+    ],
+    "keywords": [
+      "モノづくり",
+      "ジャイロ",
+      "ゲーム",
+      "モジュール式",
+      "インタラクティブ",
+      "DIY",
+      "3Dモーション"
+    ]
   }
 ]
