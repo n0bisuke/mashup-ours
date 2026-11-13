@@ -1,38 +1,32 @@
 {
   "schemaVersion": 1,
-  "slot": "2026-11-13T0245",
-  "generatedAt": "2026-11-13T02:58:19.646Z",
-  "nextSlot": "2026-11-13T0300",
+  "slot": "2026-11-13T1045",
+  "generatedAt": "2026-11-13T10:50:17.784Z",
+  "nextSlot": "2026-11-13T1100",
   "source": "data/sample-prototypes.json",
   "candidates": [
     {
-      "id": "protopedia:3",
-      "title": "おしゃべりパパ人形",
-      "sourceUrl": "https://protopedia.net/prototype/3",
-      "summary": "子どもが喜んでくれて、遊んでくれたら目的達成！ 小さな子どものための電子工作",
+      "id": "protopedia:1118",
+      "title": "ボランティアを探すアプリ",
+      "sourceUrl": "https://protopedia.net/prototype/1118",
+      "summary": "スマホのGPSを使用して助けたい/助けてほしい人の場所や話せる言語を表示し、マッチング可能にします。 日本を訪れる外国人は年々増加しており、2020年にはオリンピックも開催されます。 そんな中、日本語は世界有数の難解な言語であり、多くの外国人が路頭に迷うことは火を見るよりも明らかです。 そのような状況を解決するため、誰でも持っているスマホのGPSを使用し、 地図でお互いの位置を表示することでボランティアとボランティアを必要としている人を相互検索可能とします。 \\ 1.自分の情報(助けたい/助けが必要、性別、話せる言語)を登録 2.助けが必要/助けたい人の位置が地図に表示される ※検索条件(性別、話せる言語)指定も可能",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/838b69fe-fc94-4807-b6a5-223068816f9c.jpg",
+      "mainUrl": "https://protopedia.net/pic/71d14cbf-771f-4b47-9973-11be13a6fb2a.png",
       "authors": [
-        "@erikosakashita",
-        "ひさやん@hisayan"
+        "@kanekoakira",
+        "@okanori",
+        "@okku",
+        "@shioyui"
       ],
       "tags": [
-        "mash"
+        "android",
+        "GPS",
+        "Kivy",
+        "Mapview",
+        "Python",
+        "REST API"
       ],
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:12",
-      "title": "DrunkenMaster byDrunker5",
-      "sourceUrl": "https://protopedia.net/prototype/12",
-      "summary": "お酒の場を楽しくするゲームです。酔っ払ってないとゲームはできません。",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/88dc4f01-de60-4ad9-969c-a6f31f48451d.png",
-      "authors": [
-        "@yuukankin",
-        "ひさやん@hisayan",
-        "佐田幸宏@yukihirosada"
-      ],
+      "status": 2,
       "licenseType": "CC BY 4+"
     },
     {
@@ -55,22 +49,6 @@
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:3676",
-      "title": "メカノによる高精度機械式ジャイロ実験台",
-      "sourceUrl": "https://protopedia.net/prototype/3676",
-      "summary": "Meccano Based High-Precision Gyroscope Platform",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/290cc5ef-dee1-41eb-9621-191bac4e384d.jpg",
-      "authors": [
-        "Liem Peng Hong@liemph"
-      ],
-      "tags": [
-        "ジャイロ"
-      ],
-      "status": 4,
-      "licenseType": "CC BY 4+"
-    },
-    {
       "id": "protopedia:101",
       "title": "鯖江夕景",
       "sourceUrl": "https://protopedia.net/prototype/101",
@@ -81,6 +59,34 @@
         "ひで@blue_islands"
       ],
       "status": 4,
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:3351",
+      "title": "IRリモコン",
+      "sourceUrl": "https://protopedia.net/prototype/3351",
+      "summary": "エアコンの自動制御のテストとして、既製品のベッドランプのリモコンをM5StackのIRsensorで実装してみました。",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/",
+      "authors": [
+        "えりな@erina000"
+      ],
+      "status": 4,
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:18",
+      "title": "ハンドクラッピナー",
+      "sourceUrl": "https://protopedia.net/prototype/18",
+      "summary": "結構よく回ります *** ** * ** *** ハンドスピナー (2枚タイプ) パチパチトールくん (赤・黄各1個) 参考URL:",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/035f119d-9aa9-4f5e-88b6-e49b732c1491.jpg",
+      "authors": [
+        "Masawo Yamazaki@masawoyamazaki"
+      ],
+      "tags": [
+        "クラッピーチャレンジ"
+      ],
       "licenseType": "CC BY 4+"
     }
   ],
