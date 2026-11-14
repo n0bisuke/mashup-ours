@@ -1,61 +1,40 @@
 {
   "schemaVersion": 1,
-  "slot": "2026-11-13T2345",
-  "generatedAt": "2026-11-13T23:50:00.811Z",
-  "nextSlot": "2026-11-14T0000",
+  "slot": "2026-11-14T0600",
+  "generatedAt": "2026-11-14T06:06:43.634Z",
+  "nextSlot": "2026-11-14T0615",
   "source": "data/sample-prototypes.json",
   "candidates": [
     {
-      "id": "protopedia:2042",
-      "title": "ケッセ鬼を滅するMRチャンバラ運動アプリ",
-      "sourceUrl": "https://protopedia.net/prototype/2042",
-      "summary": "刀を振り回すチャンバラゲームによって有酸素運動を日々行い、減量を支援します。",
+      "id": "protopedia:12",
+      "title": "DrunkenMaster byDrunker5",
+      "sourceUrl": "https://protopedia.net/prototype/12",
+      "summary": "お酒の場を楽しくするゲームです。酔っ払ってないとゲームはできません。",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/1e83aa14-13a5-4df4-a9e7-a559122dd98e.png",
+      "mainUrl": "https://protopedia.net/pic/88dc4f01-de60-4ad9-969c-a6f31f48451d.png",
       "authors": [
-        "HideG@hideg"
-      ],
-      "tags": [
-        "MagicLeap",
-        "MR",
-        "ゲーミフィケーション",
-        "呼吸"
-      ],
-      "status": 4,
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:18",
-      "title": "ハンドクラッピナー",
-      "sourceUrl": "https://protopedia.net/prototype/18",
-      "summary": "結構よく回ります *** ** * ** *** ハンドスピナー (2枚タイプ) パチパチトールくん (赤・黄各1個) 参考URL:",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/035f119d-9aa9-4f5e-88b6-e49b732c1491.jpg",
-      "authors": [
-        "Masawo Yamazaki@masawoyamazaki"
-      ],
-      "tags": [
-        "クラッピーチャレンジ"
+        "@yuukankin",
+        "ひさやん@hisayan",
+        "佐田幸宏@yukihirosada"
       ],
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:1140",
-      "title": "BlindGolf",
-      "sourceUrl": "https://protopedia.net/prototype/1140",
-      "summary": "ナイスショット!",
+      "id": "protopedia:6",
+      "title": "スキー場での「会えない」を解決し「会いたい」を叶える雪山BOT with LINE Beacon",
+      "sourceUrl": "https://protopedia.net/prototype/6",
+      "summary": "全力でハッカソン！1%のアイデアと99%の実証実験！！",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/1effacab-d5f9-46da-9f0b-04e4173e223f.jpg",
+      "mainUrl": "https://protopedia.net/pic/09de39fd-554f-4c27-bc72-4f80267d9150.jpg",
       "authors": [
-        "@eigokainai",
-        "@kazumayasuda",
-        "@kendoi",
-        "@takerusunahase"
+        "ひさやん@hisayan",
+        "佐田幸宏@yukihirosada"
       ],
       "tags": [
-        "NRIハッカソン"
+        "LINE Beacon",
+        "ゲレンデ",
+        "新幹線"
       ],
-      "status": 2,
       "licenseType": "CC BY 4+"
     },
     {
@@ -75,23 +54,50 @@
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:1142",
-      "title": "観客が試合にコミット",
-      "sourceUrl": "https://protopedia.net/prototype/1142",
-      "summary": "なんで選手交代しないんだ、 なんでそこで交代するんだ、記録がかかってるのに。 ファンはいつもやきもきするものです。 試合は監督が動かすもの？ 観戦している観客が試合にコミットする。そんな観戦の新しい**顧客体験**を提供します。",
+      "id": "protopedia:1118",
+      "title": "ボランティアを探すアプリ",
+      "sourceUrl": "https://protopedia.net/prototype/1118",
+      "summary": "スマホのGPSを使用して助けたい/助けてほしい人の場所や話せる言語を表示し、マッチング可能にします。 日本を訪れる外国人は年々増加しており、2020年にはオリンピックも開催されます。 そんな中、日本語は世界有数の難解な言語であり、多くの外国人が路頭に迷うことは火を見るよりも明らかです。 そのような状況を解決するため、誰でも持っているスマホのGPSを使用し、 地図でお互いの位置を表示することでボランティアとボランティアを必要としている人を相互検索可能とします。 \\ 1.自分の情報(助けたい/助けが必要、性別、話せる言語)を登録 2.助けが必要/助けたい人の位置が地図に表示される ※検索条件(性別、話せる言語)指定も可能",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/43957060-cc22-4a9d-90c3-f4a9c6e60db7.png",
+      "mainUrl": "https://protopedia.net/pic/71d14cbf-771f-4b47-9973-11be13a6fb2a.png",
       "authors": [
-        "@junokabe"
+        "@kanekoakira",
+        "@okanori",
+        "@okku",
+        "@shioyui"
       ],
       "tags": [
-        "NRIハッカソン"
+        "android",
+        "GPS",
+        "Kivy",
+        "Mapview",
+        "Python",
+        "REST API"
       ],
       "status": 2,
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:2042",
+      "title": "ケッセ鬼を滅するMRチャンバラ運動アプリ",
+      "sourceUrl": "https://protopedia.net/prototype/2042",
+      "summary": "刀を振り回すチャンバラゲームによって有酸素運動を日々行い、減量を支援します。",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/1e83aa14-13a5-4df4-a9e7-a559122dd98e.png",
+      "authors": [
+        "HideG@hideg"
+      ],
+      "tags": [
+        "MagicLeap",
+        "MR",
+        "ゲーミフィケーション",
+        "呼吸"
+      ],
+      "status": 4,
       "licenseType": "CC BY 4+"
     }
   ],
   "offspringCandidates": [
-    "mashup-000011"
+    "mashup-000009"
   ]
 }
