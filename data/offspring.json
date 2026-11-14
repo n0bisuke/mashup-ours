@@ -604,5 +604,68 @@
       "DIY",
       "3Dモーション"
     ]
+  },
+  {
+    "id": "mashup-000013",
+    "schemaVersion": 1,
+    "title": "ドリンクスピン・ゲームマスター",
+    "summary": "アルコールセンサーとハンドスピナーを組み合わせ、酔った状態でのみゲームが開始できるインタラクティブ飲み会デバイス。回転と音声応答でコミュニケーションを促進し、参加者の盛り上がりを加速する。",
+    "concept": "『ドリンクスピン・ゲームマスター』は、飲み会を新しいレベルに引き上げるハイブリッドデバイスです。ユーザーはデバイスを手で回し、同時に少量のアルコールを吸入または飲入らせます。内蔵の酔いセンサーが一定レベルに達するとゲームが開始され、回転に応じた課題やスコアが音声でフィードバックされます。デバイスは小型のサーボモーターで回転方向を検知し、タッチセンサーとマイクロフォンで声声を拾い、Bluetooth経由でスマートフォンアプリと連携。アプリ側ではスコア管理や課題提示を行い、参加者はリアルタイムで音声応答を楽しみながらスピンを回し、楽しいゲーム体験を共有します。さらに、デバイスにはLEDインジケーターが搭載され、酔いレベル、スコア、次の課題をビジュアルで表示。友達同士のコミュニケーションが活発になり、退屈を排除して飲み会を盛り上げることができます。",
+    "mechanism": "デバイスはESP32マイクロコントローラを中心に構成。サーボモーターで回転角度をリアルタイムで取得し、タッチセンサーで回転開始を検知。酔いセンサーは低消費電力のアルコール感知ピンを用いて呼気中のアルコール濃度を検出。マイクロフォンと音声認識ライブラリでユーザーの声を拾い、自然言語処理により指示を解析。Bluetooth Low Energyでスマートフォンアプリと同期し、スコアや課題を共有。デバイスの動作は有限状態機械（FSM）で管理し、酔いレベルが開始条件を満たすまで待機、回転時に課題をランダム抽出、音声で結果をフィードバック。LEDパネルはリアルタイムで状態を可視化し、サーボで小さく身体の一部（手のひら側）を揺らすことでタッチ感覚を強化。",
+    "useCases": [
+      "パーティーでの社交ゲームとして、参加者同士の会話が自然に盛り上がる。",
+      "企画イベントや結婚式の余興で、ゲストがスポーツ感覚で楽しめる。",
+      "企業の社内飲み会でチームビルディングを促進し、リラックスした雰囲気を創出する。",
+      "クラブやバーでの集客ツールとして、アトラクションに組み込み売上拡大を図る。",
+      "家庭のサプライズパーティーで、友人・家族が協力しながらゲームを楽しめる。",
+      "オンラインでの仮想飲み会で、リアルタイムでスコア共有やコメントを行うリモートコミュニケーションツールとして活用。"
+    ],
+    "inheritedTraits": [
+      {
+        "parentId": "protopedia:12",
+        "trait": "酔い状態をゲーム開始条件とするユニークな仕組みを継承し、アルコール量と酔いレベルを入力としてゲーム進行に直結させることで、参加者が自然と体験に没入できる設計。"
+      },
+      {
+        "parentId": "mashup-000002",
+        "trait": "ハンドスピナーと対話型人形を融合させた構造、低消費電力のESP32ベースマイクロコントローラ、サーボモーターでの姿勢変化、タッチセンサーと音声入力の統合FSMといったインタラクティブ設計を採用し、ユーザーが触れた瞬間に身体と声で反応する感覚を提供。"
+      }
+    ],
+    "parents": [
+      "protopedia:12",
+      "mashup-000002"
+    ],
+    "generation": 2,
+    "mode": "fusion",
+    "sourceIssue": 59,
+    "slot": "2026-11-14T00",
+    "createdAt": "2026-11-14T00:51:51.660Z",
+    "model": "@cf/openai/gpt-oss-20b",
+    "status": "idea",
+    "imagePrompt": "A sleek handheld spinning device made of polished metal and translucent glass, with embedded RGB LEDs forming a rotating ring. The device features a small touch pad on the side, a speaker grill, a microphone, and a subtle breathalyzer icon glowing above. The scene is a lively party setting with friends gathered around, laughter echoing, and ambient neon lighting reflecting off the device's surface. The device is actively spinning, with a clear pointer indicating the current score, while a short holographic message displays the game's next challenge. The illustration style is realistic yet slightly stylized, emphasizing the bright lights and dynamic motion of the spinning element. The overall composition conveys excitement, interactivity, and a modern, tech-savvy vibe.. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
+    "imagePath": "assets/inventions/mashup-000013.png",
+    "requestHash": "7c5aff0e4512bef7826001561c53f147de88977c244ac634c1d9f1e062b9b589",
+    "requesterAuto": true,
+    "technologies": [
+      "ESP32",
+      "Servo Motor",
+      "Touch Sensor",
+      "Microphone",
+      "Bluetooth Low Energy",
+      "LED Panel"
+    ],
+    "domains": [
+      "エンターテインメント",
+      "日常生活"
+    ],
+    "keywords": [
+      "飲み会",
+      "スピナー",
+      "音声認識",
+      "ゲーム開始",
+      "酔いセンサー",
+      "インタラクティブ",
+      "コミュニケーション",
+      "デジタルデバイス"
+    ]
   }
 ]
