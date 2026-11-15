@@ -92,9 +92,8 @@
   },
   "62": {
     "issue": 62,
-    "status": "failed",
-    "reason": "発明の生成に失敗しました: AIの出力がJSONとして読めません",
-    "at": "2026-11-15T11:54:52.361Z",
-    "attempts": 1
+    "status": "resolved",
+    "at": "2026-11-15T18:46:20.899Z",
+    "attempts": 2
   }
 }

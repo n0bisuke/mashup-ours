@@ -729,5 +729,67 @@
       "小型モーター",
       "アウトドア"
     ]
+  },
+  {
+    "id": "mashup-000015",
+    "schemaVersion": 1,
+    "title": "雪山オーディオカバディ VRゲームシステム",
+    "summary": "雪景色の中で、LINE BeaconとBLEワイヤレスセンサーで酔い判定・位置情報を取得し、VRヘッドセットで音響誘導とゴルフ風コースを体感。ハプティックフィードバックとモーションセンサーで身体接触型カバディを実行。ゲームサーバはUnityでリアルタイム解析し、スマートTVにスコアとアニメキャラクターを表示、LINEで友人と共有できる。酔いレベルに応じて難易度・ルールを自動調整し、安全かつエンタメ性の高い飲み会体験を提供する。",
+    "concept": "雪山リゾートでの飲み会やイベントに最適なシステム。参加者は軽量VRヘッドセットとハプティック腕bandを装着し、雪原を歩きながら音響誘導でバーチャルゴルフコースを探索。モーションセンサーが捉えた身体動作はリアルタイムでUnityゲームエンジンに送られ、カバディのタッチ＆カバー動作がゲーム内で反映される。酔い判定はウェアラブルセンサーと呼気分析で行い、酔いレベルが高い場合はハードルを下げるなど安全設計。ゲーム進行はサーバ側でスコアリングし、スマートTVにアニメキャラクターと統計を表示。LINEチャットを通じて友人とスコアを共有でき、遠隔地の相手とも対戦可能。さらに料金プランやシーズンパスを組み合わせ、リゾート事業者は収益モデルに組み込むことができる。",
+    "mechanism": "1)位置情報：LINE Beacon（BLE）でスキー場内の正確な位置を取得し、ゲームエリアを自動分割。2)酔い判定：ウェアラブルセンサー（加速度計・ジャイロ）とブレスアラーレイで呼気アルコール度数を測定し、酔いレベルをリアルタイム判定。3)身体動作：Bluetooth接続のモーションセンサーが捉えた動作はUnityゲームエンジンへ送信、アニメキャラクターの動きやカバディのタッチ判定を実施。4)音響誘導：VRヘッドセットに音響カーブを送り、視覚遮断モードでゴルフコースを聴覚で体験。5)ハプティックフィードバック：腕bandでスイング感覚やパンチ感をリアルに再現。6)ゲームロジック：サーバ側Node.jsで酔いレベル・スコアを元に難易度調整と自動イベントスケジューリング。7）UI：スマートTVまたはPCモニターに統計・アニメキャラクター表示、LINE Messaging APIで友人にスコア共有。8)安全設計：酔いレベルが閾値超過時はゲーム停止とアラートを自動送信。",
+    "useCases": [
+      "1. リゾートの本日イベント：20人程度のグループがVRヘッドセットを装着し、ハプティックフィードバックで安全にカバディを楽しみながら酔いを管理。",
+      "2. 企業年末パーティ：LINEで共有できるスコアと統計を利用し、チームビルディングに活用。",
+      "3. 冬フェスティバル：スマートTVで大画面にアニメキャラが登場し、遠隔地の友人とも対戦。",
+      "4. 友人同士の集まり：ハプティックフィードバックで身体接触型ゲームを安全に体験し、酔い判定で自動でゲーム終了。",
+      "5. 教育機関での実演：酔いを科学的に測定しながらゲームを構成し、飲酒教育へ応用。",
+      "6. スキー場のロイヤリティプラン：利用者にVRゲームを含むパッケージを提供し、リピーター獲得。"
+    ],
+    "inheritedTraits": [
+      {
+        "parentId": "mashup-000006",
+        "trait": "雪山オーディオゴルフ・ミーティングBOTが提供する、LINE Beaconによる位置情報取得、スマートフォンカメラとウェアラブルで酔い判定、VRヘッドセットで音響誘導＋ハプティックフィードバック、モーションセンサーでスイング解析、およびリアルタイムスコア更新とLINEチャット共有といった機能を維持。"
+      },
+      {
+        "parentId": "mashup-000011",
+        "trait": "酔いカバディ・アドベンチャーの酔い判定（ブレスアラーレイ＋加速度計・ジャイロ）、Unityベースのリアルタイム動作解析アルゴリズム、スマートTV/PcモニターへのUI出力と音響インターフェース、酔いレベルに応じたゲーム開始・停止、タッチ＆カバー動作の瞬間判定・急激な体勢変更検知で警告音、統計レポート提供、可愛いアニメキャラ演出を継承。"
+      }
+    ],
+    "parents": [
+      "mashup-000006",
+      "mashup-000011"
+    ],
+    "generation": 3,
+    "mode": "fusion",
+    "sourceIssue": 62,
+    "slot": "2026-11-15T18",
+    "createdAt": "2026-11-15T18:46:20.899Z",
+    "model": "@cf/openai/gpt-oss-20b",
+    "status": "idea",
+    "imagePrompt": "A futuristic winter resort scene at dusk: snow-covered ski trails with ski-lift cables in the background. In the foreground, a diverse group of people wears sleek, minimalist VR headsets and thin haptic wristbands. They are positioned as if in a playful kabaddi match – one arm extended to tag the opponent’s wristband, the other holding a virtual golf club. Overhead, a large smart TV hangs from a snow‑pocked pole, displaying glowing 3D avatars, real‑time scores, and animated characters reacting to players’ movements. Soft LED lights outline the equipment, and gentle snowfall adds ambience. The screen also shows a LINE chat overlay for remote friends cheering via text. The artwork emphasizes clear audio cues, haptic vibration icons, motion‑tracking arrows, and the harmonious blend of virtual and real environments for an immersive drinking‑game experience.. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
+    "imagePath": "assets/inventions/mashup-000015.png",
+    "requestHash": "89ffee3b0436ce4c120cc23e385aaa1bbf5e071ed671a5577fb2548ed977c97b",
+    "requesterAuto": true,
+    "technologies": [
+      "LINE Beacon",
+      "BLE",
+      "Bluetooth",
+      "Unity",
+      "Smart TV",
+      "VR Audio"
+    ],
+    "domains": [
+      "エンターテインメント",
+      "日常生活"
+    ],
+    "keywords": [
+      "飲み会",
+      "VRゴルフ",
+      "カバディ",
+      "酔い判定",
+      "ハプティックフィードバック",
+      "LINE通知",
+      "モーションセンサー"
+    ]
   }
 ]
