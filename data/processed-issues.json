@@ -95,5 +95,12 @@
     "status": "resolved",
     "at": "2026-11-15T18:46:20.899Z",
     "attempts": 2
+  },
+  "63": {
+    "issue": 63,
+    "status": "failed",
+    "reason": "発明の生成に失敗しました: AIの出力が空です",
+    "at": "2026-11-15T23:57:34.037Z",
+    "attempts": 1
   }
 }
