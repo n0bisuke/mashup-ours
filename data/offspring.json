@@ -667,5 +667,67 @@
       "コミュニケーション",
       "デジタルデバイス"
     ]
+  },
+  {
+    "id": "mashup-000014",
+    "schemaVersion": 1,
+    "title": "雪道ゴールデンウンコサプライズボット",
+    "summary": "山岳環境で位置情報連動のLINE BOTが子どもたちの集会を提案し、M5StickV制御の金色ウンコが驚きとゲームを提供するアウトドア向けサプライズシステム。",
+    "concept": "冬季スポーツ施設やスキー場で子どもたちが集まる際、設置されたLINE Beaconが位置情報を取得。スマートフォンのLINEアプリと連携した BOT が最適な集合ポイントとタイミングを提示し、子どもたちが集まるとボタンや音声で M5StickV が金色ウンコをアクション開始させる。金色ウンコは小型モーターでゆらゆら動き、突然姿を現すことで驚きと笑いを誘う。さらに、BOT は簡易クイズやミニアクションを組み合わせたゲームロジックを起動し、正解すると仮想報酬（温かいそばや日本酒）とスコアを提示。報酬はデジタル表示で子どもたちが集団でシェアでき、忘却しがちな飲酒リスクをゲーム感覚で緩和する。利用者はスマートフォンでゲーム進行と報酬確認を行うだけで、サプライズと交流を同時に楽しめる。",
+    "mechanism": "M5StickV（ESP32ベース）にソフトウェアでモーター制御とLEDディスプレイの制御を実装。金色ウンコ模型は小型伺服モーターで前後に揺れ動き、障害物センサーで接触を避ける。LINE Beacon は BLE を利用して位置情報を取得し、スマホと同期。LINE Bot API によってユーザーの位置と集合状況をリモートで監視し、最適集合ポイントをリアルタイムで提案。ゲームロジックは Node‑RED で構築し、クイズの出題と正誤判定を行い、報酬アイテムを仮想に表示。全体は Raspberry Pi 風の小型ケースにまとめ、USB 充電で動作。",
+    "useCases": [
+      "1. スキー場の子ども向け集会で、金色ウンコがサプライズしながらミーティングを円滑化。",
+      "2. 冬祭りで来場者が集まりやすい集合ポイントをBOTが提案し、ゲームで遊びながら交流。",
+      "3. 学校の遠足で山間の休憩所に設置し、チーム対抗クイズで楽しむ。",
+      "4. スノーボードキャンプで子どもが集う際に位置情報で最適ラッキングを実施。",
+      "5. 雪だるま作りイベントでクイズ形式に挑戦し、報酬でシェアし合う。",
+      "6. 家族で雪山宿泊時に施設内でボディーサプライズを提供。"
+    ],
+    "inheritedTraits": [
+      {
+        "parentId": "protopedia:2500",
+        "trait": "金色ウンコを物理的にアクティブに動かすことで子どもに視覚的なサプライズを与える点、M5StickVとモーター制御回路を用いて小型デバイスで実装する点。"
+      },
+      {
+        "parentId": "mashup-000003",
+        "trait": "LINE Beaconによる正確な位置情報取得、BOTによるスケジューリングとリアルタイム位置共有、クイズとミニアクションを組み合わせたゲームロジック、仮想アイテム報酬というエンターテインメント要素。"
+      }
+    ],
+    "parents": [
+      "protopedia:2500",
+      "mashup-000003"
+    ],
+    "generation": 2,
+    "mode": "fusion",
+    "sourceIssue": 61,
+    "slot": "2026-11-15T02",
+    "createdAt": "2026-11-15T02:06:09.001Z",
+    "model": "@cf/openai/gpt-oss-20b",
+    "status": "idea",
+    "imagePrompt": "A portable figure on a snowy background, the device has a golden poop icon on top glimmering with LED lights, surrounded by small snowflakes. A child in winter clothes looks surprised, holding a smartphone showing a LINE app with a bot chat. The scene shows the device on a wooden pole, a beacon signal icon glowing, and a background of a ski slope. The illustration is bright, playful, and clearly shows the combination of the golden poop, beacon, and LINE bot on a snowy setting.. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
+    "imagePath": "assets/inventions/mashup-000014.png",
+    "requestHash": "53c25328e2dc5206ee89f94448ecac1e23609edc6a50aa5fff590b082f056033",
+    "requesterAuto": true,
+    "technologies": [
+      "M5StickV",
+      "ESP32",
+      "モーター制御",
+      "BLE Beacon",
+      "LINE Bot API"
+    ],
+    "domains": [
+      "エンターテインメント",
+      "アウトドア"
+    ],
+    "keywords": [
+      "サプライズ",
+      "金のウンコ",
+      "位置情報",
+      "LINE Beacon",
+      "クイズゲーム",
+      "仮想報酬",
+      "小型モーター",
+      "アウトドア"
+    ]
   }
 ]
