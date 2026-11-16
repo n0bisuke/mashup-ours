@@ -854,5 +854,70 @@
       "クイズ",
       "サーバ同期"
     ]
+  },
+  {
+    "id": "mashup-000017",
+    "schemaVersion": 1,
+    "title": "アルコグラフィ 360：飲酒と3Dモーションで創るアート体験",
+    "summary": "アルコール検知＋回転・モーションセンサーで、音声で指示・応答しながら可視化された3DグラフィティをスマホやLEDで投影する、飲み会をアート体験に変えるハンドモーションデバイス。",
+    "concept": "アルコグラフィ 360は、友人同士の居酒屋やパーティーで手軽に設置できるゲーム型アートデバイスです。参加者は飲み物を口に含み、デバイスを手で回しながら話しかけるだけで、酔いレベルが一定に達するとデバイスが「Spiritモード」を発動。3軸ジャイロと加速度計が回転速度と方向をリアルタイムで計測し、内部に組み込まれたアルコールセンサで呼気中のエタノール濃度を測定。音声認識ライブラリで「次のフレーズ」「点数を教えて」などのコマンドを受け取り、BLE経由でスマートフォンアプリと同期。スマホのAR機能を利用し、デバイスの回転軌跡を3Dグラフィティとして投影。LEDディスプレイにも同期情報を出力し、回転ごとのスコアや次のチャレンジを可視化。さらに、音声でフィードバックや次の課題を説明し、プレイヤーの臨場感を高めます。飲んで回転するごとに生成される音楽やエフェクトは、オリジナルのAI音声合成で作られ、シーンに合わせて変化。家飲みでもアルコグラフィ 360は、親子・友人間のコミュニケーションを促し、単なる飲み会を創造的なアート体験へと変換します。",
+    "mechanism": "デバイスはESP32マイクロコントローラを中心に構築され、以下のサブシステムで構成される。1) サーボモーター＋ジャイロ/加速度計部位：Meccano風に組み立てられた回転具で、回転角度と速度をサーボのポジションとモーションセンサから取得し、FSMでゲーム状態を制御。2) アルコールセンサ：低消費電力の呼気エタノール検知ピンを用いて酔いレベルをリアルタイムで測定。3) マイク・音声認識：マイクロフォンと統合型音声認識ライブラリを用い、ユーザーの声でゲームコマンドを受信。4) BLE通信：データをスマートフォンアプリに送信し、ゲーム状態・スコア・3Dグラフィティパラメータを同期。5) LEDディスプレイ：回転状態とスコアをビジュアルに表示。6) AR出力ロジック：スマホのカメラ映像にローカルで生成した３Ｄグラフィティモデル（OpenGL ESベース）を合成し、リアルタイムで投影。全サブシステムはFSMにより協働し、酔いレベルが閾値を超えると「Spirit Mode」が有効化され、回転速度とアルコール濃度に応じた独自アルゴリズムで3Dアートを生成。",
+    "useCases": [
+      "居酒屋での乾杯前にアルコグラフィ 360でゲームを開始し、友人同士でスコアを競う。",
+      "家飲みの際に子どもと一緒に簡単な回転操作でアート生成し、親子の時間を楽しむ。",
+      "パーティー会場でステージに設置し、観客が回転と音声で応援しながら競技を行う。",
+      "クラフトフェアでデモンストレーション用に組み立て、来場者に操作体験を提供。",
+      "イベントの記念撮影で、回転セクションを撮影し、ARで3Dグラフィティを背景に添える。",
+      "肉球とペットのための「軽量版」で、ペットが持ち回ることでセンサが動作する新感覚ゲームを試みる。"
+    ],
+    "inheritedTraits": [
+      {
+        "parentId": "mashup-000013",
+        "trait": "ESP32を中心にサーボモーターで回転角度を取得し、タッチセンサーで回転開始を検知。低消費電力アルコール感知ピンで呼気中のアルコール濃度を測定。マイクロフォンと音声認識ライブラリで声を拾い自然言語処理。BLEでスマートフォンアプリと同期し、LEDインジケーターで状態表示。FSMで動作制御を行う。"
+      },
+      {
+        "parentId": "mashup-000012",
+        "trait": "Meccanoベースのモジュール式構造に3軸ジャイロセンサーと加速度計を搭載し、Arduinoマイクロコントローラでデータをフィルタリング。LEDディスプレイでスコア・状態表示。ワイヤレスでスマートフォンにデータ送信。振動抑制設計と微調整用スクリューで姿勢制御を実現。"
+      }
+    ],
+    "parents": [
+      "mashup-000013",
+      "mashup-000012"
+    ],
+    "generation": 3,
+    "mode": "mutation",
+    "sourceIssue": 64,
+    "slot": "2026-11-16T12",
+    "createdAt": "2026-11-16T12:39:04.094Z",
+    "model": "@cf/openai/gpt-oss-20b",
+    "status": "idea",
+    "imagePrompt": "A stylized handheld device resembling a mini-spinning top built from interlocking plastic modules, with a clear casing showing internal LEDs lighting up in vibrant colors. The top spins with a grip, a small microphone on its base, and a subtle OLED display showing swirling 3D graffiti patterns projected onto a smartphone screen via AR. The background shows a relaxed party environment with friends laughing, and faint bubbles of alcohol vapor indicating the device senses intoxication. The design should be futuristic yet playful, with metallic accents and translucent panels, highlighting the integration of motion sensors, alcohol detection, and voice feedback. Include subtle motion lines to emphasize spinning dynamics and tiny LED stars creating a \"spirit\" effect.. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
+    "imagePath": "assets/inventions/mashup-000017.png",
+    "requestHash": "276d5c857a23f8e850b403e746b04ffd9fa6e99e23515168dc64fb342496fe92",
+    "requester": {
+      "login": "n0bisuke",
+      "avatarUrl": "https://avatars.githubusercontent.com/u/2968926?v=4"
+    },
+    "technologies": [
+      "ESP32",
+      "Bluetooth Low Energy",
+      "3-axis gyroscope",
+      "accelerometer",
+      "microphone",
+      "LED display"
+    ],
+    "domains": [
+      "エンターテインメント"
+    ],
+    "keywords": [
+      "アルコールセンサー",
+      "回転検知",
+      "3Dモーション",
+      "グラフィティ",
+      "音声認識",
+      "BLE同期",
+      "Meccano",
+      "ARアート"
+    ]
   }
 ]
