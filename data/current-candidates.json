@@ -1,37 +1,56 @@
 {
   "schemaVersion": 1,
-  "slot": "2026-11-16T0115",
-  "generatedAt": "2026-11-16T01:26:21.143Z",
-  "nextSlot": "2026-11-16T0130",
+  "slot": "2026-11-16T0830",
+  "generatedAt": "2026-11-16T08:32:34.197Z",
+  "nextSlot": "2026-11-16T0845",
   "source": "data/sample-prototypes.json",
   "candidates": [
     {
-      "id": "protopedia:1",
-      "title": "クラッピーで仮装大賞",
-      "sourceUrl": "https://protopedia.net/prototype/1",
-      "summary": "合格したい！",
+      "id": "protopedia:6",
+      "title": "スキー場での「会えない」を解決し「会いたい」を叶える雪山BOT with LINE Beacon",
+      "sourceUrl": "https://protopedia.net/prototype/6",
+      "summary": "全力でハッカソン！1%のアイデアと99%の実証実験！！",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/9c507193-d695-4795-b0e6-4a11daa719e9.jpg",
+      "mainUrl": "https://protopedia.net/pic/09de39fd-554f-4c27-bc72-4f80267d9150.jpg",
       "authors": [
-        "ひさやん@hisayan"
+        "ひさやん@hisayan",
+        "佐田幸宏@yukihirosada"
       ],
       "tags": [
-        "おもちゃ",
-        "クラッピーチャレンジ"
+        "LINE Beacon",
+        "ゲレンデ",
+        "新幹線"
       ],
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:1138",
-      "title": "Prace - キミの走りで制圧セヨ(ランニング × 道場破り)",
-      "sourceUrl": "https://protopedia.net/prototype/1138",
-      "summary": "ランニングの新しい世界観を作り上げます!ぜひタッチ&トライなどで御覧ください!",
+      "id": "protopedia:1123",
+      "title": "寝かしつけ時に帰宅回避Bot",
+      "sourceUrl": "https://protopedia.net/prototype/1123",
+      "summary": "小さい子供を寝かしつけしているときにうっかり帰宅してしまい子供が覚醒、寝かしつけやり直しになることほど悲しいことはありません。 寝かしつけ時帰宅回避Botは家で寝かしつけがおこなわれているのか、もう寝かしつけが終わったのかを教えてくれるBotです。",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/63e708bb-d380-4fe7-9b35-37a23c185d4e.png",
+      "mainUrl": "https://protopedia.net/pic/75e25d37-8765-44fc-8836-4bd4cee86558.jpg",
       "authors": [
-        "@izumiwatanabe",
-        "@jonghyochang",
-        "@wataruyamaguchi"
+        "ajimitei@ajimitei"
+      ],
+      "tags": [
+        "M5Stack"
+      ],
+      "status": 2,
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:1147",
+      "title": "EEEEEカバディ",
+      "sourceUrl": "https://protopedia.net/prototype/1147",
+      "summary": "楽しいプロダクトを楽しく開発しました！",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/a7dc4dad-ef01-48c7-b7ce-202b2a3b9c53.jpg",
+      "authors": [
+        "@kojikumanami",
+        "Hiroyoshi Takahashi@hirotakahashi",
+        "岡田雄太@yutaokada",
+        "萩村卓也@takuyahagimura"
       ],
       "tags": [
         "NRIハッカソン"
@@ -68,25 +87,9 @@
         "佐田幸宏@yukihirosada"
       ],
       "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:1137",
-      "title": "ボルダリング×IoT 〜ボルダーとセッターが高め合う世界へ〜",
-      "sourceUrl": "https://protopedia.net/prototype/1137",
-      "summary": "新たな技術に挑戦します。",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/95c3afb9-6581-45b0-9326-0ceba9db41d9.png",
-      "authors": [
-        "@yoshihiromaeda"
-      ],
-      "tags": [
-        "NRIハッカソン"
-      ],
-      "status": 2,
-      "licenseType": "CC BY 4+"
     }
   ],
   "offspringCandidates": [
-    "mashup-000003"
+    "mashup-000007"
   ]
 }
