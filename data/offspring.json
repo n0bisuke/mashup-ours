@@ -791,5 +791,68 @@
       "LINE通知",
       "モーションセンサー"
     ]
+  },
+  {
+    "id": "mashup-000016",
+    "schemaVersion": 1,
+    "title": "スノースピンミートアップBOT",
+    "summary": "携帯型回転デバイスとスマートフォン連携により、雪山での友人・家族の再会を自動提案し、回転・音声対話でゲーム性を高めながら安全に楽しく交流できるサービス。",
+    "concept": "スノースピンミートアップBOTは、軽量の回転デバイスを装着したユーザーが雪山やスキー場でLINEアプリと連携。デバイスの回転速度やタッチで音声応答が流れ、同時に回転数をゲームのポイント化。利用開始時にBeaconで位置情報を取得し、BOTが最適な集合ポイントを自動提案。ユーザーはスマホのカメラで酔い判定を行い、ゲーム内で仮想アイテム（温かいそば・日本酒）を獲得。回転を続けると音声でクイズが流れ、正解ごとに追加ポイントが付与。子どもから大人まで、スピンと話すことで親子のコミュニケーションや集中力向上を図ることも可能。キャパシティのあるESP32が低消費で動作し、サーボでデバイスの軽い動きも演出。ゲームは回転、タッチ、音声入力を統合したFSMで管理。スピーカーから流れるリアルタイム音声応答は、ボイス合成で“パパ”のように親しみやすいキャラクターが発話。位置情報とゲーム進行状況はBOTがLINE上で共有し、参加者間でリアルタイムに進捗を可視化。これにより、雪山での遅延や孤立を防ぎつつ、楽しく交流できるよう設計されている。",
+    "mechanism": "1) デバイス側：ESP32が回転角度センサー（ジャイロ）とタッチセンサーを読み取り、GPIOでサーボモーターを制御。回転数をリアルタイムで計算し、クラウドサーバへUDPで送信。音声合成は音声データをローカルで生成しスピーカーに出力。2) スマートフォン側：LINEアプリ内のBotがBeaconから位置情報を取得し、GPSと連動して最適集合地点を算出。カメラで検出した飲酒レベルは画像解析APIに送信され、酔い判定値を返す。3) クラウドサーバ：回転・タッチイベント、位置情報、酔い判定を統合し、ゲームロジックを実行。クイズはサーバ側で管理し、正解はポイントに換算。ポイントに応じて仮想アイテムを発行し、LINEメッセージで通知。4) BOTは利用者の位置とゲーム状態を共有し、他メンバーへ即時反映。リアルタイム位置共有はBeaconとGPSで補完し、離れた場所でも安全に集まれるよう調整。",
+    "useCases": [
+      "スキーリゾートで複数グループが同時に参加。回転デバイスを装着した人がBeaconで位置を自動送信し、BOTが最適集合ポイントを提示。",
+      "子ども向けのアウトドアクラスで、児童がデバイスを回しながらクイズに答えて、正解ごとに音声で褒められる。",
+      "飲酒が伴う雪山ミートアップで酔い判定とゲーム報酬が安全確保を促進。",
+      "初心者スキーヤーがサーボの軽い動きで安全確認を行いつつ楽しくウォームアップ。",
+      "親子でのリラックスタイムに、デバイスの回転と音声応答で言語発達をサポート。",
+      "遠隔地にいる友人同士がLINEを通じて同じボイスクイズを競い、リアルタイムで勝敗を決定。"
+    ],
+    "inheritedTraits": [
+      {
+        "parentId": "mashup-000003",
+        "trait": "BOTによるスケジューリングとリアルタイム位置共有、酔い判定でゲーム開始、クイズ＋ミニアクションのハイブリッドゲーム、仮想アイテム報酬を維持し、雪山での再会をスムーズかつ楽しい体験に変える。"
+      },
+      {
+        "parentId": "mashup-000002",
+        "trait": "ハンドスピナーと対話型人形の融合、サーボで動く軽量ボディ、タッチ感知で即応、低電圧バッテリーで長時間使用、FSMで状態管理を継承し、ユーザーが触れるたびに音声応答と回転が連動するインタラクティブ体験を提供。"
+      }
+    ],
+    "parents": [
+      "mashup-000003",
+      "mashup-000002"
+    ],
+    "generation": 2,
+    "mode": "fusion",
+    "sourceIssue": 63,
+    "slot": "2026-11-16T06",
+    "createdAt": "2026-11-16T06:14:53.860Z",
+    "model": "@cf/openai/gpt-oss-20b",
+    "status": "idea",
+    "imagePrompt": "A sleek, wind-resistant spinning device designed for snowy outdoor settings. The device has a polished metal hub with a built-in speaker and touch-sensitive panels on both sides. It emits gentle LED lights that pulse in sync with the spin speed. The device is worn on a chest strap or attached to a backpack via magnetic clips, allowing children and adults to hold it while skiing or hiking. In the background, a picturesque mountain scene shows a group of people gathered at a scenic overlook. The foreground features the device in motion, capturing its rotation, while a translucent overlay displays a digital map pinpointing each person's location. The lights on the device glow brighter as users approach the collective meet-up point, creating an engaging visual cue for gathering. The overall thumbnail conveys a sense of adventure, teamwork, and innovative technology blending gameplay with real-world interaction.. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
+    "imagePath": "assets/inventions/mashup-000016.png",
+    "requestHash": "bed2919c48a6369a83e83a3ebc5b258126c60bb968d99b507ae0bff8d545d757",
+    "requesterAuto": true,
+    "technologies": [
+      "LINE",
+      "ESP32",
+      "Servo",
+      "TouchSensor",
+      "Beacon",
+      "Camera"
+    ],
+    "domains": [
+      "アウトドア",
+      "エンターテインメント",
+      "日常生活"
+    ],
+    "keywords": [
+      "回転デバイス",
+      "位置共有",
+      "飲酒ゲーム",
+      "音声応答",
+      "サーボ",
+      "クイズ",
+      "サーバ同期"
+    ]
   }
 ]
