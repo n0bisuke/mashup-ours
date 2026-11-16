@@ -1,26 +1,24 @@
 {
   "schemaVersion": 1,
-  "slot": "2026-11-15T2130",
-  "generatedAt": "2026-11-15T21:40:40.832Z",
-  "nextSlot": "2026-11-15T2145",
+  "slot": "2026-11-16T0115",
+  "generatedAt": "2026-11-16T01:26:21.143Z",
+  "nextSlot": "2026-11-16T0130",
   "source": "data/sample-prototypes.json",
   "candidates": [
     {
-      "id": "protopedia:1131",
-      "title": "COLOR BLASTER",
-      "sourceUrl": "https://protopedia.net/prototype/1131",
-      "summary": "作品概要 *** ** * ** *** **さあ、あなたの景色をゲームフィールドに。** COLOR BLASTERは身の回りにあるモノの「色」がマトになる新感覚シューティングゲームです。遊び方はシンプル。指定された色を持つモノを探し、狙いを定めてトリガーを引く、たったそれだけ。 場所を問わず、子供も大人も楽しむことができます。",
+      "id": "protopedia:1",
+      "title": "クラッピーで仮装大賞",
+      "sourceUrl": "https://protopedia.net/prototype/1",
+      "summary": "合格したい！",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/4ab65b91-f7cd-458b-82c3-9a70a2192b0e.jpg",
+      "mainUrl": "https://protopedia.net/pic/9c507193-d695-4795-b0e6-4a11daa719e9.jpg",
       "authors": [
-        "@HironoriSakata"
+        "ひさやん@hisayan"
       ],
       "tags": [
-        "arduino",
-        "Python",
-        "Raspberry Pi"
+        "おもちゃ",
+        "クラッピーチャレンジ"
       ],
-      "status": 2,
       "licenseType": "CC BY 4+"
     },
     {
@@ -42,54 +40,53 @@
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:101",
-      "title": "鯖江夕景",
-      "sourceUrl": "https://protopedia.net/prototype/101",
-      "summary": "鯖江夕景は鯖江市のオープンデータの鯖江百景を基に制作しています。夕景はその日ごとに違う顔を見せてくれて、季節ごとにも変化をもたらします。鯖江市の観光地の魅力を引き出すため、鯖江夕景を活用してください。",
+      "id": "protopedia:2500",
+      "title": "M5StickVで金のウンコを動かしてガキを驚かす",
+      "sourceUrl": "https://protopedia.net/prototype/2500",
+      "summary": "Let's make a demo that will surprise the kid who was sucked by the poop!",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/4c30e575-7c24-42be-b318-3b00c001f7b1.png",
+      "mainUrl": "https://protopedia.net/pic/55a484aa-716f-45a7-9b7d-878a4409f35f.jpg",
       "authors": [
-        "ひで@blue_islands"
+        "kinneko@kinneko"
+      ],
+      "tags": [
+        "NT名古屋"
       ],
       "status": 4,
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:1123",
-      "title": "寝かしつけ時に帰宅回避Bot",
-      "sourceUrl": "https://protopedia.net/prototype/1123",
-      "summary": "小さい子供を寝かしつけしているときにうっかり帰宅してしまい子供が覚醒、寝かしつけやり直しになることほど悲しいことはありません。 寝かしつけ時帰宅回避Botは家で寝かしつけがおこなわれているのか、もう寝かしつけが終わったのかを教えてくれるBotです。",
+      "id": "protopedia:12",
+      "title": "DrunkenMaster byDrunker5",
+      "sourceUrl": "https://protopedia.net/prototype/12",
+      "summary": "お酒の場を楽しくするゲームです。酔っ払ってないとゲームはできません。",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/75e25d37-8765-44fc-8836-4bd4cee86558.jpg",
+      "mainUrl": "https://protopedia.net/pic/88dc4f01-de60-4ad9-969c-a6f31f48451d.png",
       "authors": [
-        "ajimitei@ajimitei"
+        "@yuukankin",
+        "ひさやん@hisayan",
+        "佐田幸宏@yukihirosada"
       ],
-      "tags": [
-        "M5Stack"
-      ],
-      "status": 2,
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:4",
-      "title": "Pour or Drink",
-      "sourceUrl": "https://protopedia.net/prototype/4",
-      "summary": "一瞬で仲良くなれます。",
+      "id": "protopedia:1137",
+      "title": "ボルダリング×IoT 〜ボルダーとセッターが高め合う世界へ〜",
+      "sourceUrl": "https://protopedia.net/prototype/1137",
+      "summary": "新たな技術に挑戦します。",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/ddf1faf1-faf5-4a70-b079-c0a0b5b9644a.jpg",
+      "mainUrl": "https://protopedia.net/pic/95c3afb9-6581-45b0-9326-0ceba9db41d9.png",
       "authors": [
-        "ひさやん@hisayan",
-        "佐田幸宏@yukihirosada",
-        "鈴木まなみ@rin2tree"
+        "@yoshihiromaeda"
       ],
       "tags": [
-        "ノーコード",
-        "飲み会が盛り上がる"
+        "NRIハッカソン"
       ],
+      "status": 2,
       "licenseType": "CC BY 4+"
     }
   ],
   "offspringCandidates": [
-    "mashup-000015"
+    "mashup-000003"
   ]
 }
