@@ -1,63 +1,10 @@
 {
   "schemaVersion": 1,
-  "slot": "2026-11-16T0830",
-  "generatedAt": "2026-11-16T08:32:34.197Z",
-  "nextSlot": "2026-11-16T0845",
+  "slot": "2026-11-16T1845",
+  "generatedAt": "2026-11-16T18:53:34.994Z",
+  "nextSlot": "2026-11-16T1900",
   "source": "data/sample-prototypes.json",
   "candidates": [
-    {
-      "id": "protopedia:6",
-      "title": "スキー場での「会えない」を解決し「会いたい」を叶える雪山BOT with LINE Beacon",
-      "sourceUrl": "https://protopedia.net/prototype/6",
-      "summary": "全力でハッカソン！1%のアイデアと99%の実証実験！！",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/09de39fd-554f-4c27-bc72-4f80267d9150.jpg",
-      "authors": [
-        "ひさやん@hisayan",
-        "佐田幸宏@yukihirosada"
-      ],
-      "tags": [
-        "LINE Beacon",
-        "ゲレンデ",
-        "新幹線"
-      ],
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:1123",
-      "title": "寝かしつけ時に帰宅回避Bot",
-      "sourceUrl": "https://protopedia.net/prototype/1123",
-      "summary": "小さい子供を寝かしつけしているときにうっかり帰宅してしまい子供が覚醒、寝かしつけやり直しになることほど悲しいことはありません。 寝かしつけ時帰宅回避Botは家で寝かしつけがおこなわれているのか、もう寝かしつけが終わったのかを教えてくれるBotです。",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/75e25d37-8765-44fc-8836-4bd4cee86558.jpg",
-      "authors": [
-        "ajimitei@ajimitei"
-      ],
-      "tags": [
-        "M5Stack"
-      ],
-      "status": 2,
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:1147",
-      "title": "EEEEEカバディ",
-      "sourceUrl": "https://protopedia.net/prototype/1147",
-      "summary": "楽しいプロダクトを楽しく開発しました！",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/a7dc4dad-ef01-48c7-b7ce-202b2a3b9c53.jpg",
-      "authors": [
-        "@kojikumanami",
-        "Hiroyoshi Takahashi@hirotakahashi",
-        "岡田雄太@yutaokada",
-        "萩村卓也@takuyahagimura"
-      ],
-      "tags": [
-        "NRIハッカソン"
-      ],
-      "status": 2,
-      "licenseType": "CC BY 4+"
-    },
     {
       "id": "protopedia:2500",
       "title": "M5StickVで金のウンコを動かしてガキを驚かす",
@@ -75,21 +22,72 @@
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:12",
-      "title": "DrunkenMaster byDrunker5",
-      "sourceUrl": "https://protopedia.net/prototype/12",
-      "summary": "お酒の場を楽しくするゲームです。酔っ払ってないとゲームはできません。",
+      "id": "protopedia:10",
+      "title": "また、会いに行きたくなるビアサーバー by No Beer No Life",
+      "sourceUrl": "https://protopedia.net/prototype/10",
+      "summary": "若者の飲み文化をつくるため、舞い降りたビアサーバーバーチャルアイドル。 若者はお金がないのです。だから飲みに行きけないのです。 居酒屋よりも安く楽しめる「コンビニ飲み」の文化をつくる仕組みです。 ビアサーバーにバーチャルアイドル（売り子）がついて、お話しします。 (HVC-C認識) 誰かが前を通ったら、「冷えてますよ、飲みませんか？」と声をかけ（人体検出） ビアサーバー側を向いたら、「おにいさん、よってってよ〜」（性別・世代認識） 20歳未満には売ってはいけないので、 TASPOをつかって、シャリーン。するとビールを注ぎます（ここの機械連携は未実装） ↑もちろん、TASPOの電子マネーで決済も完了します。 コンビニ店員さんの手をわずらわせることなく、ビアサーバーがコンビニに。 セブンイレブンがコーヒードリッパーで、とてつもなく売上を上げたように、 ビアサーバーもいきますよ！ たのしいアイドルと共に、ビアサーバーを全国展開します。 参考URL:",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/88dc4f01-de60-4ad9-969c-a6f31f48451d.png",
+      "mainUrl": "https://protopedia.net/pic/a7112b01-07ad-4508-ba8a-ebd074a53386.png",
       "authors": [
-        "@yuukankin",
-        "ひさやん@hisayan",
-        "佐田幸宏@yukihirosada"
+        "@erikosakashita",
+        "kazu@kazu2112",
+        "TakuKobayashi@takukobayashi",
+        "ひさやん@hisayan"
+      ],
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:1131",
+      "title": "COLOR BLASTER",
+      "sourceUrl": "https://protopedia.net/prototype/1131",
+      "summary": "作品概要 *** ** * ** *** **さあ、あなたの景色をゲームフィールドに。** COLOR BLASTERは身の回りにあるモノの「色」がマトになる新感覚シューティングゲームです。遊び方はシンプル。指定された色を持つモノを探し、狙いを定めてトリガーを引く、たったそれだけ。 場所を問わず、子供も大人も楽しむことができます。",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/4ab65b91-f7cd-458b-82c3-9a70a2192b0e.jpg",
+      "authors": [
+        "@HironoriSakata"
+      ],
+      "tags": [
+        "arduino",
+        "Python",
+        "Raspberry Pi"
+      ],
+      "status": 2,
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:3676",
+      "title": "メカノによる高精度機械式ジャイロ実験台",
+      "sourceUrl": "https://protopedia.net/prototype/3676",
+      "summary": "Meccano Based High-Precision Gyroscope Platform",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/290cc5ef-dee1-41eb-9621-191bac4e384d.jpg",
+      "authors": [
+        "Liem Peng Hong@liemph"
+      ],
+      "tags": [
+        "ジャイロ"
+      ],
+      "status": 4,
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:3",
+      "title": "おしゃべりパパ人形",
+      "sourceUrl": "https://protopedia.net/prototype/3",
+      "summary": "子どもが喜んでくれて、遊んでくれたら目的達成！ 小さな子どものための電子工作",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/838b69fe-fc94-4807-b6a5-223068816f9c.jpg",
+      "authors": [
+        "@erikosakashita",
+        "ひさやん@hisayan"
+      ],
+      "tags": [
+        "mash"
       ],
       "licenseType": "CC BY 4+"
     }
   ],
   "offspringCandidates": [
-    "mashup-000007"
+    "mashup-000016"
   ]
 }
