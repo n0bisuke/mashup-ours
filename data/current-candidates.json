@@ -1,93 +1,92 @@
 {
   "schemaVersion": 1,
-  "slot": "2026-11-17T0215",
-  "generatedAt": "2026-11-17T02:26:29.659Z",
-  "nextSlot": "2026-11-17T0230",
+  "slot": "2026-11-17T1100",
+  "generatedAt": "2026-11-17T11:03:53.552Z",
+  "nextSlot": "2026-11-17T1115",
   "source": "data/sample-prototypes.json",
   "candidates": [
     {
-      "id": "protopedia:10",
-      "title": "また、会いに行きたくなるビアサーバー by No Beer No Life",
-      "sourceUrl": "https://protopedia.net/prototype/10",
-      "summary": "若者の飲み文化をつくるため、舞い降りたビアサーバーバーチャルアイドル。 若者はお金がないのです。だから飲みに行きけないのです。 居酒屋よりも安く楽しめる「コンビニ飲み」の文化をつくる仕組みです。 ビアサーバーにバーチャルアイドル（売り子）がついて、お話しします。 (HVC-C認識) 誰かが前を通ったら、「冷えてますよ、飲みませんか？」と声をかけ（人体検出） ビアサーバー側を向いたら、「おにいさん、よってってよ〜」（性別・世代認識） 20歳未満には売ってはいけないので、 TASPOをつかって、シャリーン。するとビールを注ぎます（ここの機械連携は未実装） ↑もちろん、TASPOの電子マネーで決済も完了します。 コンビニ店員さんの手をわずらわせることなく、ビアサーバーがコンビニに。 セブンイレブンがコーヒードリッパーで、とてつもなく売上を上げたように、 ビアサーバーもいきますよ！ たのしいアイドルと共に、ビアサーバーを全国展開します。 参考URL:",
+      "id": "protopedia:1137",
+      "title": "ボルダリング×IoT 〜ボルダーとセッターが高め合う世界へ〜",
+      "sourceUrl": "https://protopedia.net/prototype/1137",
+      "summary": "新たな技術に挑戦します。",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/a7112b01-07ad-4508-ba8a-ebd074a53386.png",
+      "mainUrl": "https://protopedia.net/pic/95c3afb9-6581-45b0-9326-0ceba9db41d9.png",
       "authors": [
-        "@erikosakashita",
-        "kazu@kazu2112",
-        "TakuKobayashi@takukobayashi",
-        "ひさやん@hisayan"
+        "@yoshihiromaeda"
       ],
+      "tags": [
+        "NRIハッカソン"
+      ],
+      "status": 2,
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:2042",
-      "title": "ケッセ鬼を滅するMRチャンバラ運動アプリ",
-      "sourceUrl": "https://protopedia.net/prototype/2042",
-      "summary": "刀を振り回すチャンバラゲームによって有酸素運動を日々行い、減量を支援します。",
+      "id": "protopedia:2500",
+      "title": "M5StickVで金のウンコを動かしてガキを驚かす",
+      "sourceUrl": "https://protopedia.net/prototype/2500",
+      "summary": "Let's make a demo that will surprise the kid who was sucked by the poop!",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/1e83aa14-13a5-4df4-a9e7-a559122dd98e.png",
+      "mainUrl": "https://protopedia.net/pic/55a484aa-716f-45a7-9b7d-878a4409f35f.jpg",
       "authors": [
-        "HideG@hideg"
+        "kinneko@kinneko"
       ],
       "tags": [
-        "MagicLeap",
-        "MR",
-        "ゲーミフィケーション",
-        "呼吸"
+        "NT名古屋"
       ],
       "status": 4,
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:3",
-      "title": "おしゃべりパパ人形",
-      "sourceUrl": "https://protopedia.net/prototype/3",
-      "summary": "子どもが喜んでくれて、遊んでくれたら目的達成！ 小さな子どものための電子工作",
+      "id": "protopedia:3351",
+      "title": "IRリモコン",
+      "sourceUrl": "https://protopedia.net/prototype/3351",
+      "summary": "エアコンの自動制御のテストとして、既製品のベッドランプのリモコンをM5StackのIRsensorで実装してみました。",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/838b69fe-fc94-4807-b6a5-223068816f9c.jpg",
+      "mainUrl": "https://protopedia.net/pic/",
       "authors": [
-        "@erikosakashita",
-        "ひさやん@hisayan"
+        "えりな@erina000"
       ],
-      "tags": [
-        "mash"
-      ],
+      "status": 4,
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:18",
-      "title": "ハンドクラッピナー",
-      "sourceUrl": "https://protopedia.net/prototype/18",
-      "summary": "結構よく回ります *** ** * ** *** ハンドスピナー (2枚タイプ) パチパチトールくん (赤・黄各1個) 参考URL:",
+      "id": "protopedia:1123",
+      "title": "寝かしつけ時に帰宅回避Bot",
+      "sourceUrl": "https://protopedia.net/prototype/1123",
+      "summary": "小さい子供を寝かしつけしているときにうっかり帰宅してしまい子供が覚醒、寝かしつけやり直しになることほど悲しいことはありません。 寝かしつけ時帰宅回避Botは家で寝かしつけがおこなわれているのか、もう寝かしつけが終わったのかを教えてくれるBotです。",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/035f119d-9aa9-4f5e-88b6-e49b732c1491.jpg",
+      "mainUrl": "https://protopedia.net/pic/75e25d37-8765-44fc-8836-4bd4cee86558.jpg",
       "authors": [
-        "Masawo Yamazaki@masawoyamazaki"
+        "ajimitei@ajimitei"
       ],
       "tags": [
-        "クラッピーチャレンジ"
+        "M5Stack"
       ],
+      "status": 2,
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:1",
-      "title": "クラッピーで仮装大賞",
-      "sourceUrl": "https://protopedia.net/prototype/1",
-      "summary": "合格したい！",
+      "id": "protopedia:1140",
+      "title": "BlindGolf",
+      "sourceUrl": "https://protopedia.net/prototype/1140",
+      "summary": "ナイスショット!",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/9c507193-d695-4795-b0e6-4a11daa719e9.jpg",
+      "mainUrl": "https://protopedia.net/pic/1effacab-d5f9-46da-9f0b-04e4173e223f.jpg",
       "authors": [
-        "ひさやん@hisayan"
+        "@eigokainai",
+        "@kazumayasuda",
+        "@kendoi",
+        "@takerusunahase"
       ],
       "tags": [
-        "おもちゃ",
-        "クラッピーチャレンジ"
+        "NRIハッカソン"
       ],
+      "status": 2,
       "licenseType": "CC BY 4+"
     }
   ],
   "offspringCandidates": [
-    "mashup-000015"
+    "mashup-000017"
   ]
 }
