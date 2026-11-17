@@ -919,5 +919,68 @@
       "Meccano",
       "ARアート"
     ]
+  },
+  {
+    "id": "mashup-000018",
+    "schemaVersion": 1,
+    "title": "雪山ビアミートアップスピナー",
+    "summary": "スキー場で自動ビール注ぎと顔認証・年齢確認を行う移動式スピンステーション。センサーで近づく利用者を検知し、TASPO決済とビールを注ぎ、AIアバターが音声ガイドで位置情報共有し、ゲーム化した旋回ディスプレイで安全な再会を促進する。",
+    "concept": "雪山やスキー場で、ゲストが近づくと自動で顔認証と年齢確認を行い、未成年の飲酒を防止。TASPOカードで決済が完了すると、ビールタンクから自動注ぎが始まり、サーボモーター付きの旋回ディスプレイが回転しながらAIアバターが音声で案内を行う。\\n操作はスマートフォンのLINEアプリと連携し、LINE Beaconで位置を取得。利用者は自分と友人の位置をリアルタイムで共有し、最適なミートポイントをLINE Botから提案される。\\nさらに、回転ディスプレイはゲーム要素を搭載し、回転角度や速度に応じてクイズや小さな報酬を発行。酔い判定画像解析も組み込み、過度な飲酒を自動検知しアラートで安全を確保。\\nアウトドアでの飲み会と再会を楽しく、安全に楽しめる一体型サービスとなる。",
+    "mechanism": "ESP32を中心に、GPS、Beacon、サーボモーター、顔認証センサー(HVC‑C)、TASPO決済端末、LINE Beaconアンテナ、LINE Bot API、画像解析API、音声合成エンジンを統合。\\nユーザー接近時にBeaconで検知し、顔認証で年齢確認。TASPOカードをタッチすると決済が行われ、決済成功でビールタンクが自動開放しビールが注がれる。\\n同時にサーボモーターで旋回ディスプレイを回転させ、AIアバターがTTSで「乾杯！」などと音声案内。\\n位置情報はGPSとBeaconで取得し、ESP32からクラウドへUDPで送信。LINE Botが受け取り、ユーザーの友人リストに位置共有メッセージを送信。\\n画像解析APIでカメラ映像から酔い判定を行い、過度に酔っている場合はアラートを出し注ぎ停止。",
+    "useCases": [
+      "1. スキー場の休憩エリアに設置し、スキー客が立ち寄ると自動でビールが注がれ、友人同士の再会をLINE Botで提案。",
+      "2. コンビニやアウトドアショップの角に設置し、買い物客が近づくと顔認証で年齢確認し、ビールを注ぎながらAIアバターが購入品と合うおすすめドリンクを提案。",
+      "3. テーマパークのビールコーナーで、サーボ旋回ディスプレイが回転し、ゲーム感覚で飲み会を盛り上げる。",
+      "4. スキー場の夜景イベントで、ビール注ぎと同時にライトショーを回転ディスプレイで演出。",
+      "5. 近隣の居酒屋と連携し、店舗内に設置したステーションで客が来店時にビールを自動注ぎ、LINEで店舗情報を共有。",
+      "6. 家族向けアウトドアイベントで、子供用低アルコール飲料を自動注ぎし、家族間で位置共有と温かい会話を促進。"
+    ],
+    "inheritedTraits": [
+      {
+        "parentId": "mashup-000016",
+        "trait": "スノースピンミートアップBOTの回転・タッチ・音声統合FSM管理と低消費電力ESP32、酔い判定連動、リアルタイム位置共有機能を継承し、雪山やスキー場での安全な再会提案とゲーム性を提供。"
+      },
+      {
+        "parentId": "mashup-000005",
+        "trait": "ビア・ミートアップ・ビーコンステーションの顔認識による年齢判定と即時データ破棄、TASPO決済連携、LINE Beaconでの高精度位置検知、LINE Botによるリアルタイムメッセージ・スケジュール管理、およびAIアイドルによる視覚的案内を継承。"
+      }
+    ],
+    "parents": [
+      "mashup-000016",
+      "mashup-000005"
+    ],
+    "generation": 3,
+    "mode": "fusion",
+    "sourceIssue": 65,
+    "slot": "2026-11-17T04",
+    "createdAt": "2026-11-17T04:26:43.362Z",
+    "model": "@cf/openai/gpt-oss-20b",
+    "status": "idea",
+    "imagePrompt": "A compact, rugged beer dispensing station mounted on a wooden stand, with a dark slate frame and a circular LED beacon that rotates slowly. The rotating disk features a stylized AI avatar face with animated eyes, giving a welcoming smile. A small cooler holds a steel beer tap, connected to a discreet tank. On the top, an ESP32 module is visible through a clear case, and beneath it, a tiny GPS and Beacon antenna protrude. Near the base, a metallic TASPO card reader glows softly, while a tiny LCD displays the current status. Snowflakes gently fall onto the station, with a backdrop of a ski resort's alpine landscape. Skier silhouettes approach, with their smartphones showing the LINE app icon flashing in a circle beside the beacon. The scene conveys a blend of technology and outdoor leisure, highlighting safety, interaction, and fun.. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
+    "imagePath": "assets/inventions/mashup-000018.png",
+    "requestHash": "bdd913908a39f0d4779f0ea754ce471c7bc1c3945d281ef3231100b902e10b91",
+    "requesterAuto": true,
+    "technologies": [
+      "ESP32",
+      "GPS",
+      "Beacon",
+      "Servo Motor",
+      "TTS",
+      "Image Recognition API"
+    ],
+    "domains": [
+      "アウトドア",
+      "エンターテインメント"
+    ],
+    "keywords": [
+      "自動ビール注ぎ",
+      "位置共有",
+      "顔認識",
+      "音声ガイド",
+      "旋回ディスプレイ",
+      "ゲーム化",
+      "未成年防止",
+      "飲み会"
+    ]
   }
 ]
