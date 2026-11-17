@@ -1,26 +1,10 @@
 {
   "schemaVersion": 1,
-  "slot": "2026-11-16T1845",
-  "generatedAt": "2026-11-16T18:53:34.994Z",
-  "nextSlot": "2026-11-16T1900",
+  "slot": "2026-11-17T0215",
+  "generatedAt": "2026-11-17T02:26:29.659Z",
+  "nextSlot": "2026-11-17T0230",
   "source": "data/sample-prototypes.json",
   "candidates": [
-    {
-      "id": "protopedia:2500",
-      "title": "M5StickVで金のウンコを動かしてガキを驚かす",
-      "sourceUrl": "https://protopedia.net/prototype/2500",
-      "summary": "Let's make a demo that will surprise the kid who was sucked by the poop!",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/55a484aa-716f-45a7-9b7d-878a4409f35f.jpg",
-      "authors": [
-        "kinneko@kinneko"
-      ],
-      "tags": [
-        "NT名古屋"
-      ],
-      "status": 4,
-      "licenseType": "CC BY 4+"
-    },
     {
       "id": "protopedia:10",
       "title": "また、会いに行きたくなるビアサーバー by No Beer No Life",
@@ -37,35 +21,20 @@
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:1131",
-      "title": "COLOR BLASTER",
-      "sourceUrl": "https://protopedia.net/prototype/1131",
-      "summary": "作品概要 *** ** * ** *** **さあ、あなたの景色をゲームフィールドに。** COLOR BLASTERは身の回りにあるモノの「色」がマトになる新感覚シューティングゲームです。遊び方はシンプル。指定された色を持つモノを探し、狙いを定めてトリガーを引く、たったそれだけ。 場所を問わず、子供も大人も楽しむことができます。",
+      "id": "protopedia:2042",
+      "title": "ケッセ鬼を滅するMRチャンバラ運動アプリ",
+      "sourceUrl": "https://protopedia.net/prototype/2042",
+      "summary": "刀を振り回すチャンバラゲームによって有酸素運動を日々行い、減量を支援します。",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/4ab65b91-f7cd-458b-82c3-9a70a2192b0e.jpg",
+      "mainUrl": "https://protopedia.net/pic/1e83aa14-13a5-4df4-a9e7-a559122dd98e.png",
       "authors": [
-        "@HironoriSakata"
+        "HideG@hideg"
       ],
       "tags": [
-        "arduino",
-        "Python",
-        "Raspberry Pi"
-      ],
-      "status": 2,
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:3676",
-      "title": "メカノによる高精度機械式ジャイロ実験台",
-      "sourceUrl": "https://protopedia.net/prototype/3676",
-      "summary": "Meccano Based High-Precision Gyroscope Platform",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/290cc5ef-dee1-41eb-9621-191bac4e384d.jpg",
-      "authors": [
-        "Liem Peng Hong@liemph"
-      ],
-      "tags": [
-        "ジャイロ"
+        "MagicLeap",
+        "MR",
+        "ゲーミフィケーション",
+        "呼吸"
       ],
       "status": 4,
       "licenseType": "CC BY 4+"
@@ -85,9 +54,40 @@
         "mash"
       ],
       "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:18",
+      "title": "ハンドクラッピナー",
+      "sourceUrl": "https://protopedia.net/prototype/18",
+      "summary": "結構よく回ります *** ** * ** *** ハンドスピナー (2枚タイプ) パチパチトールくん (赤・黄各1個) 参考URL:",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/035f119d-9aa9-4f5e-88b6-e49b732c1491.jpg",
+      "authors": [
+        "Masawo Yamazaki@masawoyamazaki"
+      ],
+      "tags": [
+        "クラッピーチャレンジ"
+      ],
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:1",
+      "title": "クラッピーで仮装大賞",
+      "sourceUrl": "https://protopedia.net/prototype/1",
+      "summary": "合格したい！",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/9c507193-d695-4795-b0e6-4a11daa719e9.jpg",
+      "authors": [
+        "ひさやん@hisayan"
+      ],
+      "tags": [
+        "おもちゃ",
+        "クラッピーチャレンジ"
+      ],
+      "licenseType": "CC BY 4+"
     }
   ],
   "offspringCandidates": [
-    "mashup-000016"
+    "mashup-000015"
   ]
 }
