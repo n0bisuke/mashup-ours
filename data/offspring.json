@@ -982,5 +982,69 @@
       "未成年防止",
       "飲み会"
     ]
+  },
+  {
+    "id": "mashup-000019",
+    "schemaVersion": 1,
+    "title": "雪山VRランニングサプライズBOT",
+    "summary": "雪山でVR音響誘導とハプティックフィードバックを体感しつつ、LINEボットと連携した位置ベースのゲーム化ランニングイベント。金色サプライズと安全確認を組み合わせ、子どもから大人まで楽しめる安全・娯楽双方向体験を提供します。",
+    "concept": "この発明は、スキー場や山岳トレイルで行われるアウトドアランニングを、VRヘッドセットによる音響誘導とハプティックバックパックでの振動フィードバックでサポートしつつ、LINE Messaging APIを介したリアルタイム安全確認とゲーム化要素を統合した総合システムです。参加者はスマートフォンとベアラブルデバイスを装着し、BLEビーコンで位置情報を取得。VRヘッドセットは仮想の山道と音響トラックを再生し、走行中の道案内やリズム調整を行い、ハプティックバックパックは足取りやペースに合わせて振動を発生させ、身体的フィードバックを提供します。さらに、M5StickVを小型デバイスとして設置し、特定のチェックポイントで金色のサプライズフレークを揺らす物理的な驚きと、Node.jsサーバーと連携したクイズ・ミニゲームロジックにより、正解時には仮想報酬（温かいそば・日本酒など）をLINEチャットで表示。アルコール検知機能（スマホカメラで顔認識・酒精濃度推定）と心拍・歩幅測定により、酔いレベルに応じた難易度調整や安全メッセージをリアルタイムで送信。これにより、視覚障害者や酔い状態でも安全を確保しつつ、家族や友人との共有ステータスを楽しむことが可能です。",
+    "mechanism": "1. 位置情報取得：BLEビーコンが各走行コースに設置され、参加者のスマートフォンとM5StickVが現在位置を取得。 2. VR音響誘導：VRヘッドセットがリアルタイムの音響トラックを再生し、仮想山道をナビゲート。 3. ハプティックフィードバック：ハプティックバックパックが走行速度・心拍に応じて振動を発生、身体的反応を誘導。 4. サプライズデバイス：M5StickVに取り付けた金色サプライズモジュールがチェックポイント到着時にサウンド・LEDとともにフレークを揺らし物理的驚きを提供。 5. ゲームロジック：Node.jsサーバーがクイズ・ミニゲームを管理し、正解時にLINE Messaging APIへ仮想報酬を送信。 6. 安全確認：スマホカメラでの顔認識→酒精濃度推定と心拍・歩幅測定データを統合し、酔いレベルを判定。酔いレベルが高い場合はLINEボットから安全注意喚起とペース調整指示を送信。 7. データ統合：全てのデータはNode.jsサーバーで集約・分析され、参加者のラインチャットに進捗・スコア・安全情報をリアルタイムで配信。",
+    "useCases": [
+      "【スキー場ファミリーイベント】子どもと大人がVR音響とハプティックを体感しながら雪山を走り、金色サプライズで笑顔を創出。",
+      "【山岳トレイル安全対策】視覚障害者や酔い状態のランナーが音響誘導と安全メッセージでリスクを低減。",
+      "【企業ウェルネスプログラム】社員がアウトドアランニングで身体を動かし、LINEで成果を共有・競争。",
+      "【教育フィールドワーク】学生が地理・環境学習とVR体感を組み合わせ、実地調査を楽しく。",
+      "【観光プロモーション】地元の山岳観光をVR誘導でPRし、観光客に新感覚体験を提供。",
+      "【コミュニティラン】地域住民が集まり、LINEチャットで進捗をリアルタイム共有し安全に走る。"
+    ],
+    "inheritedTraits": [
+      {
+        "parentId": "mashup-000014",
+        "trait": "位置情報連動のLINE BOTによるリアルタイム集合ポイント提案と、金色サプライズモジュールでの物理的サプライズ、M5StickVを用いた小型デバイス設計、Node‑REDベースのクイズ・ゲームロジック、仮想報酬表示の仕組みを継承。"
+      },
+      {
+        "parentId": "mashup-000010",
+        "trait": "VRヘッドセットを用いた音響誘導とハプティックバックパックでの振動フィードバック、アルコール検知（顔認識・酒精濃度推定）と心拍・歩幅測定データのリアルタイム統合、LINE Messaging APIによる安全確認メッセージ、Node.jsサーバーでのデータ統合・難易度調整機能を継承。"
+      }
+    ],
+    "parents": [
+      "mashup-000014",
+      "mashup-000010"
+    ],
+    "generation": 4,
+    "mode": "fusion",
+    "sourceIssue": 66,
+    "slot": "2026-11-17T20",
+    "createdAt": "2026-11-17T20:47:50.152Z",
+    "model": "@cf/openai/gpt-oss-20b",
+    "status": "idea",
+    "imagePrompt": "A vibrant thumbnail showing a child wearing a sleek VR headset and a small haptic backpack, running across a snowy mountain trail. The child’s backpack has a glittering gold coin-like device that’s slightly flashing, hinting at a surprise element. In the foreground, a smartphone screen displays a LINE chat bubble with a safety message and a virtual reward icon. The background is a crisp, deep-blue sky with white snowflakes falling, emphasizing the wintery setting. The overall composition conveys excitement, safety, and interactive gaming in an outdoor adventure.. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
+    "imagePath": "assets/inventions/mashup-000019.png",
+    "requestHash": "878454675a26f3777f13c83d0791a7d8745157cc576ac4ecc2f306b3bbde8924",
+    "requesterAuto": true,
+    "technologies": [
+      "BLE",
+      "LINE Messaging API",
+      "VR headset",
+      "haptic backpack",
+      "Node.js",
+      "M5StickV"
+    ],
+    "domains": [
+      "エンターテインメント",
+      "日常生活",
+      "アウトドア"
+    ],
+    "keywords": [
+      "VR",
+      "ハプティック",
+      "LINEボット",
+      "サプライズ",
+      "雪山",
+      "位置情報",
+      "安全",
+      "アルコール検知"
+    ]
   }
 ]
