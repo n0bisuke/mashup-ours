@@ -1,51 +1,74 @@
 {
   "schemaVersion": 1,
-  "slot": "2026-11-17T1100",
-  "generatedAt": "2026-11-17T11:03:53.552Z",
-  "nextSlot": "2026-11-17T1115",
+  "slot": "2026-11-17T1945",
+  "generatedAt": "2026-11-17T19:47:36.248Z",
+  "nextSlot": "2026-11-17T2000",
   "source": "data/sample-prototypes.json",
   "candidates": [
     {
-      "id": "protopedia:1137",
-      "title": "ボルダリング×IoT 〜ボルダーとセッターが高め合う世界へ〜",
-      "sourceUrl": "https://protopedia.net/prototype/1137",
-      "summary": "新たな技術に挑戦します。",
+      "id": "protopedia:1",
+      "title": "クラッピーで仮装大賞",
+      "sourceUrl": "https://protopedia.net/prototype/1",
+      "summary": "合格したい！",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/95c3afb9-6581-45b0-9326-0ceba9db41d9.png",
+      "mainUrl": "https://protopedia.net/pic/9c507193-d695-4795-b0e6-4a11daa719e9.jpg",
       "authors": [
-        "@yoshihiromaeda"
+        "ひさやん@hisayan"
       ],
       "tags": [
-        "NRIハッカソン"
+        "おもちゃ",
+        "クラッピーチャレンジ"
+      ],
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:1118",
+      "title": "ボランティアを探すアプリ",
+      "sourceUrl": "https://protopedia.net/prototype/1118",
+      "summary": "スマホのGPSを使用して助けたい/助けてほしい人の場所や話せる言語を表示し、マッチング可能にします。 日本を訪れる外国人は年々増加しており、2020年にはオリンピックも開催されます。 そんな中、日本語は世界有数の難解な言語であり、多くの外国人が路頭に迷うことは火を見るよりも明らかです。 そのような状況を解決するため、誰でも持っているスマホのGPSを使用し、 地図でお互いの位置を表示することでボランティアとボランティアを必要としている人を相互検索可能とします。 \\ 1.自分の情報(助けたい/助けが必要、性別、話せる言語)を登録 2.助けが必要/助けたい人の位置が地図に表示される ※検索条件(性別、話せる言語)指定も可能",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/71d14cbf-771f-4b47-9973-11be13a6fb2a.png",
+      "authors": [
+        "@kanekoakira",
+        "@okanori",
+        "@okku",
+        "@shioyui"
+      ],
+      "tags": [
+        "android",
+        "GPS",
+        "Kivy",
+        "Mapview",
+        "Python",
+        "REST API"
       ],
       "status": 2,
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:2500",
-      "title": "M5StickVで金のウンコを動かしてガキを驚かす",
-      "sourceUrl": "https://protopedia.net/prototype/2500",
-      "summary": "Let's make a demo that will surprise the kid who was sucked by the poop!",
+      "id": "protopedia:22",
+      "title": "コスラッピー",
+      "sourceUrl": "https://protopedia.net/prototype/22",
+      "summary": "クラッピーのコスプレ用です参考URL:",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/55a484aa-716f-45a7-9b7d-878a4409f35f.jpg",
+      "mainUrl": "https://protopedia.net/pic/6c255377-2995-4a7f-9ee5-77b75faeb943.jpg",
       "authors": [
-        "kinneko@kinneko"
+        "Masawo Yamazaki@masawoyamazaki"
       ],
       "tags": [
-        "NT名古屋"
+        "クラッピーチャレンジ"
       ],
-      "status": 4,
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:3351",
-      "title": "IRリモコン",
-      "sourceUrl": "https://protopedia.net/prototype/3351",
-      "summary": "エアコンの自動制御のテストとして、既製品のベッドランプのリモコンをM5StackのIRsensorで実装してみました。",
+      "id": "protopedia:93",
+      "title": "ドライブメモ for くるくるピ",
+      "sourceUrl": "https://protopedia.net/prototype/93",
+      "summary": "ドライブ中の気になる場所を見つけた時にくるくるピっと記録する 。",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/",
+      "mainUrl": "https://protopedia.net/pic/bf6338ec-5205-413a-bbaf-2239b34fae07.png",
       "authors": [
-        "えりな@erina000"
+        "ひで@blue_islands"
       ],
       "status": 4,
       "licenseType": "CC BY 4+"
@@ -65,28 +88,9 @@
       ],
       "status": 2,
       "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:1140",
-      "title": "BlindGolf",
-      "sourceUrl": "https://protopedia.net/prototype/1140",
-      "summary": "ナイスショット!",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/1effacab-d5f9-46da-9f0b-04e4173e223f.jpg",
-      "authors": [
-        "@eigokainai",
-        "@kazumayasuda",
-        "@kendoi",
-        "@takerusunahase"
-      ],
-      "tags": [
-        "NRIハッカソン"
-      ],
-      "status": 2,
-      "licenseType": "CC BY 4+"
     }
   ],
   "offspringCandidates": [
-    "mashup-000017"
+    "mashup-000006"
   ]
 }
