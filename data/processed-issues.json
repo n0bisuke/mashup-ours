@@ -125,5 +125,12 @@
     "status": "resolved",
     "at": "2026-11-18T03:39:44.716Z",
     "attempts": 1
+  },
+  "68": {
+    "issue": 68,
+    "status": "failed",
+    "reason": "発明の生成に失敗しました: useCases（利用場面）が有効な文字列を含みません",
+    "at": "2026-11-18T20:26:33.743Z",
+    "attempts": 1
   }
 }
