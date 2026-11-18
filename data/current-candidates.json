@@ -1,96 +1,99 @@
 {
   "schemaVersion": 1,
-  "slot": "2026-11-17T1945",
-  "generatedAt": "2026-11-17T19:47:36.248Z",
-  "nextSlot": "2026-11-17T2000",
+  "slot": "2026-11-18T0145",
+  "generatedAt": "2026-11-18T01:54:16.552Z",
+  "nextSlot": "2026-11-18T0200",
   "source": "data/sample-prototypes.json",
   "candidates": [
     {
-      "id": "protopedia:1",
-      "title": "クラッピーで仮装大賞",
-      "sourceUrl": "https://protopedia.net/prototype/1",
-      "summary": "合格したい！",
+      "id": "protopedia:2042",
+      "title": "ケッセ鬼を滅するMRチャンバラ運動アプリ",
+      "sourceUrl": "https://protopedia.net/prototype/2042",
+      "summary": "刀を振り回すチャンバラゲームによって有酸素運動を日々行い、減量を支援します。",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/9c507193-d695-4795-b0e6-4a11daa719e9.jpg",
+      "mainUrl": "https://protopedia.net/pic/1e83aa14-13a5-4df4-a9e7-a559122dd98e.png",
       "authors": [
-        "ひさやん@hisayan"
+        "HideG@hideg"
       ],
       "tags": [
-        "おもちゃ",
-        "クラッピーチャレンジ"
-      ],
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:1118",
-      "title": "ボランティアを探すアプリ",
-      "sourceUrl": "https://protopedia.net/prototype/1118",
-      "summary": "スマホのGPSを使用して助けたい/助けてほしい人の場所や話せる言語を表示し、マッチング可能にします。 日本を訪れる外国人は年々増加しており、2020年にはオリンピックも開催されます。 そんな中、日本語は世界有数の難解な言語であり、多くの外国人が路頭に迷うことは火を見るよりも明らかです。 そのような状況を解決するため、誰でも持っているスマホのGPSを使用し、 地図でお互いの位置を表示することでボランティアとボランティアを必要としている人を相互検索可能とします。 \\ 1.自分の情報(助けたい/助けが必要、性別、話せる言語)を登録 2.助けが必要/助けたい人の位置が地図に表示される ※検索条件(性別、話せる言語)指定も可能",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/71d14cbf-771f-4b47-9973-11be13a6fb2a.png",
-      "authors": [
-        "@kanekoakira",
-        "@okanori",
-        "@okku",
-        "@shioyui"
-      ],
-      "tags": [
-        "android",
-        "GPS",
-        "Kivy",
-        "Mapview",
-        "Python",
-        "REST API"
-      ],
-      "status": 2,
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:22",
-      "title": "コスラッピー",
-      "sourceUrl": "https://protopedia.net/prototype/22",
-      "summary": "クラッピーのコスプレ用です参考URL:",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/6c255377-2995-4a7f-9ee5-77b75faeb943.jpg",
-      "authors": [
-        "Masawo Yamazaki@masawoyamazaki"
-      ],
-      "tags": [
-        "クラッピーチャレンジ"
-      ],
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:93",
-      "title": "ドライブメモ for くるくるピ",
-      "sourceUrl": "https://protopedia.net/prototype/93",
-      "summary": "ドライブ中の気になる場所を見つけた時にくるくるピっと記録する 。",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/bf6338ec-5205-413a-bbaf-2239b34fae07.png",
-      "authors": [
-        "ひで@blue_islands"
+        "MagicLeap",
+        "MR",
+        "ゲーミフィケーション",
+        "呼吸"
       ],
       "status": 4,
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:1123",
-      "title": "寝かしつけ時に帰宅回避Bot",
-      "sourceUrl": "https://protopedia.net/prototype/1123",
-      "summary": "小さい子供を寝かしつけしているときにうっかり帰宅してしまい子供が覚醒、寝かしつけやり直しになることほど悲しいことはありません。 寝かしつけ時帰宅回避Botは家で寝かしつけがおこなわれているのか、もう寝かしつけが終わったのかを教えてくれるBotです。",
+      "id": "protopedia:1147",
+      "title": "EEEEEカバディ",
+      "sourceUrl": "https://protopedia.net/prototype/1147",
+      "summary": "楽しいプロダクトを楽しく開発しました！",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/75e25d37-8765-44fc-8836-4bd4cee86558.jpg",
+      "mainUrl": "https://protopedia.net/pic/a7dc4dad-ef01-48c7-b7ce-202b2a3b9c53.jpg",
       "authors": [
-        "ajimitei@ajimitei"
+        "@kojikumanami",
+        "Hiroyoshi Takahashi@hirotakahashi",
+        "岡田雄太@yutaokada",
+        "萩村卓也@takuyahagimura"
       ],
       "tags": [
-        "M5Stack"
+        "NRIハッカソン"
+      ],
+      "status": 2,
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:3676",
+      "title": "メカノによる高精度機械式ジャイロ実験台",
+      "sourceUrl": "https://protopedia.net/prototype/3676",
+      "summary": "Meccano Based High-Precision Gyroscope Platform",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/290cc5ef-dee1-41eb-9621-191bac4e384d.jpg",
+      "authors": [
+        "Liem Peng Hong@liemph"
+      ],
+      "tags": [
+        "ジャイロ"
+      ],
+      "status": 4,
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:2",
+      "title": "プロジェクターをIoTしてみた",
+      "sourceUrl": "https://protopedia.net/prototype/2",
+      "summary": "昨年(2016年)に開催中止になった for Pro ハッカソンでつくりたかったアイデア。1年寝かせたけど、世に出てこなかったようなので、今回、締め切り前の1泊2日でつくってみました。",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/8d0c7a7e-0a87-416d-98a2-8bad511e6a89.png",
+      "authors": [
+        "ひさやん@hisayan"
+      ],
+      "tags": [
+        "FPGA"
+      ],
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:1131",
+      "title": "COLOR BLASTER",
+      "sourceUrl": "https://protopedia.net/prototype/1131",
+      "summary": "作品概要 *** ** * ** *** **さあ、あなたの景色をゲームフィールドに。** COLOR BLASTERは身の回りにあるモノの「色」がマトになる新感覚シューティングゲームです。遊び方はシンプル。指定された色を持つモノを探し、狙いを定めてトリガーを引く、たったそれだけ。 場所を問わず、子供も大人も楽しむことができます。",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/4ab65b91-f7cd-458b-82c3-9a70a2192b0e.jpg",
+      "authors": [
+        "@HironoriSakata"
+      ],
+      "tags": [
+        "arduino",
+        "Python",
+        "Raspberry Pi"
       ],
       "status": 2,
       "licenseType": "CC BY 4+"
     }
   ],
   "offspringCandidates": [
-    "mashup-000006"
+    "mashup-000003"
   ]
 }
