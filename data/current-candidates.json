@@ -1,60 +1,19 @@
 {
   "schemaVersion": 1,
-  "slot": "2026-11-18T0145",
-  "generatedAt": "2026-11-18T01:54:16.552Z",
-  "nextSlot": "2026-11-18T0200",
+  "slot": "2026-11-18T1000",
+  "generatedAt": "2026-11-18T10:01:54.137Z",
+  "nextSlot": "2026-11-18T1015",
   "source": "data/sample-prototypes.json",
   "candidates": [
     {
-      "id": "protopedia:2042",
-      "title": "ケッセ鬼を滅するMRチャンバラ運動アプリ",
-      "sourceUrl": "https://protopedia.net/prototype/2042",
-      "summary": "刀を振り回すチャンバラゲームによって有酸素運動を日々行い、減量を支援します。",
+      "id": "protopedia:101",
+      "title": "鯖江夕景",
+      "sourceUrl": "https://protopedia.net/prototype/101",
+      "summary": "鯖江夕景は鯖江市のオープンデータの鯖江百景を基に制作しています。夕景はその日ごとに違う顔を見せてくれて、季節ごとにも変化をもたらします。鯖江市の観光地の魅力を引き出すため、鯖江夕景を活用してください。",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/1e83aa14-13a5-4df4-a9e7-a559122dd98e.png",
+      "mainUrl": "https://protopedia.net/pic/4c30e575-7c24-42be-b318-3b00c001f7b1.png",
       "authors": [
-        "HideG@hideg"
-      ],
-      "tags": [
-        "MagicLeap",
-        "MR",
-        "ゲーミフィケーション",
-        "呼吸"
-      ],
-      "status": 4,
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:1147",
-      "title": "EEEEEカバディ",
-      "sourceUrl": "https://protopedia.net/prototype/1147",
-      "summary": "楽しいプロダクトを楽しく開発しました！",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/a7dc4dad-ef01-48c7-b7ce-202b2a3b9c53.jpg",
-      "authors": [
-        "@kojikumanami",
-        "Hiroyoshi Takahashi@hirotakahashi",
-        "岡田雄太@yutaokada",
-        "萩村卓也@takuyahagimura"
-      ],
-      "tags": [
-        "NRIハッカソン"
-      ],
-      "status": 2,
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:3676",
-      "title": "メカノによる高精度機械式ジャイロ実験台",
-      "sourceUrl": "https://protopedia.net/prototype/3676",
-      "summary": "Meccano Based High-Precision Gyroscope Platform",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/290cc5ef-dee1-41eb-9621-191bac4e384d.jpg",
-      "authors": [
-        "Liem Peng Hong@liemph"
-      ],
-      "tags": [
-        "ジャイロ"
+        "ひで@blue_islands"
       ],
       "status": 4,
       "licenseType": "CC BY 4+"
@@ -75,25 +34,54 @@
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:1131",
-      "title": "COLOR BLASTER",
-      "sourceUrl": "https://protopedia.net/prototype/1131",
-      "summary": "作品概要 *** ** * ** *** **さあ、あなたの景色をゲームフィールドに。** COLOR BLASTERは身の回りにあるモノの「色」がマトになる新感覚シューティングゲームです。遊び方はシンプル。指定された色を持つモノを探し、狙いを定めてトリガーを引く、たったそれだけ。 場所を問わず、子供も大人も楽しむことができます。",
+      "id": "protopedia:6",
+      "title": "スキー場での「会えない」を解決し「会いたい」を叶える雪山BOT with LINE Beacon",
+      "sourceUrl": "https://protopedia.net/prototype/6",
+      "summary": "全力でハッカソン！1%のアイデアと99%の実証実験！！",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/4ab65b91-f7cd-458b-82c3-9a70a2192b0e.jpg",
+      "mainUrl": "https://protopedia.net/pic/09de39fd-554f-4c27-bc72-4f80267d9150.jpg",
       "authors": [
-        "@HironoriSakata"
+        "ひさやん@hisayan",
+        "佐田幸宏@yukihirosada"
       ],
       "tags": [
-        "arduino",
-        "Python",
-        "Raspberry Pi"
+        "LINE Beacon",
+        "ゲレンデ",
+        "新幹線"
       ],
-      "status": 2,
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:3351",
+      "title": "IRリモコン",
+      "sourceUrl": "https://protopedia.net/prototype/3351",
+      "summary": "エアコンの自動制御のテストとして、既製品のベッドランプのリモコンをM5StackのIRsensorで実装してみました。",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/",
+      "authors": [
+        "えりな@erina000"
+      ],
+      "status": 4,
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:3",
+      "title": "おしゃべりパパ人形",
+      "sourceUrl": "https://protopedia.net/prototype/3",
+      "summary": "子どもが喜んでくれて、遊んでくれたら目的達成！ 小さな子どものための電子工作",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/838b69fe-fc94-4807-b6a5-223068816f9c.jpg",
+      "authors": [
+        "@erikosakashita",
+        "ひさやん@hisayan"
+      ],
+      "tags": [
+        "mash"
+      ],
       "licenseType": "CC BY 4+"
     }
   ],
   "offspringCandidates": [
-    "mashup-000003"
+    "mashup-000019"
   ]
 }
