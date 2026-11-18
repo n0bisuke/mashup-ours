@@ -1046,5 +1046,68 @@
       "安全",
       "アルコール検知"
     ]
+  },
+  {
+    "id": "mashup-000020",
+    "schemaVersion": 1,
+    "title": "雪山スピン・ミートアップBOT",
+    "summary": "雪山での友人・家族と酔い判定とスピンゲームを組み合わせ、BluetoothとLINE Beaconで位置共有しながら仮想報酬を得られるインタラクティブミートアップデバイス。",
+    "concept": "雪山やスキー場など寒冷地での飲み会を想定し、参加者が持ち運ぶことでその場の雰囲気を即座にゲーム化するデバイスです。持ち手にはタッチセンサーとサーボモーターを備え、ユーザーが手で回すとスピン角度が検知。さらに、LCDまたはLEDディスプレイで酔いレベルをリアルタイムに表示します。酒量はアルコール感知ピンで呼気を検知し、酔い判定を自動で行います。LINE Beaconに接続したスマートフォンとBluetooth Low Energyで同期し、位置情報を共有。LINE BOTがスケジューリングや集合ポイントを提案し、クイズやミニアクションと連動したゲームモードを起動。ゲーム中は仮想アイテム（温かいそば・日本酒）が獲得でき、これらはスマホのゲーム画面に表示される。酔いが一定レベルに達するとゲームが自動で開始し、参加者同士のコミュニケーションを促進。また、LEDインジケーターで安全管理を行い過飲を防ぎつつ、楽しい飲み会体験を提供します。",
+    "mechanism": "ハードウェアはESP32を中心に構成され、サーボモーターで回転角度を取得し、タッチセンサーで回転開始を検知。アルコールセンサーは低消費電力設計で呼気中のアルコール濃度を測定。ESP32はBluetooth Low Energyでスマートフォンアプリと同期し、状態を送受信します。音声認識モジュールにより、ユーザーの発話を受け取り、ゲーム内指示やフィードバックを音声で返答。LEDディスプレイは酔いレベルとゲーム進行状況を可視化。ソフトウェアは有限状態機械（FSM）で全体制御を行い、酔い判定が閾値に達した際にゲームモードへ遷移。位置情報はLINE Beaconを利用し、ユーザーのリアルタイム位置を取得。LINE BOTは取得した位置情報を元にスケジュール提案や集合ポイントのニューラルネットワークで算出し、ユーザーのスマートフォンに通知。ゲームロジックはクイズ＋ミニアクションを組み合わせ、スピン角度に応じて課題を出題。獲得した仮想アイテムはサーバー側で管理され、実際の飲み物の報酬と連携可能。",
+    "useCases": [
+      "山岳リゾートでの雪山ハイキング中に友人同士が集合し、デバイスでスピンゲームを開始。",
+      "スキー場の休憩所でアルコール感知と位置共有を利用し、未経験者同士が安全に飲み会を開催。",
+      "寒冷地の企業チームビルディングイベントで、参加者が位置情報とゲーム化した飲み会でリラックス。",
+      "冬季フェスティバルの屋外ステージ前で、来場者がデバイスを使い仲間と連携。",
+      "雪道の排水路撤去作業後の休憩コーナーで、作業員が安全に酔い管理しつつ楽しめる。",
+      "登山帰路の温泉地で、帰還途中のグループがスピンゲームをプレイしながら集合点へ誘導。"
+    ],
+    "inheritedTraits": [
+      {
+        "parentId": "mashup-000003",
+        "trait": "位置情報取得とBOTによるスケジューリング、リアルタイム位置共有機能、酔い判定でゲーム開始、クイズ・ミニアクションのハイブリッドゲーム、仮想アイテム報酬という構造をそのまま保ち、雪山特有の交流促進エコシステムを提供。"
+      },
+      {
+        "parentId": "mashup-000013",
+        "trait": "ESP32マイクロコントローラを中心にサーボモーターで回転検知、タッチセンサーで回転開始の検出、低消費電力アルコール感知ピンで呼気中のアルコール濃度を測定、マイクロフォンと音声認識ライブラリで声を拾い自然言語処理、Bluetooth Low Energyでスマートフォンアプリと同期、LEDインジケーターで状態表示、有限状態機械で動作制御という機能を統合。"
+      }
+    ],
+    "parents": [
+      "mashup-000003",
+      "mashup-000013"
+    ],
+    "generation": 3,
+    "mode": "fusion",
+    "sourceIssue": 67,
+    "slot": "2026-11-18T03",
+    "createdAt": "2026-11-18T03:39:44.716Z",
+    "model": "@cf/openai/gpt-oss-20b",
+    "status": "idea",
+    "imagePrompt": "A compact handheld device set against a snowy mountain backdrop, featuring a rotating top with a sleek metallic finish, a row of colorful LED strips lighting up to indicate alcohol level and game status, a small camera module on the front for alcohol detection, a touch-sensitive button on the side, and a Bluetooth icon glowing. A smartphone screen nearby shows a LINE map pinpointing meetup locations, while a virtual hot noodle and sake icon floats above the device, representing the virtual rewards. The image conveys a sense of playful interaction, safety monitoring, and outdoor adventure.. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
+    "imagePath": "assets/inventions/mashup-000020.png",
+    "requestHash": "34b71729f5fb25b017067f1896a09b73e00c5bab85962dca3e72f94710471c0c",
+    "requesterAuto": true,
+    "technologies": [
+      "ESP32",
+      "Bluetooth Low Energy",
+      "LINE Beacon",
+      "Camera",
+      "Alcohol Sensor",
+      "Voice Recognition"
+    ],
+    "domains": [
+      "アウトドア",
+      "エンターテインメント"
+    ],
+    "keywords": [
+      "ドリンクスピン",
+      "位置情報",
+      "酔い判定",
+      "音声認識",
+      "ゲーム化",
+      "アルコールセンサー",
+      "スピンゲーム",
+      "ミートアップ"
+    ]
   }
 ]
