@@ -1,82 +1,24 @@
 {
   "schemaVersion": 1,
-  "slot": "2026-11-18T1845",
-  "generatedAt": "2026-11-18T18:49:28.390Z",
-  "nextSlot": "2026-11-18T1900",
+  "slot": "2026-11-19T0100",
+  "generatedAt": "2026-11-19T01:04:53.150Z",
+  "nextSlot": "2026-11-19T0115",
   "source": "data/sample-prototypes.json",
   "candidates": [
     {
-      "id": "protopedia:1140",
-      "title": "BlindGolf",
-      "sourceUrl": "https://protopedia.net/prototype/1140",
-      "summary": "ナイスショット!",
+      "id": "protopedia:2500",
+      "title": "M5StickVで金のウンコを動かしてガキを驚かす",
+      "sourceUrl": "https://protopedia.net/prototype/2500",
+      "summary": "Let's make a demo that will surprise the kid who was sucked by the poop!",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/1effacab-d5f9-46da-9f0b-04e4173e223f.jpg",
+      "mainUrl": "https://protopedia.net/pic/55a484aa-716f-45a7-9b7d-878a4409f35f.jpg",
       "authors": [
-        "@eigokainai",
-        "@kazumayasuda",
-        "@kendoi",
-        "@takerusunahase"
+        "kinneko@kinneko"
       ],
       "tags": [
-        "NRIハッカソン"
+        "NT名古屋"
       ],
-      "status": 2,
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:1147",
-      "title": "EEEEEカバディ",
-      "sourceUrl": "https://protopedia.net/prototype/1147",
-      "summary": "楽しいプロダクトを楽しく開発しました！",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/a7dc4dad-ef01-48c7-b7ce-202b2a3b9c53.jpg",
-      "authors": [
-        "@kojikumanami",
-        "Hiroyoshi Takahashi@hirotakahashi",
-        "岡田雄太@yutaokada",
-        "萩村卓也@takuyahagimura"
-      ],
-      "tags": [
-        "NRIハッカソン"
-      ],
-      "status": 2,
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:1131",
-      "title": "COLOR BLASTER",
-      "sourceUrl": "https://protopedia.net/prototype/1131",
-      "summary": "作品概要 *** ** * ** *** **さあ、あなたの景色をゲームフィールドに。** COLOR BLASTERは身の回りにあるモノの「色」がマトになる新感覚シューティングゲームです。遊び方はシンプル。指定された色を持つモノを探し、狙いを定めてトリガーを引く、たったそれだけ。 場所を問わず、子供も大人も楽しむことができます。",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/4ab65b91-f7cd-458b-82c3-9a70a2192b0e.jpg",
-      "authors": [
-        "@HironoriSakata"
-      ],
-      "tags": [
-        "arduino",
-        "Python",
-        "Raspberry Pi"
-      ],
-      "status": 2,
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:4",
-      "title": "Pour or Drink",
-      "sourceUrl": "https://protopedia.net/prototype/4",
-      "summary": "一瞬で仲良くなれます。",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/ddf1faf1-faf5-4a70-b079-c0a0b5b9644a.jpg",
-      "authors": [
-        "ひさやん@hisayan",
-        "佐田幸宏@yukihirosada",
-        "鈴木まなみ@rin2tree"
-      ],
-      "tags": [
-        "ノーコード",
-        "飲み会が盛り上がる"
-      ],
+      "status": 4,
       "licenseType": "CC BY 4+"
     },
     {
@@ -96,9 +38,57 @@
         "社会課題を解決するデザイン"
       ],
       "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:3676",
+      "title": "メカノによる高精度機械式ジャイロ実験台",
+      "sourceUrl": "https://protopedia.net/prototype/3676",
+      "summary": "Meccano Based High-Precision Gyroscope Platform",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/290cc5ef-dee1-41eb-9621-191bac4e384d.jpg",
+      "authors": [
+        "Liem Peng Hong@liemph"
+      ],
+      "tags": [
+        "ジャイロ"
+      ],
+      "status": 4,
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:12",
+      "title": "DrunkenMaster byDrunker5",
+      "sourceUrl": "https://protopedia.net/prototype/12",
+      "summary": "お酒の場を楽しくするゲームです。酔っ払ってないとゲームはできません。",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/88dc4f01-de60-4ad9-969c-a6f31f48451d.png",
+      "authors": [
+        "@yuukankin",
+        "ひさやん@hisayan",
+        "佐田幸宏@yukihirosada"
+      ],
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:4",
+      "title": "Pour or Drink",
+      "sourceUrl": "https://protopedia.net/prototype/4",
+      "summary": "一瞬で仲良くなれます。",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/ddf1faf1-faf5-4a70-b079-c0a0b5b9644a.jpg",
+      "authors": [
+        "ひさやん@hisayan",
+        "佐田幸宏@yukihirosada",
+        "鈴木まなみ@rin2tree"
+      ],
+      "tags": [
+        "ノーコード",
+        "飲み会が盛り上がる"
+      ],
+      "licenseType": "CC BY 4+"
     }
   ],
   "offspringCandidates": [
-    "mashup-000019"
+    "mashup-000009"
   ]
 }
