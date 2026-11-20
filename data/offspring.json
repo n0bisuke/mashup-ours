@@ -1109,5 +1109,69 @@
       "スピンゲーム",
       "ミートアップ"
     ]
+  },
+  {
+    "id": "mashup-000021",
+    "schemaVersion": 1,
+    "title": "RunBrew Quest: ビーコンランでビールをゲット",
+    "summary": "ランニングとビール体験を融合した、ビーコンで位置を検知し、AIアイドルが案内する飲み会＆ゲーム型アウトドアアプリ。",
+    "concept": "RunBrew Questは、フィットネスと社交を同時に楽しむための新感覚サービスです。利用者はスマートフォンを持ち歩き、街や公園に設置されたビア・ミートアップ・ビーコンステーションを目指して走ります。走行中はモバイルデバイスが距離・速度・心拍を取得し、Praceのゲームロジックにより「道場制圧」要素が加わります。ビーコンが検知されると自動でビール自動注ぎが開始され、AIアバターがビールの種類を選択しながらリアルタイムで応援メッセージを発信。友人の位置情報はLINE BeaconとLINE Bot APIで共有され、会合場所の提案や到着通知が行われます。走行が一定距離に達するとゲーム内でレベルアップが起き、追加のビールトークンや限定ドリンクがアンロック。ゲーム感覚で走る楽しさと、友人との再会、安定決済（TASPO）を一セットにした体験です。ユーザーは走行した距離に応じてポイントを獲得し、次回のビールを割引で入手できるほか、AIアイドルキャラクターの衣装で自己表現も可能です。",
+    "mechanism": "本発明は以下の技術要素で構成される。HVC‑C顔認識センサーで年齢と性別を即時判定し、未成年者の飲酒を防止。TASPO決済端末がビーコンステーションでの支払いをスムーズに実行。LINE Beaconアンテナで周囲ビーコンを高精度検知し、ユーザーの現在位置をリアルタイムで把握。LINE Bot APIを通じて会合スケジュールと再会案内を配信。AIアバター（バーチャルアイドル）エンジンがコンソール上で視覚的な案内とメッセージを生成。LCDディスプレイとビールタンク・注ぎ装置が自動注ぎを制御。モバイルデバイス上で走行データを取得し、タッチ操作でゲーム内の「道場制圧」を制御。全てのデータは一時的にデバイス上に保持され、プライバシー保護に配慮した設計となっている。",
+    "useCases": [
+      "1. 友人とランニングイベントを開催し、指定ビーコンステーションでビールを自動注ぎつつ、ゲーム内で競い合う。",
+      "2. 学生がキャンパス内で走って、学割付きビールを受け取る。",
+      "3. スキー場や山岳トレイルで歩きながら、耐熱ビールタンクからビールを注ぐ。",
+      "4. 企業の社員研修でウォーキングを取り入れ、会議後にビールでリフレッシュ。",
+      "5. 地域イベントで遊び心のあるランニングゲームを提供し、来場者の集客を増やす。",
+      "6. 個人が健康管理と社交欲求を同時に満たすため、毎朝公園で走りながら朝ビールを仕入れる。"
+    ],
+    "inheritedTraits": [
+      {
+        "parentId": "mashup-000005",
+        "trait": "ビア・ミートアップ・ビーコンステーションからは、HVC‑C顔認識による即時年齢判定とデータ破棄、TASPO決済連携、LINE Beaconで高精度位置検知、LINE Botによるリアルタイムメッセージ・スケジュール管理、AIアバターで視覚的案内、およびビール自動注ぎ装置の機能を継承。"
+      },
+      {
+        "parentId": "protopedia:1138",
+        "trait": "Praceからは、モバイルデバイス上で走行データ（距離・速度・心拍）を取得し、タッチ操作でゲーム要素を制御する仕組み、走行をゲーム感覚で継続できる道場制圧目標、走行記録とフィードバックの出力機能を継承。"
+      }
+    ],
+    "parents": [
+      "mashup-000005",
+      "protopedia:1138"
+    ],
+    "generation": 2,
+    "mode": "fusion",
+    "sourceIssue": 70,
+    "slot": "2026-11-20T20",
+    "createdAt": "2026-11-20T20:01:54.737Z",
+    "model": "@cf/openai/gpt-oss-20b",
+    "status": "idea",
+    "imagePrompt": "A vibrant, futuristic portable beer tap station set in a sunny park, with glowing LED signs and a smart device held by a runner in motion. The smartphone screen displays a colorful map with beacon icons, a virtual idol avatar guiding the runner, and real-time stats. Beer pours from the tap onto a waiting glass, while a group of friends watches, each with a LINE app notification bubble. The scene is rendered in high-detail illustration, showcasing dynamic motion, bright colors, and an engaging blend of fitness, gaming, and social drinking.. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
+    "imagePath": "assets/inventions/mashup-000021.png",
+    "requestHash": "20208d0fc88b5f8f72291b0876d45993a3b8c3918c38b0bb887a302e8b893a62",
+    "requesterAuto": true,
+    "technologies": [
+      "HVC-C顔認識センサー",
+      "TASPO決済端末",
+      "LINE Beacon",
+      "LINE Bot API",
+      "AI Avatar Engine",
+      "モバイルデバイス（Android/iOS）"
+    ],
+    "domains": [
+      "アウトドア",
+      "エンターテインメント",
+      "日常生活"
+    ],
+    "keywords": [
+      "ランニング",
+      "ゲーム感覚",
+      "ビール",
+      "ビーコン",
+      "バーチャルアイドル",
+      "友人再会",
+      "フィットネス",
+      "決済"
+    ]
   }
 ]
