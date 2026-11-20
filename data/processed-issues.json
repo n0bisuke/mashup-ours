@@ -136,8 +136,8 @@
   "69": {
     "issue": 69,
     "status": "failed",
-    "reason": "発明の生成に失敗しました: timeout: Cloudflare Workers AI [timeout]: タイムアウト",
-    "at": "2026-11-19T20:31:14.292Z",
-    "attempts": 1
+    "reason": "発明の生成に失敗しました: AIの出力が空です",
+    "at": "2026-11-20T01:54:56.850Z",
+    "attempts": 2
   }
 }
