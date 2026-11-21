@@ -1236,5 +1236,69 @@
       "思いやり",
       "乗車管理"
     ]
+  },
+  {
+    "id": "mashup-000023",
+    "schemaVersion": 1,
+    "title": "スノーリバー・アルコグラフィトリック",
+    "summary": "スキー場もパーティーも同じデバイスで楽しむ、動きと酒量に応じて3Dアートを生成し、クイズで金色サプライズを出すオールインワン型インタラクティブゲームシステム。",
+    "concept": "冬季スポーツ施設で子どもが集うのを促進するクイズとサプライズムービーを備えつつ、飲酒を伴う大人のパーティーでは手で回すモーションとアルコールセンサで生成される3Dグラフィティと音楽を同時に体験できる。参加者はスマートフォンやARヘッドセットを通じて、リアルタイムで生成されるアートを確認し、外部のLEDディスプレイでは全体像を投影。雪の中で走り回る子どもたちは、位置情報を取得したBLEビーコンから提示された集合ポイントに向かい、正解を出すたびにロータリーモーターで金色のウンコが揺れ、光り輝くLEDが点滅し、仮想報酬を受け取る。大人は自分のアルコールレベルを声で指示しながら、デバイスを手で回し、生成された3Dアートがスマホ画面に投影される。音声認識でコマンドを受け付け、Spirit Modeでは音楽とエフェクトが増幅される。臨場感とゲーム性を兼ね備え、同時に交流を促進する。",
+    "mechanism": "本システムはESP32ベースのM5StickVを中心に、3軸ジャイロ・加速度計と低消費電力アルコールセンサを統合したモジュールで、ユーザーの手の動きと酒量をリアルタイムに取得。BLEビーコンは位置情報を取得し、Node‑REDで構築されたクイズ・ゲームロジックと連携してサプライズトークンを発火させる。サーボモーターで小型の金色ウンコアームを揺らし、LEDリングが感情やスコアを可視化。音声認識ライブラリでコマンドを処理し、OpenGL ESベースのARエンジンがスマートフォンやARディスプレイに3Dアートを投影。FSMで各モードの遷移を管理し、ロスレスなユーザー体験を実現。",
+    "useCases": [
+      "1. スキー場の子どもがLINEと連携したスマートフォンでクイズに挑戦。正解すると金色ウンコが揺れ、LEDが点滅し、仮想報酬が表示される。",
+      "2. 大人の居酒屋で、参加者がデバイスを手で回しながらアルコールセンサにより現在の飲酒レベルが検知され、Spirit Modeで3Dアートと音楽が再生される。",
+      "3. 親子連れが外でスノーモービルに乗る際、デバイスがスムーズに連動して動きとアルコール量に応じたアートを表示。",
+      "4. 企業のチームビルディングイベントで、サーバーと連携したクイズチャレンジに参加し、チームごとにスコアを競い合う。",
+      "5. スキーリゾートで配信者がライブストリームし、視聴者がデバイスを操作してリアルタイムにアートを生成し、共有。",
+      "6. ともに家族イベントやパーティーで、ベビーカーや車の中でデバイスを持ち、屋内で動きとクイズで楽しむ。"
+    ],
+    "inheritedTraits": [
+      {
+        "parentId": "mashup-000017",
+        "trait": "アルコグラフィ 360 からは、ESP32を中心とした低消費電力設計、手で回すモーションで3Dグラフィティをリアルタイムに生成、アルコールセンサで酔いレベルを判定、音声認識とAI音声フィードバック、LEDディスプレイでスコア表示、Spirit Modeで音楽・エフェクトを増幅する機能が継承された。"
+      },
+      {
+        "parentId": "mashup-000014",
+        "trait": "雪道ゴールデンウンコサプライズボット からは、BLEビーコンによる位置情報取得とスマートフォンと連携したゲームロジック、サーボモーターで金色ウンコを揺らす物理サプライズ、Node‑REDで構築したクイズ・報酬システム、LED表示で仮想報酬・スコア提示、M5StickV のコンパクトなデザインとUSB充電方式が受け継がれた。"
+      }
+    ],
+    "parents": [
+      "mashup-000017",
+      "mashup-000014"
+    ],
+    "generation": 4,
+    "mode": "fusion",
+    "sourceIssue": 72,
+    "slot": "2026-11-21T12",
+    "createdAt": "2026-11-21T12:31:54.491Z",
+    "model": "@cf/openai/gpt-oss-20b",
+    "status": "idea",
+    "imagePrompt": "A compact, translucent device approximately the size of a smartphone, featuring a sleek black case with a thin LED ring around the perimeter. Inside, a small servo-controlled golden mascot arm with a shiny finish protrudes from a slot at the front, poised to swing. The device is mounted on a stylized ski slope with snow-covered trees and bright blue sky in the background. A child wearing a ski helmet holds the device, turning it around while laughter is visible. Above the child, a translucent AR overlay shows dynamic 3D graffiti swirling around the device, illuminated by the LED ring. In the lower right corner, a smartphone screen displays an interactive quiz interface with a gold coin reward animation popping up. The scene captures the fusion of motion-based art creation, alcohol detection (indicated by a subtle sensor icon), and a playful surprise element. The aesthetic is vibrant, joyful, and promotes a sense of adventure and connection.. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
+    "imagePath": "assets/inventions/mashup-000023.png",
+    "requestHash": "6e1df0c2586a735f24041a958875412bbf24487a93c932e2db8d568a09dac322",
+    "requesterAuto": true,
+    "technologies": [
+      "ESP32",
+      "BLE",
+      "Servo Motor",
+      "Gyroscope",
+      "Alcohol Sensor",
+      "OpenGL ES"
+    ],
+    "domains": [
+      "エンターテインメント",
+      "アウトドア",
+      "教育・学習"
+    ],
+    "keywords": [
+      "ARアート",
+      "サプライズトークン",
+      "アルコール検知",
+      "位置情報ゲーム",
+      "クイズ",
+      "Bluetooth",
+      "音声認識",
+      "モビリティ"
+    ]
   }
 ]
