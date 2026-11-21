@@ -1173,5 +1173,68 @@
       "フィットネス",
       "決済"
     ]
+  },
+  {
+    "id": "mashup-000022",
+    "schemaVersion": 1,
+    "title": "スキー場連携型座席認識＆位置共有システム",
+    "summary": "スキー場内での友人・家族の会合と、乗り物内の座席空き情報をリアルタイムで通信するための、温度センサーとBLEビームを備えたスマートつり革／ウェアラブルデバイス。LINE BeaconとBOTを組み合わせ、位置情報連携と自動会合調整、座席占有時の振動通知を一体化したシステムです。",
+    "concept": "スキー場やスキーリフト・シャトルバスなどの移動手段を利用する際、友人や家族と合流できないケースが多く、さらに座席がいっぱいになると乗車が困難になるという課題があります。本発明は、スキー場全域に設置されたLINE Beaconと連携してリアルタイムに位置情報を共有し、さらに個々の乗客がつり革や腕に装着する温度センサ+BLEモジュールで座席占有状況を検知し、振動や音で他乗客へ譲り合いを促すことで、会合調整と座席管理を一括で行います。ユーザーはLINEアプリ内で「今ここ！」「次の乗車予定」などの通知を受け取り、ビンの位置情報と座席空き情報をマップ上で確認。転倒や渋滞の際にも安全性を高め、スキー体験をよりスムーズかつ楽しいものにします。",
+    "mechanism": "デバイスはArduino（またはKonashi）に基づき、温度センサで座席に接触した温度を測定し、BLEモジュール（BLE Beacon）で近隣端末へ熱と占有情報を送信。同期サーバー（MyThings等）にデータをアップロードし、LINE BOTが受信。BOTはリアルタイムでユーザーの位置情報を解析し、近隣ユーザーと近距離マッチング。会合ポイントを提案し、到着予定時に通知。さらに、占有時にデバイス内の振動アクチュエータが起動し、周囲に譲り合いを促す音・振動を送出。サーバーは占有データを集計し、乗客全体の座席空き情報をマップ化。ユーザーはLINE上でシェアできるリンクを受け取り、同じリフトまたはシャトルに乗る乗客と情報を共有。",
+    "useCases": [
+      "1. スキー場内で友人と合流できないとき、LINE BOTがリアルタイムで近くのユーザー位置を表示し、最適な会合場所を提案。",
+      "2. スキーリフトに乗る際、デバイスが乗客の座席占有状況をサーバーへ送信し、空席情報をLINEで通知。",
+      "3. 高齢者や長距離乗車者がつり革に握ると温度上昇を検知し、他乗客へ譲り合いの振動/音を送信。",
+      "4. 雪山で事故や悪天候時に、デバイスがユーザーの位置と安全情報をLINEに報告し、救命情報を共有。",
+      "5. 乗り物内での長期滞在時、座席占有時間を集計し、乗客に残り時間や他乗客の空席リマインド。",
+      "6. スキー場内イベントやツアーの集合点をLINE BOTが提案し、参加者全員の位置情報を統合表示。"
+    ],
+    "inheritedTraits": [
+      {
+        "parentId": "protopedia:6",
+        "trait": "LINE BeaconとBOTによる位置検知と、リアルタイム座席共有機能。グループ内のスケジュール調整と会合場所提案により、スキー場での“会えない”問題を解決する仕組み。"
+      },
+      {
+        "parentId": "protopedia:9",
+        "trait": "つり革に組み込む温湿度センサ＋BLEと、乗客がつり革に掴むと生成される振動・音で周囲に譲り合いを促すアクチュエータ。乗客間の思いやりと安全性を高める体験を提供。"
+      }
+    ],
+    "parents": [
+      "protopedia:6",
+      "protopedia:9"
+    ],
+    "generation": 1,
+    "mode": "fusion",
+    "sourceIssue": 71,
+    "slot": "2026-11-21T01",
+    "createdAt": "2026-11-21T01:25:52.351Z",
+    "model": "@cf/openai/gpt-oss-20b",
+    "status": "idea",
+    "imagePrompt": "A sleek, ergonomic wristband or seat strap glowing with subtle LED indicators, integrated with a small temperature sensor and a tiny vibration motor. The device emits a weak BLE beacon, represented by soft concentric waves. Nearby, a smartphone screen displays the LINE app with a map overlay showing multiple colored pins indicating user locations. A ski lift cabin is shown in the background with a clear seat marking occupied by the strap, while other seats are highlighted as available. The scene captures a skier in a bright ski jacket holding the strap, with a calm, friendly tone, showcasing both the technology and the convivial atmosphere of group ski outings.. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
+    "imagePath": "assets/inventions/mashup-000022.png",
+    "requestHash": "af3d215b12cfab7366f9d7a31c8fc82dbe73d9c027b1b0d816d49d898ff48257",
+    "requesterAuto": true,
+    "technologies": [
+      "LINE Beacon",
+      "BLE",
+      "Arduino",
+      "Temperature sensor",
+      "Vibration actuator",
+      "LINE Bot"
+    ],
+    "domains": [
+      "アウトドア",
+      "日常生活"
+    ],
+    "keywords": [
+      "位置共有",
+      "リアルタイム",
+      "座席通知",
+      "温度センサー",
+      "ビーコン",
+      "自動会合調整",
+      "思いやり",
+      "乗車管理"
+    ]
   }
 ]
