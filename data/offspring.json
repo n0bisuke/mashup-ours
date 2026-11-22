@@ -1300,5 +1300,69 @@
       "音声認識",
       "モビリティ"
     ]
+  },
+  {
+    "id": "mashup-000024",
+    "schemaVersion": 1,
+    "title": "スノーARランニングアートギャラリー",
+    "summary": "手で回しながら滑走・走行するアウトドア参加者が、M5StickVとAR映像、VR音響誘導、ハプティックフィードバック、金色サプライズを組み合わせて、リアルタイムに3Dアートを生成しつつ、安全を自動監視する統合エンターテインメント装置。",
+    "concept": "本発明は、雪山やスキー場でのアウトドアアクティビティとパーティー要素を融合させ、参加者が手を回す動作で3DアートをARヘッドセットへ投影しながら、VR音響誘導とハプティック振動パックによって仮想山道を走行する体験を提供する。加えて、M5StickVの低消費電力アルコールセンサーと心拍・顔認識機能により酔いレベルや体調をリアルタイムで監視し、必要に応じてペース調整や安全メッセージを音声で案内。金色サプライズモジュールは、ゲーム性を高めるためにランダムに小さな金属フレークを散布し、LINE Messaging APIと連携して仮想報酬や進捗を共有。参加者は家族や友人と遠隔で結果を比較し、仲間意識を醸成できる。ユーザー体験は、身体活動とデジタルエンタメが同時に満たされることで、従来の単一イベントよりも高い臨場感と安全性を実現。",
+    "mechanism": "M5StickV（ESP32）に搭載された3軸ジャイロ・加速度計で手の回転を検知し、これをNode‑REDで処理してリアルタイムに生成される3Dアート指令をOpenGL ESベースのARエンジンへ送信。アルコールセンサーの値はSpirit Modeの推進に利用され、酔いレベルが高いと音楽とエフェクトが強調される。また、心拍計・顔認識モジュールで安全データを取得し、VRヘッドセットへ音響誘導とハプティックバックパックへ振動指示を送る。金色サプライズモジュールはBLEビーコンで位置情報を受信し、指定ポイントで金屬フレークを放出。LEDリングはスコアと感情を可視化し、M5StickVからスマートフォンへBluetoothで転送。全てのデータはNode‑REDで統合され、LINE Messaging APIにより仮想報酬をテキスト・画像で送信。",
+    "useCases": [
+      "1. スキー場での大人と子どもが手を回しつつ滑走し、ARアートを生成しながら金色サプライズを体験。",
+      "2. 雪山ランニングイベントで、参加者がVR誘導を受けつつハプティック振動で道順を確認。",
+      "3. 家族旅行中にリモートでLINEボットを通じて進捗と報酬を共有。",
+      "4. 観光客向けのスノーアートツアーで、手動アクションが美術作品を生成。",
+      "5. スポーツ大会のセーフティモニタリングとして酔いレベルと心拍をリアルタイム表示。",
+      "6. パーティーイベントで、参加者が手で回し金色サプライズとLED光のショーを楽しむ。"
+    ],
+    "inheritedTraits": [
+      {
+        "parentId": "mashup-000023",
+        "trait": "親Aからは、M5StickVに統合された3軸ジャイロ・加速度計と低消費電力アルコールセンサー、手の回転で生成される3DグラフィティのAR投影、金色ウンコサプライズモジュール、LEDリングによるスコア可視化、音声認識によるモード遷移、Node‑REDで構築されるクイズロジック、Spirit Modeでの音楽増幅と感情フィードバックを取り入れた。"
+      },
+      {
+        "parentId": "mashup-000019",
+        "trait": "親Bからは、VRヘッドセットとハプティックバックパックを用いた音響誘導と振動フィードバック、BLEビーコンで取得される位置情報と金色サプライズモジュール、顔認識とアルコール濃度推定による安全確認、心拍・歩幅測定、LINE Messaging APIを介した仮想報酬表示と安全メッセージ、Node‑REDで統合されたクイズロジック、AR/VR技術を使った仮想山道表現を賜った。"
+      }
+    ],
+    "parents": [
+      "mashup-000023",
+      "mashup-000019"
+    ],
+    "generation": 5,
+    "mode": "fusion",
+    "sourceIssue": 73,
+    "slot": "2026-11-22T00",
+    "createdAt": "2026-11-22T00:17:28.274Z",
+    "model": "@cf/openai/gpt-oss-20b",
+    "status": "idea",
+    "imagePrompt": "A high-energy thumbnail illustration showing a child and an adult wearing sleek AR glasses and a lightweight haptic backpack, both holding a compact M5StickV device glowing subtly. They are running along a snowy mountain trail where the ground is dotted with floating golden flakes that pop out intermittently. Their hands are in motion, creating streaks of colorful 3D graffiti that unfurl around the AR lenses in real-time. Behind them, a glowing heart rate sensor and an alcohol level icon float in a transparent HUD, while a small LED ring lights up in sync with the score. A subtle audio waveform and a wave of vibration icons emanate from the haptic pack. The background captures a stylized ski resort environment with dynamic lighting, snow, and a digital map overlay showing GPS positioning. All elements merge to depict a futuristic, playful, and safe outdoor gaming experience.. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
+    "imagePath": "assets/inventions/mashup-000024.png",
+    "requestHash": "8adbfe5d3f796d65daf86941c78c3f9116106800202d0effc015d3b4124a1bf9",
+    "requesterAuto": true,
+    "technologies": [
+      "ESP32",
+      "M5StickV",
+      "BLEビーコン",
+      "Node‑RED",
+      "OpenGL ES ARエンジン",
+      "VR音響誘導"
+    ],
+    "domains": [
+      "アウトドア",
+      "エンターテインメント",
+      "医療・ヘルスケア"
+    ],
+    "keywords": [
+      "3D ARアート",
+      "手回しインタラクション",
+      "VR音響誘導",
+      "ハプティックフィードバック",
+      "金色サプライズ",
+      "安全モニタリング",
+      "LINE報酬共有",
+      "Node‑REDクイズ"
+    ]
   }
 ]
