@@ -1,10 +1,22 @@
 {
   "schemaVersion": 1,
-  "slot": "2026-11-22T1445",
-  "generatedAt": "2026-11-22T14:52:50.612Z",
-  "nextSlot": "2026-11-22T1500",
+  "slot": "2026-11-22T2100",
+  "generatedAt": "2026-11-22T21:00:18.165Z",
+  "nextSlot": "2026-11-22T2115",
   "source": "data/sample-prototypes.json",
   "candidates": [
+    {
+      "id": "protopedia:8",
+      "title": "Project Musha 視覚障害体験AR",
+      "sourceUrl": "https://protopedia.net/prototype/8",
+      "summary": "健常者にとって全盲は両目を閉じることで体感できますが、 視野狭窄や色盲がどの程度生活しづらいかは想像しにくいです。 それらをARで体験できるように、プロトタイプをつくりました。 \"左右別々の眼の症状\" を設定できる安価なシミュレーターは、実はなかなかの発明で \"世界初\" と思われます。 別々に設定し、体験すると、かなり気持ち悪いです。 動作環境は Androidスマホ + Chrome Browser 推奨環境は Google CardBoard などのスマホをAR/VRゴーグルにするガジェットです。 ※アプリ化し、いくつかAPIとのマッシュアップも検討したのですが、まずはどなたにも簡単に体験いただきやすいWebブラウザアプリとして開発してみました。",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/edc84a49-d26a-4336-98d1-053d7dcc716f.png",
+      "authors": [
+        "ひさやん@hisayan"
+      ],
+      "licenseType": "CC BY 4+"
+    },
     {
       "id": "protopedia:6",
       "title": "スキー場での「会えない」を解決し「会いたい」を叶える雪山BOT with LINE Beacon",
@@ -24,18 +36,17 @@
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:1",
-      "title": "クラッピーで仮装大賞",
-      "sourceUrl": "https://protopedia.net/prototype/1",
-      "summary": "合格したい！",
+      "id": "protopedia:2",
+      "title": "プロジェクターをIoTしてみた",
+      "sourceUrl": "https://protopedia.net/prototype/2",
+      "summary": "昨年(2016年)に開催中止になった for Pro ハッカソンでつくりたかったアイデア。1年寝かせたけど、世に出てこなかったようなので、今回、締め切り前の1泊2日でつくってみました。",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/9c507193-d695-4795-b0e6-4a11daa719e9.jpg",
+      "mainUrl": "https://protopedia.net/pic/8d0c7a7e-0a87-416d-98a2-8bad511e6a89.png",
       "authors": [
         "ひさやん@hisayan"
       ],
       "tags": [
-        "おもちゃ",
-        "クラッピーチャレンジ"
+        "FPGA"
       ],
       "licenseType": "CC BY 4+"
     },
@@ -64,33 +75,14 @@
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:1140",
-      "title": "BlindGolf",
-      "sourceUrl": "https://protopedia.net/prototype/1140",
-      "summary": "ナイスショット!",
+      "id": "protopedia:1142",
+      "title": "観客が試合にコミット",
+      "sourceUrl": "https://protopedia.net/prototype/1142",
+      "summary": "なんで選手交代しないんだ、 なんでそこで交代するんだ、記録がかかってるのに。 ファンはいつもやきもきするものです。 試合は監督が動かすもの？ 観戦している観客が試合にコミットする。そんな観戦の新しい**顧客体験**を提供します。",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/1effacab-d5f9-46da-9f0b-04e4173e223f.jpg",
+      "mainUrl": "https://protopedia.net/pic/43957060-cc22-4a9d-90c3-f4a9c6e60db7.png",
       "authors": [
-        "@eigokainai",
-        "@kazumayasuda",
-        "@kendoi",
-        "@takerusunahase"
-      ],
-      "tags": [
-        "NRIハッカソン"
-      ],
-      "status": 2,
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:1137",
-      "title": "ボルダリング×IoT 〜ボルダーとセッターが高め合う世界へ〜",
-      "sourceUrl": "https://protopedia.net/prototype/1137",
-      "summary": "新たな技術に挑戦します。",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/95c3afb9-6581-45b0-9326-0ceba9db41d9.png",
-      "authors": [
-        "@yoshihiromaeda"
+        "@junokabe"
       ],
       "tags": [
         "NRIハッカソン"
@@ -100,6 +92,6 @@
     }
   ],
   "offspringCandidates": [
-    "mashup-000014"
+    "mashup-000002"
   ]
 }
