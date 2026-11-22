@@ -1364,5 +1364,68 @@
       "LINE報酬共有",
       "Node‑REDクイズ"
     ]
+  },
+  {
+    "id": "mashup-000025",
+    "schemaVersion": 1,
+    "title": "エコーゴルフ・ソーシャルバー",
+    "summary": "視覚障害者もバリアフリーに楽しめる音響誘導付きVRゴルフと、ハンドスピンで自動注ぎされるAIアバターが交互に連動した社交型飲料ディスプレイデバイス。",
+    "concept": "エコーゴルフ・ソーシャルバーは、VRヘッドセットのみで構成される音響誘導ゴルフ体験と、ESP32を搭載したモバイル飲料ディスペンサーを一体化したデバイスです。ユーザーは完全視覚遮断モードでコースを聴覚で探索し、ステップごとに手のスピンでボトルを回すと、サーボモーターが自動で飲料を注ぎ、AIアバターが音声で次のターンを案内します。顔認証で年齢を確認し、LINE Beaconで近隣の友人と位置情報を共有。イベントやバー、フェスティバルに設置可能で、視覚障害者や多様な参加者が同時に楽しむ場を提供します。社交性とゲーム性を融合し、飲み物を楽しみながら音響でゴルフのリズムを感じる革新的な体験を実現。",
+    "mechanism": "デバイスはVRヘッドセットに音響誘導システムとモーションセンサーを組み込み、ゴルフコースを聴覚的に再現します。外部はESP32マイクロコントローラをベースに、HVC‑C顔認証センサーで年齢判定、LINE Beaconアンテナで位置情報取得、サーボモーターと駆動回路で飲料自動注ぎを実装。タッチセンサーとマイク＆スピーカーでユーザーの手スピンと音声入力を検知し、AIアバター（GPUベース）により音声案内を生成。LCDディスプレイで飲料情報とゲーム進行を表示。低電力設計と3Dプリント軽量ボディで持ち運び可能。音響誘導はリアルタイムで距離・方向を変化させ、ハプティックフィードバックによりスイング感覚を補完。ユーザーは手スピンで飲料を選択し、AIアバターがボトルを回すごとに音響で次のホールへ誘導される。",
+    "useCases": [
+      "バーやクラブで、視覚障害者も含めた30人規模のソーシャルゴルフイベント。",
+      "フェスティバルの屋外ブースに設置し、音楽と連動したゴルフレースを人々に提供。",
+      "家族イベントで肢体不自由なメンバーも一緒に楽しめるエンタメ企画。",
+      "企業のチームビルディングに、飲料自動注ぎと音響ゴルフを組み合わせた研修プログラム。",
+      "誕生日パーティで友人同士がLINE Beaconで再会し、AIアバターが案内。",
+      "視覚障害者教育イベントで、音響誘導ゴルフの体験を通じてITリテラシー向上を図る。"
+    ],
+    "inheritedTraits": [
+      {
+        "parentId": "protopedia:1140",
+        "trait": "BlindGolfの完全視覚遮断モード、リアルタイム音響誘導、モーションセンサーでのスイング検知、ハプティックフィードバックを音声でのゴルフ体験のエンゲージメント向上に活用。"
+      },
+      {
+        "parentId": "mashup-000007",
+        "trait": "ミートアップ・スピンバーの手スピン操作、顔認証による年齢判定、LINE Beaconでの位置共有と友人リスト生成、AIアバター音声応答、サーボモーターによる飲料自動注ぎ、低消費電力設計とタッチセンサー。"
+      }
+    ],
+    "parents": [
+      "protopedia:1140",
+      "mashup-000007"
+    ],
+    "generation": 3,
+    "mode": "fusion",
+    "sourceIssue": 74,
+    "slot": "2026-11-22T19",
+    "createdAt": "2026-11-22T19:29:16.213Z",
+    "model": "@cf/openai/gpt-oss-20b",
+    "status": "idea",
+    "imagePrompt": "A sleek, modern portable device resembling a handheld VR headset combined with a small beverage dispenser, surrounded by subtle blue LED lighting and a vibrant green LCD screen displaying a virtual golf course map. The device sits in a dimly lit club setting with patrons wearing VR headsets, one holding the device’s hand spinner to trigger the automatic pour of a sparkling drink. Transparent glass panels showcase integrated sensors: a close-up of a face recognition camera, a small speaker emitting sound cues, and a touch sensor on the device’s front. In the background, a lineup of friends’ LINE avatars appear on a holographic display, showing social connections. The image emphasizes the blend of auditory gaming, automated beverage service, and social interaction, highlighting the device’s dual function: immersive audio-guided golf and smart drink dispensing. The overall aesthetic is futuristic yet approachable, with warm ambient lighting and an inviting club ambience that conveys inclusivity and fun. The composition should highlight the device’s multifunctionality and ease of use, with a focus on the hand spinner, audio output, and AI avatar interface. The setting conveys an effortless, socially engaging experience that caters to visually impaired users and tech-savvy guests alike. --ar 16:9. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
+    "imagePath": "assets/inventions/mashup-000025.png",
+    "requestHash": "1550c22645eaad56dfd2244a755545a5f9272e4441f885c0dcd9eadd6962b9a9",
+    "requesterAuto": true,
+    "technologies": [
+      "VRヘッドセット",
+      "音響誘導システム",
+      "モーションセンサー",
+      "ESP32マイクロコントローラ",
+      "HVC‑C顔認証センサー",
+      "LINE Beacon"
+    ],
+    "domains": [
+      "エンターテインメント",
+      "日常生活"
+    ],
+    "keywords": [
+      "音響誘導",
+      "ハンドスピン",
+      "AIアバター",
+      "年齢判定",
+      "飲料自動注ぎ",
+      "LINE Beacon",
+      "視覚障害者",
+      "VRゴルフ"
+    ]
   }
 ]

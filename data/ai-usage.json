@@ -44,11 +44,11 @@
       "estimatedNeurons": 467
     },
     "2026-11-22": {
-      "textCalls": 4,
-      "imageCalls": 1,
-      "inputTokens": 8018,
-      "outputTokens": 6977,
-      "estimatedNeurons": 380
+      "textCalls": 6,
+      "imageCalls": 2,
+      "inputTokens": 11566,
+      "outputTokens": 9769,
+      "estimatedNeurons": 563
     }
   }
 }
