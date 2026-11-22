@@ -1,10 +1,44 @@
 {
   "schemaVersion": 1,
-  "slot": "2026-11-22T0630",
-  "generatedAt": "2026-11-22T06:32:30.490Z",
-  "nextSlot": "2026-11-22T0645",
+  "slot": "2026-11-22T1445",
+  "generatedAt": "2026-11-22T14:52:50.612Z",
+  "nextSlot": "2026-11-22T1500",
   "source": "data/sample-prototypes.json",
   "candidates": [
+    {
+      "id": "protopedia:6",
+      "title": "スキー場での「会えない」を解決し「会いたい」を叶える雪山BOT with LINE Beacon",
+      "sourceUrl": "https://protopedia.net/prototype/6",
+      "summary": "全力でハッカソン！1%のアイデアと99%の実証実験！！",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/09de39fd-554f-4c27-bc72-4f80267d9150.jpg",
+      "authors": [
+        "ひさやん@hisayan",
+        "佐田幸宏@yukihirosada"
+      ],
+      "tags": [
+        "LINE Beacon",
+        "ゲレンデ",
+        "新幹線"
+      ],
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:1",
+      "title": "クラッピーで仮装大賞",
+      "sourceUrl": "https://protopedia.net/prototype/1",
+      "summary": "合格したい！",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/9c507193-d695-4795-b0e6-4a11daa719e9.jpg",
+      "authors": [
+        "ひさやん@hisayan"
+      ],
+      "tags": [
+        "おもちゃ",
+        "クラッピーチャレンジ"
+      ],
+      "licenseType": "CC BY 4+"
+    },
     {
       "id": "protopedia:1118",
       "title": "ボランティアを探すアプリ",
@@ -30,6 +64,25 @@
       "licenseType": "CC BY 4+"
     },
     {
+      "id": "protopedia:1140",
+      "title": "BlindGolf",
+      "sourceUrl": "https://protopedia.net/prototype/1140",
+      "summary": "ナイスショット!",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/1effacab-d5f9-46da-9f0b-04e4173e223f.jpg",
+      "authors": [
+        "@eigokainai",
+        "@kazumayasuda",
+        "@kendoi",
+        "@takerusunahase"
+      ],
+      "tags": [
+        "NRIハッカソン"
+      ],
+      "status": 2,
+      "licenseType": "CC BY 4+"
+    },
+    {
       "id": "protopedia:1137",
       "title": "ボルダリング×IoT 〜ボルダーとセッターが高め合う世界へ〜",
       "sourceUrl": "https://protopedia.net/prototype/1137",
@@ -44,61 +97,9 @@
       ],
       "status": 2,
       "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:5",
-      "title": "KENPARIS（ケンパリス）",
-      "sourceUrl": "https://protopedia.net/prototype/5",
-      "summary": "ケンケンパって昔やりましたよね？テトリスって昔やりましたよね？",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/a7a7ae1f-5507-4c89-81c7-023aa920642e.png",
-      "authors": [
-        "ひさやん@hisayan",
-        "ピーターパーカー@peterparker",
-        "佐田幸宏@yukihirosada",
-        "山森美穂@yamamo"
-      ],
-      "tags": [
-        "micro:bit",
-        "ケンケンパ",
-        "体力勝負"
-      ],
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:93",
-      "title": "ドライブメモ for くるくるピ",
-      "sourceUrl": "https://protopedia.net/prototype/93",
-      "summary": "ドライブ中の気になる場所を見つけた時にくるくるピっと記録する 。",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/bf6338ec-5205-413a-bbaf-2239b34fae07.png",
-      "authors": [
-        "ひで@blue_islands"
-      ],
-      "status": 4,
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:1147",
-      "title": "EEEEEカバディ",
-      "sourceUrl": "https://protopedia.net/prototype/1147",
-      "summary": "楽しいプロダクトを楽しく開発しました！",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/a7dc4dad-ef01-48c7-b7ce-202b2a3b9c53.jpg",
-      "authors": [
-        "@kojikumanami",
-        "Hiroyoshi Takahashi@hirotakahashi",
-        "岡田雄太@yutaokada",
-        "萩村卓也@takuyahagimura"
-      ],
-      "tags": [
-        "NRIハッカソン"
-      ],
-      "status": 2,
-      "licenseType": "CC BY 4+"
     }
   ],
   "offspringCandidates": [
-    "mashup-000011"
+    "mashup-000014"
   ]
 }
