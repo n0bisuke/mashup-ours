@@ -1427,5 +1427,67 @@
       "視覚障害者",
       "VRゴルフ"
     ]
+  },
+  {
+    "id": "mashup-000026",
+    "schemaVersion": 1,
+    "title": "酔い＆モーションカバディデバイス『Spirit Kabbadi』",
+    "summary": "友情と安全を両立させた手持ち型モーションゲームデバイス。Bluetooth接続のMeccano式モジュールに、3軸ジャイロ・加速度計と小型ブレスアルコールセンサーを統合し、ユニティベースの3Dゲームとリアルタイム酔い判定を同時に実現。飲み会での身体接触型カバディの楽しさと、機械的判断での安全性を融合させた次世代パーティー体験。",
+    "concept": "『Spirit Kabbadi』は、腕に装着できるモジュール式デバイスで、1万ドル級の高価なセットアップを必要とせず、Meccanoスタイルの小型フレームに3軸ジャイロ・加速度計、Bluetooth通信モジュール、そして小型ブレスアルコールセンサーを一体化。飲み会やパーティーで参加者は手で振ったり回したりし、リアルタイムで3Dキャラクターのジャンプや回避をコントロール。スマートフォンやテレビに送信されるデータはUnityエンジンで視覚化され、LEDディスプレイがワンスタップでスコアや酔いレベルを表示。酔いの閾値に達した際は自動でゲームモードを調整し、プレイヤーを安全に保つための警告音やサウンドエフェクトも付加。飲み過ぎのリスクを低減しつつ、身体を動かしながら親子・友人と協調し合い、反射神経や協調性を楽しく鍛えることができる。",
+    "mechanism": "デバイス内部にはArduino Megaが搭載され、3軸ジャイロセンサーと加速度計から取得したデータをRTOSで5段階感度調整し、フィルタリング後にBluetooth 5.0でスマートフォンへ送信。小型ブレスアルコールセンサー（光学式またはエレクトロルミネセンス）を腕の内側に設置し、呼気量とアルコール度数をリアルタイムで解析。リアルタイム酔い判定は簡易アルゴリズムで酔い指数を算出し、ゲームロジックに反映。Unity側はモーションデータを受信し、3Dキャラクターのアニメーションを制御。LEDディスプレイ（7セグ）でスコアと酔いレベルを表示。Meccano構造で部品を互換性のあるモジュールに分割し、ユーザー自身が組み替え可能。",
+    "useCases": [
+      "1. 週末の飲み会で友人同士が手持ちデバイスを持ち、酒席で身体接触型カバディをプレイしつつ酔いレベルを確認。",
+      "2. 親子パーティーで子供がデバイスを操作し、3Dキャラクターを動かしながら協調性を育む。",
+      "3. バーやレストランでフロントに設置し、客がテーブルを囲んで対戦型モーションゲームを楽しむ。",
+      "4. 企業のチームビルディングイベントで、社員が集まりゲームを通じて反射神経とコミュニケーションを向上。",
+      "5. カルチャーイベントやフェスで屋外に設置し、ランダムな酔い判定で特別スキルを付与し盛り上げる。",
+      "6. 夜間の居酒屋や酒場で、安全性を確保しつつ、ゲーム中に酔いレベルをモニタリングし指示を送る。"
+    ],
+    "inheritedTraits": [
+      {
+        "parentId": "mashup-000011",
+        "trait": "酔い判定とリアルタイムスコアリング、飲み会の安全性を重視した身体接触型カバディゲームの設計思想と、呼気量・アルコール度数を測定するブレスアラーレイ技術、酔いレベルに応じたアニメキャラクター演出を継承。"
+      },
+      {
+        "parentId": "mashup-000012",
+        "trait": "Meccanoベースのモジュール式構造、3軸ジャイロ・加速度計による姿勢解析、LEDディスプレイでのスコア表示、Arduinoマイクロコントローラーによるデータフィルタリング、低コストで組み立てやすい点を継承。"
+      }
+    ],
+    "parents": [
+      "mashup-000011",
+      "mashup-000012"
+    ],
+    "generation": 2,
+    "mode": "fusion",
+    "sourceIssue": 75,
+    "slot": "2026-11-23T10",
+    "createdAt": "2026-11-23T10:40:03.888Z",
+    "model": "@cf/openai/gpt-oss-20b",
+    "status": "idea",
+    "imagePrompt": "A wrist‑mounted gaming controller featuring a modular Meccano‑style frame with a small OLED display on the front showing game score and alcohol level. A compact breath alcohol sensor protrudes on the side, while a triple‑axis gyro and accelerometer are embedded inside. The device is connected via a visible Bluetooth antenna to a smartphone. In the background, a bright TV screen displays a colorful 3D animated kabbadi game with playful characters reacting to motion, and LED strips light up around the device. The setting is a lively party interior with friends cheering, showing the device in use, with a clear focus on safety indicators and fun.. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
+    "imagePath": "assets/inventions/mashup-000026.png",
+    "requestHash": "7f7a0107d0ce3f44b6854b35688e33de188312ae7452140b844adfc4c24989c3",
+    "requesterAuto": true,
+    "technologies": [
+      "Bluetooth",
+      "Arduino",
+      "3D Motion Graphics",
+      "Unity Engine",
+      "Breath Alcohol Sensor",
+      "Meccano"
+    ],
+    "domains": [
+      "エンターテインメント",
+      "日常生活"
+    ],
+    "keywords": [
+      "モーションゲーム",
+      "酔い判定",
+      "安全プレイ",
+      "手持ちデバイス",
+      "LEDディスプレイ",
+      "Bluetooth通信",
+      "リアルタイムスコアリング"
+    ]
   }
 ]
