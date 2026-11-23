@@ -1489,5 +1489,69 @@
       "Bluetooth通信",
       "リアルタイムスコアリング"
     ]
+  },
+  {
+    "id": "mashup-000027",
+    "schemaVersion": 1,
+    "title": "音響誘導VRゴルフ・ブロックパズル",
+    "summary": "VRゴルフ場を舞台に、KenKenの数式とTetrisブロックを融合させたパズル型ゴルフゲーム。プレイヤーは音響案内でコースを探索しながら、数式を解くことで落下ブロックを制御し、ホールをクリアし、AIアバターと飲料自動注ぎで社交を楽しむ。",
+    "concept": "音響誘導と視覚障害者向けのVRゴルフという既存のエコーゴルフのハプティック・音声案内機能に、KenKenとTetrisの融合で実現した数式パズルとブロック落下メカニクスを組み合わせることで、単なるゴルフ練習以上の体験を提供する。ゲームは3D VRコースを背景に、各ホールごとにKenKenスタイルの数式を解答することで、そのホール上に落下するブロックの形状を制御できる。正解するとブロックが突破し、障害が解除されると同時にスコアが加算される。音響誘導がホールの進行と適切な操作タイミングを音声で指示し、視覚情報に頼らないプレイを可能にする。また、手スピンで飲料を選択し、サーボモーターが自動で注ぎ、LCDに情報を表示することで、ゲームと飲み物の社交体験を同時に楽しむ。AIアバターが会話と案内を行い、LINE Beaconで友人リストと位置情報が共有されることで、遠隔プレイヤーとの協力プレイや対戦も実現できる。",
+    "mechanism": "VRヘッドセットに音響誘導システムを接続し、マイクロボード(ESP32)でハプティック・音声入力を処理する。プレイヤーが数式を解くと、数値解に応じたTetrisブロックの形状と落下速度が決定。ブロックは3D空間の障害物として配置され、AIアバターが音声で操作指示を出す。顔認証センサーで年齢確認し、LINE Beaconで位置情報を取得。サーボモーターが飲料自動注ぎを制御し、LCDに情報を表示。低電力設計と3Dプリント軽量ボディで持ち運び可能。",
+    "useCases": [
+      "●個人のパズル練習: 数式解くスキルとVR操作感覚を同時に鍛え、集中力アップ。",
+      "●友人同士の社交型イベント: 位置情報共有で同時進行プレイと飲み物を楽しむ。",
+      "●視覚障害者のヘルスケア: 音響誘導で安全にコースを探索し、軽い運動と社交性を促進。",
+      "●企業のチームビルディング: コラボレーションと問題解決をVR中で体験。",
+      "●教育機関の算数授業: KenKenの数式をゲーム化し、数学的思考を楽しく学習。",
+      "●展示会・商業施設のデモ: 飲料自動注ぎとVRブロック体験で来客を惹きつける。"
+    ],
+    "inheritedTraits": [
+      {
+        "parentId": "protopedia:5",
+        "trait": "KenKenの数式ルールとTetrisのブロック落下機構を統合し、数式を解くことでブロックの配置・形状が決定される点を継承。プレイヤーは数値演算とパズル解答により障害をクリアし、得点を稼ぐというコードレス・ゲームメカニクスを採用。"
+      },
+      {
+        "parentId": "mashup-000025",
+        "trait": "音響誘導付きVRゴルフの音声案内・ハプティック反応、手スピン飲料選択、AIアバターの音声案内、顔認証で年齢確認、LINE Beaconで位置情報取得、サーボモーターによる自動飲料注ぎ、LCD表示機能、低電力・持ち運び設計を継承。"
+      }
+    ],
+    "parents": [
+      "protopedia:5",
+      "mashup-000025"
+    ],
+    "generation": 4,
+    "mode": "fusion",
+    "sourceIssue": 76,
+    "slot": "2026-11-23T14",
+    "createdAt": "2026-11-23T14:28:25.678Z",
+    "model": "@cf/openai/gpt-oss-20b",
+    "status": "idea",
+    "imagePrompt": "A futuristic VR golf course set in a dimly lit loft, with floating Tetris blocks suspended over green fairways. The player wearing a sleek VR headset is surrounded by holographic KenKen grids displaying numbers. An audio speaker emits a soft sound wave guiding the player. In the foreground, a small, lightweight automatic drink dispenser with a servo arm holds a sparkling beverage. A friendly AI avatar in a sports jacket leans forward, offering verbal guidance. Ambient lighting highlights a touch sensor panel and a compact LCD screen showing score and course progress. The composition conveys a blend of nostalgic puzzle gaming, modern VR technology, and social bar experience, capturing the innovative fusion in a single frame.. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
+    "imagePath": "assets/inventions/mashup-000027.png",
+    "requestHash": "2432e9a5a5957146798603ab55f625ca0f6c381726ef25a0f7e78e9497102b95",
+    "requesterAuto": true,
+    "technologies": [
+      "VRヘッドセット",
+      "音響誘導システム",
+      "ESP32",
+      "サーボモーター",
+      "AIアバター",
+      "LCDディスプレイ"
+    ],
+    "domains": [
+      "エンターテインメント",
+      "日常生活",
+      "教育・学習",
+      "医療・ヘルスケア"
+    ],
+    "keywords": [
+      "VRゴルフ",
+      "音響誘導",
+      "KenKenパズル",
+      "Tetrisブロック",
+      "自動飲料注ぎ",
+      "AIアバター",
+      "社交型イベント"
+    ]
   }
 ]
