@@ -1,22 +1,10 @@
 {
   "schemaVersion": 1,
-  "slot": "2026-11-22T2100",
-  "generatedAt": "2026-11-22T21:00:18.165Z",
-  "nextSlot": "2026-11-22T2115",
+  "slot": "2026-11-23T0130",
+  "generatedAt": "2026-11-23T01:34:51.596Z",
+  "nextSlot": "2026-11-23T0145",
   "source": "data/sample-prototypes.json",
   "candidates": [
-    {
-      "id": "protopedia:8",
-      "title": "Project Musha 視覚障害体験AR",
-      "sourceUrl": "https://protopedia.net/prototype/8",
-      "summary": "健常者にとって全盲は両目を閉じることで体感できますが、 視野狭窄や色盲がどの程度生活しづらいかは想像しにくいです。 それらをARで体験できるように、プロトタイプをつくりました。 \"左右別々の眼の症状\" を設定できる安価なシミュレーターは、実はなかなかの発明で \"世界初\" と思われます。 別々に設定し、体験すると、かなり気持ち悪いです。 動作環境は Androidスマホ + Chrome Browser 推奨環境は Google CardBoard などのスマホをAR/VRゴーグルにするガジェットです。 ※アプリ化し、いくつかAPIとのマッシュアップも検討したのですが、まずはどなたにも簡単に体験いただきやすいWebブラウザアプリとして開発してみました。",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/edc84a49-d26a-4336-98d1-053d7dcc716f.png",
-      "authors": [
-        "ひさやん@hisayan"
-      ],
-      "licenseType": "CC BY 4+"
-    },
     {
       "id": "protopedia:6",
       "title": "スキー場での「会えない」を解決し「会いたい」を叶える雪山BOT with LINE Beacon",
@@ -36,42 +24,38 @@
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:2",
-      "title": "プロジェクターをIoTしてみた",
-      "sourceUrl": "https://protopedia.net/prototype/2",
-      "summary": "昨年(2016年)に開催中止になった for Pro ハッカソンでつくりたかったアイデア。1年寝かせたけど、世に出てこなかったようなので、今回、締め切り前の1泊2日でつくってみました。",
+      "id": "protopedia:5",
+      "title": "KENPARIS（ケンパリス）",
+      "sourceUrl": "https://protopedia.net/prototype/5",
+      "summary": "ケンケンパって昔やりましたよね？テトリスって昔やりましたよね？",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/8d0c7a7e-0a87-416d-98a2-8bad511e6a89.png",
+      "mainUrl": "https://protopedia.net/pic/a7a7ae1f-5507-4c89-81c7-023aa920642e.png",
       "authors": [
-        "ひさやん@hisayan"
+        "ひさやん@hisayan",
+        "ピーターパーカー@peterparker",
+        "佐田幸宏@yukihirosada",
+        "山森美穂@yamamo"
       ],
       "tags": [
-        "FPGA"
+        "micro:bit",
+        "ケンケンパ",
+        "体力勝負"
       ],
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:1118",
-      "title": "ボランティアを探すアプリ",
-      "sourceUrl": "https://protopedia.net/prototype/1118",
-      "summary": "スマホのGPSを使用して助けたい/助けてほしい人の場所や話せる言語を表示し、マッチング可能にします。 日本を訪れる外国人は年々増加しており、2020年にはオリンピックも開催されます。 そんな中、日本語は世界有数の難解な言語であり、多くの外国人が路頭に迷うことは火を見るよりも明らかです。 そのような状況を解決するため、誰でも持っているスマホのGPSを使用し、 地図でお互いの位置を表示することでボランティアとボランティアを必要としている人を相互検索可能とします。 \\ 1.自分の情報(助けたい/助けが必要、性別、話せる言語)を登録 2.助けが必要/助けたい人の位置が地図に表示される ※検索条件(性別、話せる言語)指定も可能",
+      "id": "protopedia:18",
+      "title": "ハンドクラッピナー",
+      "sourceUrl": "https://protopedia.net/prototype/18",
+      "summary": "結構よく回ります *** ** * ** *** ハンドスピナー (2枚タイプ) パチパチトールくん (赤・黄各1個) 参考URL:",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/71d14cbf-771f-4b47-9973-11be13a6fb2a.png",
+      "mainUrl": "https://protopedia.net/pic/035f119d-9aa9-4f5e-88b6-e49b732c1491.jpg",
       "authors": [
-        "@kanekoakira",
-        "@okanori",
-        "@okku",
-        "@shioyui"
+        "Masawo Yamazaki@masawoyamazaki"
       ],
       "tags": [
-        "android",
-        "GPS",
-        "Kivy",
-        "Mapview",
-        "Python",
-        "REST API"
+        "クラッピーチャレンジ"
       ],
-      "status": 2,
       "licenseType": "CC BY 4+"
     },
     {
@@ -89,9 +73,22 @@
       ],
       "status": 2,
       "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:3351",
+      "title": "IRリモコン",
+      "sourceUrl": "https://protopedia.net/prototype/3351",
+      "summary": "エアコンの自動制御のテストとして、既製品のベッドランプのリモコンをM5StackのIRsensorで実装してみました。",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/",
+      "authors": [
+        "えりな@erina000"
+      ],
+      "status": 4,
+      "licenseType": "CC BY 4+"
     }
   ],
   "offspringCandidates": [
-    "mashup-000002"
+    "mashup-000021"
   ]
 }
