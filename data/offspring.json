@@ -1553,5 +1553,67 @@
       "AIアバター",
       "社交型イベント"
     ]
+  },
+  {
+    "id": "mashup-000028",
+    "schemaVersion": 1,
+    "title": "スピン＆ポア・ソーシャルデバイス",
+    "summary": "飲酒レベルでゲームを開始し、スマートポーターと連携して参加者へ飲み物を自動で注ぎ、音声・LEDでインタラクティブに盛り上げる、社交イベント向けのハイブリッドデバイス。",
+    "concept": "パーティーや社交イベントで、参加者はデバイスのハンドルを回し、軽くマウスでタッチ、呼気でアルコールを測定。酔いレベルが閾値に達するとゲームが自動開始。BLEでスマートフォンと同期し、スコアや課題を表示。加えて、内蔵の自動ポーターが各ゲストのカップへ好きな飲み物を注ぎ、ちょっとした会話のきっかけを作る。音声認識により参加者は声で指示を出し、LEDで状態とゲーム進行を即座に視覚化。友達同士のコミュニケーションを促進し、飲み会の退屈さを払拭する。",
+    "mechanism": "デバイスはESP32マイクロコントローラを搭載し、サーボモーターでハンドル回転角度を取得。タッチセンサーが回転開始を検知し、アルコールセンサー（低消費電力）で呼気中のアルコール濃度をリアルタイムに測定。フィードバックは音声認識ライブラリで処理され、音声応答・指示を行う。游戏開始条件は酔いレベルの閾値超過で、自動的にゲームフェーズへ遷移。ゲームロジックは有限状態機械で管理され、回転角度と酔いレベルに応じて課題／スコアを決定。さらに、内蔵のスマートポーターはステンレス製ポアスプーンとモーター制御の注ぎ部で、ユーザー選択の飲み物（冷たい/温かい、アルコール含有/ノンアルコール）を自動で注ぎ、カップを自動検知して正確に注ぎ止める。BLE Low Energyでスマートフォンアプリと同期し、ゲームスコア・ポーション情報をクラウドへ送信。LEDインジケーターは酔いレベルとゲーム進行をカラフルに表示し、視覚的刺激を提供。全体で低消費モードを採用し、数時間の連続使用が可能。",
+    "useCases": [
+      "1. 友人宅での飲み会：ハンドルを振ってゲームを楽しみ、ポア機能でカップへ飲み物を注ぎ、会話のきっかけを創出。",
+      "2. 企業のチームビルディングイベント：社員が酔いレベルを測定しつつ、チーム対抗ゲームでスコアリング、同時に各自のオフィスカフェで飲み物を自動注給。",
+      "3. 結婚式の乾杯タイム：新郎新婦がデバイスを操作し、ゲストへ特別メッセージと飲み物をポアし、記念ゲームを開催。",
+      "4. 高齢者向けの集会：安全にアルコール摂取を管理しつつ、簡単な回転ゲームで認知機能を刺激し、社交を促進。",
+      "5. アパートのバーニングパーティ：スマートアプリで飲み物リストを同期、DIYでカスタマイズしたゲームテーマで盛り上げ。",
+      "6. ストリートフェスティバル：屋外拡張版でQRコードを読み取り、デバイスが直接バッテリー供給し、飲み物と音楽イベントを統合。"
+    ],
+    "inheritedTraits": [
+      {
+        "parentId": "mashup-000013",
+        "trait": "本発明は、ドリンクスピン・ゲームマスターのアルコールセンサーによるゲーム開始条件、サーボモーターで回転角度を検知しタッチセンサーと音声入力を統合したFSM制御、BLE連携、LEDで状態を可視化する機能を継承している。"
+      },
+      {
+        "parentId": "protopedia:4",
+        "trait": "本発明は、Pour or Drinkのスマートドリンクディスペンサーと自動注ぎ機能、ユーザーが選ぶ飲み物を瞬時に提供し、社交を促進する設計という根本的コンセプトを継承している。"
+      }
+    ],
+    "parents": [
+      "mashup-000013",
+      "protopedia:4"
+    ],
+    "generation": 3,
+    "mode": "fusion",
+    "sourceIssue": 77,
+    "slot": "2026-11-24T09",
+    "createdAt": "2026-11-24T09:44:30.093Z",
+    "model": "@cf/openai/gpt-oss-20b",
+    "status": "idea",
+    "imagePrompt": "A compact, sleek handheld device resembling a mini smart pitcher with a cylindrical body made of brushed stainless steel. On its side, a small rotating handle connects to a servo motor; around the handle, a clear, illuminated LED ring displays colors changing from blue to red as the alcohol level rises. A tiny microphone protrudes near the handle, and a digital touch sensor is marked with a subtle icon. The bottom features a narrow spout that extends when activated, pouring liquid into a glass. In the background, a lively party setting shows several friends holding glasses that are being filled by the device, with a faint holographic display of spinning numbers and speech bubbles indicating game prompts. The overall aesthetic conveys a futuristic, social cocktail experience, highlighting both the mechanical spinning aspect and the automatic pouring functionality within an energetic, engaging environment.. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
+    "imagePath": "assets/inventions/mashup-000028.png",
+    "requestHash": "8f42dbc5725543faf9972972f8fda9b5de5b25105b2d9e6a21a068e1616d6f16",
+    "requesterAuto": true,
+    "technologies": [
+      "ESP32",
+      "Servo Motor",
+      "Alcohol Sensor",
+      "BLE",
+      "LED",
+      "Microphone"
+    ],
+    "domains": [
+      "エンターテインメント",
+      "社交イベント",
+      "日常生活"
+    ],
+    "keywords": [
+      "アルコール検知",
+      "インタラクティブゲーム",
+      "スマートドリンクディスペンサー",
+      "音声認識",
+      "LED表示",
+      "BLE同期"
+    ]
   }
 ]
