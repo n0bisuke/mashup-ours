@@ -1615,5 +1615,67 @@
       "LED表示",
       "BLE同期"
     ]
+  },
+  {
+    "id": "mashup-000029",
+    "schemaVersion": 1,
+    "title": "アルコール感知VRランニングドリンクゲームデバイス",
+    "summary": "スマートポーターとVRランニングクエストを統合したデバイス。呼気アルコール濃度を検知し、飲んだ量に応じてVRコースの難易度を自動調整。スマートフォンとBLEで同期し、LINEを通じて友人とスコアや安全メッセージを共有できる。音声・LEDインタラクションとハプティックバックパックでリアルなフィードバックを提供し、飲酒と運動を楽しく安全に楽しむことができる。",
+    "concept": "本デバイスは、まずユーザーが持ち運ぶスマートポーターにつくった酒精センサーで呼気中のアルコール濃度をリアルタイムで測定する。測定結果が一定の閾値を超えると、デバイスは自動的にスマホアプリとBLEで接続し、VRヘッドセットに対してランニングコースの難易度を変更するコマンドを送信する。例えば、酔いが強いときは地形を平坦化し、リズムを合わせた音響誘導と組み合わせたハプティック振動で安全に走れるようにする。逆に酔いが軽い場合は、急な斜面や障害物を増やしたハイレベルコースへ切り替えてゲーム感覚を高める。また、スマートポーターはユーザーの好きな飲み物を自動注ぎ、ターゲットアルコールレベルに合わせた量調整を行うため、飲酒とランニングのサイクルをスムーズに保つ。さらに、LINE Messaging APIを通じて安全確認メッセージや友人へのスコア共有がリアルタイムで行える。音声認識とLEDインジケータにより、進行状況や安全メッセージが視覚と音声で即座にフィードバックされ、ユーザーは飲酒しながらも安全にアウトドアを楽しめる。総合的に、飲酒イベントとアウトドア運動を組み合わせ、社交性と健康を両立させる新しい体験を提供する。",
+    "mechanism": "1.**アルコール検知**：ESP32ベースの低消費電力マイクロコントローラにSNSプラグインで接続したアルコールセンサーが呼気を検知。検知値をBLEでスマホへ送信。2.**スマートポーター制御**：検知結果をもとに、LEDインジケータで状況表示し、サーボモーターを駆動して指定液体を自動注ぎ。タッチセンサーで飲料選択。3.**VRランニング制御**：Node.jsサーバーがスマホからの位置・心拍・歩幅・酔いレベルを統合し、VRヘッドセットへ音響誘導タスクと難易度設定を送信。 haptic backpack で振動フィードバック。4.**ソーシャル連携**：LINE Messaging API でリアルタイム安全メッセージとゲームスコアを友人へ送信。5.**音声・LEDインタラクション**：音声認識で「次のコースへ」「飲み直し」などの指示を受け付け、LEDで状態を可視化。6.**安全チェック**：顔認識カメラとウェアラブルの心拍データから酔い度を推定し、危険レベルに達したら自動でランニングを停止または緩和する。",
+    "useCases": [
+      "1. 友人との居酒屋で、飲みながらVRランニングゲームを行い、酔いレベルに合わせた難易度調整と自動注ぎで飲酒を安全に楽しむ。",
+      "2. サイクリングイベントで、参加者がスマートポーターとVRデバイスを装着し、走行中の酔い状態を検知してコースをリアルタイムに変更。",
+      "3. リハビリ施設で、アルコール依存症の患者がVRランニングを通じて歩行リハビリを行い、飲料は自動注ぎで摂取量管理。",
+      "4. 家庭用フィットネスで、ワインを飲みつつVRトレーニングを行い、音声・LEDでモチベーションを向上。",
+      "5. 旅行先の山岳リゾートで、アウトドア客がベルギアンビールを飲みながらVRランニングクエストを体験し、LINEで友人と成績を共有。"
+    ],
+    "inheritedTraits": [
+      {
+        "parentId": "mashup-000028",
+        "trait": "スマートポーターによる飲み物自動注ぎ、アルコールレベルでゲーム開始判定、低消費電力設計、LEDと音声の双方向インタラクション、BLEでスマホ・クラウド同期、サーボ＋タッチで回転角度・入力検知"
+      },
+      {
+        "parentId": "mashup-000010",
+        "trait": "BLEビーコンで位置情報取得、VRヘッドセットで音響誘導、ハプティックバックパックで振動フィードバック、Node.jsでデータ統合、LINE Messaging APIで安全確認・スコア共有、顔認識で酒精濃度推定、ウェアラブルで心拍・歩幅測定、酔いレベルに応じた難易度調整"
+      }
+    ],
+    "parents": [
+      "mashup-000028",
+      "mashup-000010"
+    ],
+    "generation": 4,
+    "mode": "fusion",
+    "sourceIssue": 78,
+    "slot": "2026-11-24T22",
+    "createdAt": "2026-11-24T22:19:35.759Z",
+    "model": "@cf/openai/gpt-oss-20b",
+    "status": "idea",
+    "imagePrompt": "A futuristic portable device combining a sleek smart pourer with a VR headset and haptic backpack. The smart pourer has a clear bottle with a sensor head, a small LED display, and a touch panel for drink selection. The VR headset is lightweight, featuring a transparent faceplate and built-in speakers. The haptic backpack is mounted on the user’s back, displaying gentle vibration pods. The device is displayed against a mountain trail background with a line of friends waving their phones, illustrating BLE connectivity and real-time messaging notifications on the phones. The overall composition shows the device in use during a lively mountain run, with a focus on safety, social interaction, and immersive audio cues. The thumbnail should capture the integrated smart pourer, VR headset, haptic backpack, and the dynamic environment showing racing forward, a subtle LED glow, audio wave icons, and a small cloud icon indicating connection. The illustration style should be modern and vibrant, highlighting the device’s smooth lines and the LED interface. The setting includes a misty mountaintop with a clear sky, a trail path, and a small group of participants cheering, all within a framed composition that showcases the device’s features and user interaction.. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
+    "imagePath": "assets/inventions/mashup-000029.png",
+    "requestHash": "6826c93864a1a19a8238d5d7721be0dc5c4e66cce04b4845b778d9ee236b715a",
+    "requesterAuto": true,
+    "technologies": [
+      "ESP32",
+      "BLE Low Energy",
+      "Alcohol Sensor",
+      "Servo Motor",
+      "Touch Sensor",
+      "Voice Recognition"
+    ],
+    "domains": [
+      "エンターテインメント",
+      "アウトドア",
+      "日常生活"
+    ],
+    "keywords": [
+      "アルコール検知",
+      "VRランニング",
+      "ハプティックフィードバック",
+      "ゲーム感覚",
+      "ソーシャル共有",
+      "スマートポーター",
+      "安全管理"
+    ]
   }
 ]
