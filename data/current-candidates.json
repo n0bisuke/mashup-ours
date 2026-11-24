@@ -1,10 +1,42 @@
 {
   "schemaVersion": 1,
-  "slot": "2026-11-23T2145",
-  "generatedAt": "2026-11-23T21:59:51.915Z",
-  "nextSlot": "2026-11-23T2200",
+  "slot": "2026-11-24T0545",
+  "generatedAt": "2026-11-24T05:56:27.363Z",
+  "nextSlot": "2026-11-24T0600",
   "source": "data/sample-prototypes.json",
   "candidates": [
+    {
+      "id": "protopedia:1137",
+      "title": "ボルダリング×IoT 〜ボルダーとセッターが高め合う世界へ〜",
+      "sourceUrl": "https://protopedia.net/prototype/1137",
+      "summary": "新たな技術に挑戦します。",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/95c3afb9-6581-45b0-9326-0ceba9db41d9.png",
+      "authors": [
+        "@yoshihiromaeda"
+      ],
+      "tags": [
+        "NRIハッカソン"
+      ],
+      "status": 2,
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:1142",
+      "title": "観客が試合にコミット",
+      "sourceUrl": "https://protopedia.net/prototype/1142",
+      "summary": "なんで選手交代しないんだ、 なんでそこで交代するんだ、記録がかかってるのに。 ファンはいつもやきもきするものです。 試合は監督が動かすもの？ 観戦している観客が試合にコミットする。そんな観戦の新しい**顧客体験**を提供します。",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/43957060-cc22-4a9d-90c3-f4a9c6e60db7.png",
+      "authors": [
+        "@junokabe"
+      ],
+      "tags": [
+        "NRIハッカソン"
+      ],
+      "status": 2,
+      "licenseType": "CC BY 4+"
+    },
     {
       "id": "protopedia:2500",
       "title": "M5StickVで金のウンコを動かしてガキを驚かす",
@@ -22,37 +54,16 @@
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:22",
-      "title": "コスラッピー",
-      "sourceUrl": "https://protopedia.net/prototype/22",
-      "summary": "クラッピーのコスプレ用です参考URL:",
+      "id": "protopedia:93",
+      "title": "ドライブメモ for くるくるピ",
+      "sourceUrl": "https://protopedia.net/prototype/93",
+      "summary": "ドライブ中の気になる場所を見つけた時にくるくるピっと記録する 。",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/6c255377-2995-4a7f-9ee5-77b75faeb943.jpg",
+      "mainUrl": "https://protopedia.net/pic/bf6338ec-5205-413a-bbaf-2239b34fae07.png",
       "authors": [
-        "Masawo Yamazaki@masawoyamazaki"
+        "ひで@blue_islands"
       ],
-      "tags": [
-        "クラッピーチャレンジ"
-      ],
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:1147",
-      "title": "EEEEEカバディ",
-      "sourceUrl": "https://protopedia.net/prototype/1147",
-      "summary": "楽しいプロダクトを楽しく開発しました！",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/a7dc4dad-ef01-48c7-b7ce-202b2a3b9c53.jpg",
-      "authors": [
-        "@kojikumanami",
-        "Hiroyoshi Takahashi@hirotakahashi",
-        "岡田雄太@yutaokada",
-        "萩村卓也@takuyahagimura"
-      ],
-      "tags": [
-        "NRIハッカソン"
-      ],
-      "status": 2,
+      "status": 4,
       "licenseType": "CC BY 4+"
     },
     {
@@ -72,27 +83,9 @@
         "社会課題を解決するデザイン"
       ],
       "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:4",
-      "title": "Pour or Drink",
-      "sourceUrl": "https://protopedia.net/prototype/4",
-      "summary": "一瞬で仲良くなれます。",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/ddf1faf1-faf5-4a70-b079-c0a0b5b9644a.jpg",
-      "authors": [
-        "ひさやん@hisayan",
-        "佐田幸宏@yukihirosada",
-        "鈴木まなみ@rin2tree"
-      ],
-      "tags": [
-        "ノーコード",
-        "飲み会が盛り上がる"
-      ],
-      "licenseType": "CC BY 4+"
     }
   ],
   "offspringCandidates": [
-    "mashup-000026"
+    "mashup-000005"
   ]
 }
