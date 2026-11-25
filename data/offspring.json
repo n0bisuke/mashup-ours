@@ -1741,5 +1741,67 @@
       "モーションコントロール",
       "再会案内"
     ]
+  },
+  {
+    "id": "mashup-000031",
+    "schemaVersion": 1,
+    "title": "スキー&スピリットARマッチングデバイス",
+    "summary": "飲酒・モーションを感知し、リアルタイムで3Dアートを生成するデバイスに、LINE BeaconとBOTを組み合わせることで、雪山やアウトドアパーティーでの友人・家族との再会をスムーズにする新しいエンターテインメント体験を提供する。",
+    "concept": "想像してみてください。雪に覆われた山岳リゾートで、友人とスキーを楽しむ合間に、あなたの手に取り付ける小型デバイスが、体内のアルコールレベルと手の回転を感知し、指示された音声コマンドに応じて、スマートフォンや周囲のLEDにリアルタイムで描かれる3Dアートと音楽を投影します。一方で、デバイスはBLE Beaconを発信し、LINEアプリ上でBOTが位置情報を取得。見つけにくい山岳環境でも、仲間が同じデバイスを持てば互いの位置を共有し、最適な再会場所を提案。さらにBOTが自動でスケジュール調整を行い、到着時間を通知。これにより、スキー中でも「会いたい」気持ちをテンポ良く叶えつつ、飲み会のコミュニケーションを創造的に盛り上げ、アルコールの過剰摂取を抑える機能も備えています。デバイスは軽量で持ち運びしやすく、LEDとサーボモーターで自身の姿を演出することで、山の風景にそびえる新感覚ARアートを創出。アウトドアとエンターテインメントを融合し、誰もが手軽に参加できる新しい社交空間を提供します。",
+    "mechanism": "1. **ハードウェア**：ESP32をベースに低消費電力アルコールセンサー、3軸ジャイロ・加速度計、サーボモーター、LEDディスプレイを搭載。BLEでLINE Beacon機能を実装し、周囲にデバイスの位置情報を発信。 2. **ソフトウェア**： - FSMでデバイス状態を管理。アルコールレベルが閾値を超えるとSpirit Modeに遷移し、サーボモーターが旋回し、ARアートを生成。 - 音声認識ライブラリでマイク入力を解析し、コマンドに応じてアートテーマを切り替える。 - OpenGL ESベースのARロジックがスマートフォンのカメラ映像に3Dグラフィティを重畳。 3. **位置情報連携**： - デバイスがBLE Beaconで自身の位置を周囲に発信。 - LINEアプリ内のBOTがBeaconデータを受信し、ユーザーの現在位置を把握。 - BOTが最短ルート・傾斜情報を基に再会場所を提案し、到着通知を送信。 4. **安全機能**： - アルコール検知により、過度の飲酒が検知されるとアラート音と同時にアートの複雑度を減少。 - 位置情報とアート生成を連動させ、酒量が高いとリアルタイムで残りアクションを制限。 5. **ユーザーインターフェース**： - デバイス側LEDで状態表示、サーボモーターの振動でフィードバック。 - スマートフォン側アプリはAR表示とLINE BOTの対話画面を統合。 これにより、飲酒＋モーション＋AR＋位置情報が一体化し、アウトドアの中で創造的かつ安全に楽しめる新しいソーシャルプラットフォームを提供します。",
+    "useCases": [
+      "1. スキーリゾートでの友人グループが同時にデバイスを装着し、山頂で回転アートを生成しながら位置情報を共有。BOTが最適な再会スポットを提案。",
+      "2. 雪山パーティーで、参加者が手でデバイスを回転させるたびにLEDとARが同期し、音楽と連動したアートが現れる。",
+      "3. 友人が別々のリゾートにいる場合でも、LINE BeaconとBOTで距離を測定し、近くに来たタイミングで合流。",
+      "4. スキー場の宿泊客がデバイスを利用し、部屋の窓に投影される3Dアートと音楽でリラックス。",
+      "5. 飲酒量が上限に達した時、アートの複雑度が自動で下がり、同時にアラート音で注意を促す。",
+      "6. デジタルマーケティングイベントで、ブランドがARテーマを設定し、参加者がリアルタイムでアートを共有。"
+    ],
+    "inheritedTraits": [
+      {
+        "parentId": "mashup-000017",
+        "trait": "アルコール検知と手の回転を組み合わせ、リアルタイムで3Dアートと音楽を生成するデバイスとして、低消費電力アルコールセンサ、3軸ジャイロ・加速度計、サーボモーター、マイク・音声認識、LEDディスプレイ、FSM制御、OpenGL ESベースのAR出力ロジックをそのまま継承。さらにSpirit Modeで酔いレベルに応じた独自アルゴリズムを採用し、ユーザーの飲酒体験を安全に促進。"
+      },
+      {
+        "parentId": "protopedia:6",
+        "trait": "LINE BeaconとBOTを組み合わせた位置情報連携システムとして、Beaconの正確な位置検知とBOTによる自動スケジュール調整機能をそのまま採用。これにより、雪山内でのユーザー同士の近隣位置共有、会合場所提案、到着通知といった機能・ユーザー体験を確保。"
+      }
+    ],
+    "parents": [
+      "mashup-000017",
+      "protopedia:6"
+    ],
+    "generation": 4,
+    "mode": "fusion",
+    "sourceIssue": 80,
+    "slot": "2026-11-25T21",
+    "createdAt": "2026-11-25T21:36:10.524Z",
+    "model": "@cf/openai/gpt-oss-20b",
+    "status": "idea",
+    "imagePrompt": "A futuristic wearable wrist device mounted on a skier’s wrist, glowing with LED strips and a small OLED display. The device emits a subtle blue beacon signal, represented by glowing arrows pointing upward. Around it, snow-covered trees and ski slopes frame the scene. The wrist emits a swirling 3D art effect projected onto the air, creating a vibrant, translucent vortex of colors and geometric shapes that merge with the surrounding winter landscape. A smartphone on the skier’s arm displays an AR view of the swirling art, with a sleek interface showing alcohol level, motion tracking icons, and a LINE chat bubble indicating nearby users’ positions. The overall composition highlights the blend of motion, alcohol sensing, AR art generation, and beacon-based location sharing, showcasing a lively, interactive experience in a high-tech winter setting.. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
+    "imagePath": "assets/inventions/mashup-000031.png",
+    "requestHash": "13943555650372ba911618a4a8592361c94da93e11f7570406d7cbd6e5c7e9f2",
+    "requesterAuto": true,
+    "technologies": [
+      "ESP32",
+      "BLE",
+      "OpenGL ES",
+      "LINE Beacon",
+      "BOT"
+    ],
+    "domains": [
+      "アウトドア",
+      "エンターテインメント"
+    ],
+    "keywords": [
+      "ARアート",
+      "飲酒センサー",
+      "位置情報",
+      "LINE",
+      "Beacon",
+      "モーション",
+      "音声コマンド",
+      "リアルタイム"
+    ]
   }
 ]
