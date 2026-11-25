@@ -1,86 +1,10 @@
 {
   "schemaVersion": 1,
-  "slot": "2026-11-24T1730",
-  "generatedAt": "2026-11-24T17:30:18.461Z",
-  "nextSlot": "2026-11-24T1745",
+  "slot": "2026-11-25T0130",
+  "generatedAt": "2026-11-25T01:34:12.442Z",
+  "nextSlot": "2026-11-25T0145",
   "source": "data/sample-prototypes.json",
   "candidates": [
-    {
-      "id": "protopedia:1147",
-      "title": "EEEEEカバディ",
-      "sourceUrl": "https://protopedia.net/prototype/1147",
-      "summary": "楽しいプロダクトを楽しく開発しました！",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/a7dc4dad-ef01-48c7-b7ce-202b2a3b9c53.jpg",
-      "authors": [
-        "@kojikumanami",
-        "Hiroyoshi Takahashi@hirotakahashi",
-        "岡田雄太@yutaokada",
-        "萩村卓也@takuyahagimura"
-      ],
-      "tags": [
-        "NRIハッカソン"
-      ],
-      "status": 2,
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:1118",
-      "title": "ボランティアを探すアプリ",
-      "sourceUrl": "https://protopedia.net/prototype/1118",
-      "summary": "スマホのGPSを使用して助けたい/助けてほしい人の場所や話せる言語を表示し、マッチング可能にします。 日本を訪れる外国人は年々増加しており、2020年にはオリンピックも開催されます。 そんな中、日本語は世界有数の難解な言語であり、多くの外国人が路頭に迷うことは火を見るよりも明らかです。 そのような状況を解決するため、誰でも持っているスマホのGPSを使用し、 地図でお互いの位置を表示することでボランティアとボランティアを必要としている人を相互検索可能とします。 \\ 1.自分の情報(助けたい/助けが必要、性別、話せる言語)を登録 2.助けが必要/助けたい人の位置が地図に表示される ※検索条件(性別、話せる言語)指定も可能",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/71d14cbf-771f-4b47-9973-11be13a6fb2a.png",
-      "authors": [
-        "@kanekoakira",
-        "@okanori",
-        "@okku",
-        "@shioyui"
-      ],
-      "tags": [
-        "android",
-        "GPS",
-        "Kivy",
-        "Mapview",
-        "Python",
-        "REST API"
-      ],
-      "status": 2,
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:1138",
-      "title": "Prace - キミの走りで制圧セヨ(ランニング × 道場破り)",
-      "sourceUrl": "https://protopedia.net/prototype/1138",
-      "summary": "ランニングの新しい世界観を作り上げます!ぜひタッチ&トライなどで御覧ください!",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/63e708bb-d380-4fe7-9b35-37a23c185d4e.png",
-      "authors": [
-        "@izumiwatanabe",
-        "@jonghyochang",
-        "@wataruyamaguchi"
-      ],
-      "tags": [
-        "NRIハッカソン"
-      ],
-      "status": 2,
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:10",
-      "title": "また、会いに行きたくなるビアサーバー by No Beer No Life",
-      "sourceUrl": "https://protopedia.net/prototype/10",
-      "summary": "若者の飲み文化をつくるため、舞い降りたビアサーバーバーチャルアイドル。 若者はお金がないのです。だから飲みに行きけないのです。 居酒屋よりも安く楽しめる「コンビニ飲み」の文化をつくる仕組みです。 ビアサーバーにバーチャルアイドル（売り子）がついて、お話しします。 (HVC-C認識) 誰かが前を通ったら、「冷えてますよ、飲みませんか？」と声をかけ（人体検出） ビアサーバー側を向いたら、「おにいさん、よってってよ〜」（性別・世代認識） 20歳未満には売ってはいけないので、 TASPOをつかって、シャリーン。するとビールを注ぎます（ここの機械連携は未実装） ↑もちろん、TASPOの電子マネーで決済も完了します。 コンビニ店員さんの手をわずらわせることなく、ビアサーバーがコンビニに。 セブンイレブンがコーヒードリッパーで、とてつもなく売上を上げたように、 ビアサーバーもいきますよ！ たのしいアイドルと共に、ビアサーバーを全国展開します。 参考URL:",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/a7112b01-07ad-4508-ba8a-ebd074a53386.png",
-      "authors": [
-        "@erikosakashita",
-        "kazu@kazu2112",
-        "TakuKobayashi@takukobayashi",
-        "ひさやん@hisayan"
-      ],
-      "licenseType": "CC BY 4+"
-    },
     {
       "id": "protopedia:8",
       "title": "Project Musha 視覚障害体験AR",
@@ -92,9 +16,73 @@
         "ひさやん@hisayan"
       ],
       "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:22",
+      "title": "コスラッピー",
+      "sourceUrl": "https://protopedia.net/prototype/22",
+      "summary": "クラッピーのコスプレ用です参考URL:",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/6c255377-2995-4a7f-9ee5-77b75faeb943.jpg",
+      "authors": [
+        "Masawo Yamazaki@masawoyamazaki"
+      ],
+      "tags": [
+        "クラッピーチャレンジ"
+      ],
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:1137",
+      "title": "ボルダリング×IoT 〜ボルダーとセッターが高め合う世界へ〜",
+      "sourceUrl": "https://protopedia.net/prototype/1137",
+      "summary": "新たな技術に挑戦します。",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/95c3afb9-6581-45b0-9326-0ceba9db41d9.png",
+      "authors": [
+        "@yoshihiromaeda"
+      ],
+      "tags": [
+        "NRIハッカソン"
+      ],
+      "status": 2,
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:4",
+      "title": "Pour or Drink",
+      "sourceUrl": "https://protopedia.net/prototype/4",
+      "summary": "一瞬で仲良くなれます。",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/ddf1faf1-faf5-4a70-b079-c0a0b5b9644a.jpg",
+      "authors": [
+        "ひさやん@hisayan",
+        "佐田幸宏@yukihirosada",
+        "鈴木まなみ@rin2tree"
+      ],
+      "tags": [
+        "ノーコード",
+        "飲み会が盛り上がる"
+      ],
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:18",
+      "title": "ハンドクラッピナー",
+      "sourceUrl": "https://protopedia.net/prototype/18",
+      "summary": "結構よく回ります *** ** * ** *** ハンドスピナー (2枚タイプ) パチパチトールくん (赤・黄各1個) 参考URL:",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/035f119d-9aa9-4f5e-88b6-e49b732c1491.jpg",
+      "authors": [
+        "Masawo Yamazaki@masawoyamazaki"
+      ],
+      "tags": [
+        "クラッピーチャレンジ"
+      ],
+      "licenseType": "CC BY 4+"
     }
   ],
   "offspringCandidates": [
-    "mashup-000025"
+    "mashup-000009"
   ]
 }
