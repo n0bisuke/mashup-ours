@@ -1677,5 +1677,69 @@
       "スマートポーター",
       "安全管理"
     ]
+  },
+  {
+    "id": "mashup-000030",
+    "schemaVersion": 1,
+    "title": "ARビールビート・ビジョンステーション",
+    "summary": "顔認証で年齢確認・決済後に自動でビールを注ぎ、手の動きとアルコール値に連動してAR 3Dアートを生成。LINE Beaconで友人の位置共有と再会案内を行い、AIアイドルがイベントをサポートするオールインワンアウトドアパーティーステーション。",
+    "concept": "ARビールビート・ビジョンステーションは、スキー場やキャンプ場、夏祭りなどのアウトドアイベントで活躍する自動ビール注ぎ・ARアート生成ステーションです。利用者はステーション近くで顔認証により年齢確認とTASPO決済を行い、認証完了後にビールが自動注ぎされます。ビールを注ぎながら、手の動き（ジャイロ角速度・加速度）と内部アルコールセンサがリアルタイムで検知され、スピーカーと小型ディスプレイ、ARヘッドセットへ3Dアートが投影されます。参加者はそのアートを共有し、LINE Beaconにより近くにいる友人の位置が表示。AIアイドル・バーチャルアイドルがLINE Botを通じて再会案内やゲーム進行、ゲーム内報酬の発行を行います。子どもから大人まで、動きと飲み物、音楽、ARが融合した一体感のあるパーティー体験を提供し、アルコールの適正摂取を楽しく管理します。",
+    "mechanism": "ハードウェアはESP32ベースのM5StickVに3軸ジャイロ・加速度計、低消費電力アルコールセンサ、BLEビーコンを搭載。顔認証にはHVC-Cセンサとカメラを組み合わせ、年齢判定と顔情報は即時破棄。TASPOカードリーダーで決済完了後、ビールタンクからの自動注ぎ装置（小型タップ）へ制御信号を送る。音声・音楽は内蔵スピーカー。AR表示はスマートフォンまたはARヘッドセットへOpenGL ES基盤のエンジンで3Dモデルを投影。Node‑REDでゲームロジックを管理し、FSMでモード遷移。LINE Beaconで周囲のビーコンと連携し、友人位置情報を取得。LINE Bot APIから送られるメッセージとAIアイドルエンジン（バーチャルアイドル）によってリモート案内・会話を実現。全サービスは低電力設計でUSBやソーラーパネルで充電可能。",
+    "useCases": [
+      "スキー場でゲレンデを滑った後、ステーションに立ち寄り自動でビールを飲み、ARアートを作りながら他のゲストとSNSで共有。",
+      "キャンプ場でテントの近くに設置し、家族全員が顔認証で年齢確認後ビールを注ぎ、子どもたちは動きで3Dアートを作って楽しむ。",
+      "夏祭りの中でLINE Beaconで位置共有し、友人と再会を呼びかけつつ、ステーションでビールとARアートを同時に楽しむ。",
+      "スキー旅行の終業時に集まる友人グループがステーションでビールを注ぎ、AIアイドルが飲酒記録と注意喚起のメッセージを流す。",
+      "アウトドアイベントの入場ゲートで顔認証＆決済を行い、入場者をビールでウェルカムし、ARアートゲームで来場者を募集する。",
+      "屋内のパーティールームに設置し、クラブ風の音楽とARアート、ビール自動注ぎを統合したインタラクティブ体験を提供。"
+    ],
+    "inheritedTraits": [
+      {
+        "parentId": "mashup-000023",
+        "trait": "手の動き（ジャイロ・加速度計）とアルコールセンサでリアルタイムに3Dアートを生成し、金色ウンコサプライズやLEDリングによるスコア可視化、音声認識とFSMで状態遷移を管理するクイズ・ゲームロジックを取り入れ、ARヘッドセットへOpenGL ESベースの3Dアートを投影する技術を継承。"
+      },
+      {
+        "parentId": "mashup-000005",
+        "trait": "顔認証で年齢判定とデータ破棄、TASPO決済連携、自動ビール注ぎ機能、LINE Beaconによる高精度位置検知、LINE Bot APIで友人位置共有と再会案内、AIアバター（バーチャルアイドル）による案内と案内音声を継承。"
+      }
+    ],
+    "parents": [
+      "mashup-000023",
+      "mashup-000005"
+    ],
+    "generation": 5,
+    "mode": "fusion",
+    "sourceIssue": 79,
+    "slot": "2026-11-25T05",
+    "createdAt": "2026-11-25T05:01:01.483Z",
+    "model": "@cf/openai/gpt-oss-20b",
+    "status": "idea",
+    "imagePrompt": "A compact, sleek outdoor cocktail station with a small tablet display and a stylized beer tap, surrounded by LED lights and motion sensors. The device emits a translucent holographic 3D graffiti art projected onto nearby surfaces, while holographic AI avatar appears above it, guiding users. The station has a sleek humanoid silhouette, a built-in camera for face recognition, and a barcode scanner for TASPO cards. Ambient lighting shows the step-by-step animation of a user shaking the device, a beer filling the glass, and a friendly AI avatar waving. The setting is a snowy ski slope or a summer festival tent, showing the device in action surrounded by friends. The image captures the fusion of technology, fun, and social interaction in vibrant, eye-catching colors.. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
+    "imagePath": "assets/inventions/mashup-000030.png",
+    "requestHash": "79ded96e9f53e048adc858829f6d45361cf1f31b8d0a08c34dff5f445af93305",
+    "requesterAuto": true,
+    "technologies": [
+      "ESP32",
+      "M5StickV",
+      "3-axis Gyro/Accelerometer",
+      "Alcohol Sensor",
+      "BLE Beacon",
+      "Node‑RED"
+    ],
+    "domains": [
+      "アウトドア",
+      "日常生活",
+      "エンターテインメント"
+    ],
+    "keywords": [
+      "ARアート",
+      "自動ビール注ぎ",
+      "顔認証",
+      "アルコール検知",
+      "LINE Beacon",
+      "AIアイドル",
+      "モーションコントロール",
+      "再会案内"
+    ]
   }
 ]
