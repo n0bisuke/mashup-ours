@@ -1803,5 +1803,69 @@
       "音声コマンド",
       "リアルタイム"
     ]
+  },
+  {
+    "id": "mashup-000032",
+    "schemaVersion": 1,
+    "title": "雪山インタラクティブ・ゴルフ＆スピン・エコシステム",
+    "summary": "ユーザーが瞬時に揺れとスイングを感知し、アルコールレベルに応じて難易度を調整。VR音響誘導とハプティックフィードバックで視覚障がい者も安心してゴルフ風飲みゲームを楽しみ、LINE Botと連携してスコアや集合ポイントを共有、スピン角度でクイズやミニゲームが自動発生する一体型システム。",
+    "concept": "雪山での飲み会は酔いと天候、位置情報の管理が大きな課題です。本システムは、ESP32ベースのハンドヘルドスピンデバイスと、ゴルフクラブに組み込まれたセンサユニットを統合し、ユーザーが手で回したスピン角度とスイング情報をリアルタイムで取得。アルコールセンサーは呼気中のアルコール濃度を測定し、LINE Beaconで位置情報を送信。取得データをNode.jsサーバーが処理し、酔い判定に応じてVRヘッドセットに音響誘導ストリームを送信、同時にハプティックフィードバックでスイング感覚を補完。さらに、LED/LCDディスプレイには現在の酔いレベル、ゲーム進行状況、仮想アイテム獲得情報を表示。音声認識モジュールにより、ユーザーは口頭で操作や質問が可能。LINE Botはリアルタイムスコア共有、集合ポイントの提案、スピン角度に応じたクイズ発生を担当。視覚障がい者向けに完全視覚遮断モードを用意し、音響誘導のみでゴルフコースを体験できるほか、酔いが進むほど難易度が上がるダイナミックなゲーム設計により、安全かつ楽しい体験を保証。",
+    "mechanism": "1) 位置情報: LINE Beaconでスキー場内の座標を取得し、ユーザーの位置をサーバーへ送信。2) アルコール検知: ESP32に接続された呼気アルコールセンサーがリアルタイムで濃度を測定、数値をBLEでスマートフォンへ転送。3) スピン・スイングデータ取得: ハンドヘルドスピンデバイスは回転角度を加速度センサで検知、同時にゴルフクラブに埋め込まれたモーションセンサがスイング速度・軌道を取得。4) ゲームロジック: Node.jsサーバー上でFST（有限状態機械）と簡易ニューラルネットワークが酔いレベルとスピン角度を入力として、難易度、クイズ内容、報酬アイテムを生成。5) VR音響誘導: 生成されたゲームステップに応じて、VRヘッドセットへ音響誘導ストリームを送信。6) ハプティックフィードバック: スイングデータとゲーム状態に合わせて、ゴルフクラブに内蔵された振動モータがリアルタイムで振動パターンを出力。7) LED/LCD表示: 伴う情報（酔いレベル、ゲーム進行、アイテム獲得）をデバイス上に表示。8) 音声認識: 文字起こしAPI（in-house）で音声コマンドを解析し、サーバーへ指示送信。9) LINE Bot: スコア/集合ポイント/クイズ結果をLINE Messaging APIで友人へ送信。10) スコア管理: スコアはサーバーに保存され、時間経過で自動リセット。全ての通信はBLE・Wi-Fiで行い、低消費電力設計を採用。",
+    "useCases": [
+      "雪山で友人と酔いながら安全に遊ぶため、スピン角度に応じてクイズが自動で流れ、LINE Botで勝者が即時に知らせる。",
+      "視覚障がい者がVR音響誘導のみでゴルフコースを体験し、ハプティックフィードバックでスイング感覚を補完。",
+      "寒い環境下で低消費電力アルコールセンサーが酔い判定を行い、サーバーが自動でゲーム開始。",
+      "スピンデバイスのLED/LCDに酔いレベルと仮想アイテムを表示し、進行状況を把握しやすい。",
+      "音声認識で「次のクイズを」と言うだけで音声で操作できるインタラクティブ体験。",
+      "LINE Beaconで位置情報が共有され、LINE Botが安全集合ポイントを提案。"
+    ],
+    "inheritedTraits": [
+      {
+        "parentId": "mashup-000006",
+        "trait": "酔い検知に基づくBOTによる自動イベントスケジューリング、VRヘッドセットによる音響誘導ゴルフ、ハプティックフィードバック付きモーション解析、リアルタイムスコア共有などの安全とエンターテインメント機能を継承。"
+      },
+      {
+        "parentId": "mashup-000020",
+        "trait": "ESP32マイクロコントローラのBLE通信、低消費電力アルコール感知ピン、タッチセンサーと音声認識によるインタラクティブ操作、有限状態機械でのゲーム進行管理、LINE BOTによるスケジューリングと集合ポイント通知などを継承。"
+      }
+    ],
+    "parents": [
+      "mashup-000006",
+      "mashup-000020"
+    ],
+    "generation": 4,
+    "mode": "fusion",
+    "sourceIssue": 81,
+    "slot": "2026-11-26T04",
+    "createdAt": "2026-11-26T04:06:29.716Z",
+    "model": "@cf/openai/gpt-oss-20b",
+    "status": "idea",
+    "imagePrompt": "A sleek, futuristic handheld device with a spinning knob, integrated sensors on a golf club shaft, glowing LED panel displaying alcohol level and game status, a VR headset with audio waves emanating, a haptic feedback mechanism on the club, speech recognition icon, Bluetooth icon, and a LINE app icon showing real-time score updates, all set against a snow-covered mountain backdrop with ski lifts and a whimsical golf course. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
+    "imagePath": "assets/inventions/mashup-000032.png",
+    "requestHash": "d507d74178d666232539058a4a5c7f44b263fbd4593e5d8dca12e1b5c85107d2",
+    "requesterAuto": true,
+    "technologies": [
+      "BLE",
+      "ESP32",
+      "LINE Beacon",
+      "VR Audio",
+      "Haptic Feedback",
+      "Speech Recognition"
+    ],
+    "domains": [
+      "アウトドア",
+      "エンターテインメント",
+      "日常生活"
+    ],
+    "keywords": [
+      "アルコール検知",
+      "ヘルスセーフティ",
+      "ゲーム化",
+      "VR音響ガイド",
+      "ハプティックフィードバック",
+      "LINE BOT",
+      "位置共有",
+      "スピンゲーム"
+    ]
   }
 ]
