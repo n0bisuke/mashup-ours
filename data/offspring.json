@@ -1867,5 +1867,70 @@
       "位置共有",
       "スピンゲーム"
     ]
+  },
+  {
+    "id": "mashup-000033",
+    "schemaVersion": 1,
+    "title": "Audioメトロゴルフ・ミーティングGyroBot",
+    "summary": "高級山岳スキー場でVR音響誘導ゴルフと自動ミートアップを統合したシステム。飲酒量と姿勢データをリアルタイムに解析し、酔い判定とジャイロスタビライゼーションを組み合わせて安全・楽しさを両立させる。",
+    "concept": "雪山リゾートや登山道に設置された軽量ジンバル型ジャイロ台を装着した参加者は、スマートフォンやウェアラブルで飲酒量と姿勢角度を測定。LINE Beaconで位置情報を共有し、VRヘッドセットから音響誘導ゴルフが投影される。酔いレベルに応じて難易度やショット距離が自動調整され、ハプティックフィードバックでゴルフ感覚を補完。さらに、ジャイロデータを解析して姿勢安定性を競い合い、BOTが最適集合ポイントを提案。参加者はモバイルアプリを通じて天候情報や近隣ミートアップの情報を受け取り、仮想ショップでトロフィーや温泉クーポンを購入可能。リアルタイムでスコアと位置・姿勢を共有し、LINEチャットで友人と競いながら安全に楽しむことができる。",
+    "mechanism": "システムは主にLINE Beacon、Bluetooth Low Energy、VRヘッドセット、ハプティックフィードバックデバイス、ジャイロモジュール、AIカメラ、Node.jsサーバーおよびLINE Messaging APIで構成される。ベアリングに装着されたジャイロモジュールは姿勢データをBluetoothで送信し、スマホはAIで飲酒判定。両者のデータはNode.jsサーバーに集約され、酔い判定に基づくゲーム難易度とショット数を算出。VRヘッドセットは音響誘導で仮想ゴルフコースを再現し、同時にハプティックフィードバックでバタフライ効果を発生。BOTはLINE Messaging APIを通じてイベントスケジュールや集合ポイントを通知。通信はTLSで暗号化され、ユーザーのプライバシーと安全性を確保している。",
+    "useCases": [
+      "1. スキー場で酔った状態のゲーマーが安全にVR音響誘導ゴルフを楽しめる。",
+      "2. 登山途中で姿勢データを共有し、ミートアップ集合ポイントを自動提案。",
+      "3. 体力トレーニング中に姿勢安定性とヘルスデータをゲーム化。",
+      "4. 友人同士でLINEチャットを通じてリアルタイムスコアと位置情報を共有。",
+      "5. 仮想ショップで温泉券や日本酒クーポンを購入し、アウトドア体験を拡張。",
+      "6. 学校のアウトドア教育で安全管理とゲーム化による学習効果を実感。"
+    ],
+    "inheritedTraits": [
+      {
+        "parentId": "mashup-000006",
+        "trait": "A作品からは、飲酒量・酔い判定AI、VR音響誘導ゴルフ、ハプティックフィードバック、LINE Beaconによる位置情報送信、リアルタイムスコア共有、およびBOTによるイベントスケジュール機能を継承。"
+      },
+      {
+        "parentId": "mashup-000008",
+        "trait": "B作品からは、モジュール式ジャイロ台での姿勢データ取得、LINE Beaconでの正確位置取得、AI酔い判定、BOTによる集合ポイント算出、TLS暗号化通信、仮想ショップでの報酬システムを取り入れた。"
+      }
+    ],
+    "parents": [
+      "mashup-000006",
+      "mashup-000008"
+    ],
+    "generation": 3,
+    "mode": "fusion",
+    "sourceIssue": 82,
+    "slot": "2026-11-26T13",
+    "createdAt": "2026-11-26T13:48:28.906Z",
+    "model": "@cf/openai/gpt-oss-20b",
+    "status": "idea",
+    "imagePrompt": "A sleek, futuristic outdoor control station sits atop a snowy mountain slope. In the foreground, a rugged white backpack features a lightweight gyroscope platform with adjustable screws, seamlessly integrating a VR headset and a discreet haptic glove. The scene shows a group of skiers wearing the system: each holds a smartphone displaying a LINE Beacon icon and an AI camera feed that monitors their drink intake. Transparent holographic arrows float in the air, indicating the virtual golf course and the meeting point suggested by the bot. Background snow glistens under a clear blue sky, while a floating map displays real-time positions and posture metrics. The entire setup conveys a blend of technology, safety, and playful mountain gaming, all in a vibrant, immersive style.. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
+    "imagePath": "assets/inventions/mashup-000033.png",
+    "requestHash": "c7fc9c238eecd1e8a32f74edfb30f2a64c04c1e3d2af7835a8a3cdbc3e851cdb",
+    "requesterAuto": true,
+    "technologies": [
+      "LINE Beacon",
+      "Bluetooth Low Energy",
+      "VR Headset",
+      "Haptic Feedback",
+      "Gyroscope Module",
+      "AI Camera"
+    ],
+    "domains": [
+      "アウトドア",
+      "エンターテインメント",
+      "日常生活",
+      "医療・ヘルスケア"
+    ],
+    "keywords": [
+      "VR音響誘導",
+      "飲酒判定",
+      "位置情報",
+      "ジャイロ姿勢",
+      "ハプティック",
+      "LINE",
+      "ミーティング",
+      "安全管理"
+    ]
   }
 ]
