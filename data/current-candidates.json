@@ -1,38 +1,74 @@
 {
   "schemaVersion": 1,
-  "slot": "2026-11-25T2000",
-  "generatedAt": "2026-11-25T20:08:07.429Z",
-  "nextSlot": "2026-11-25T2015",
+  "slot": "2026-11-26T0245",
+  "generatedAt": "2026-11-26T02:55:00.846Z",
+  "nextSlot": "2026-11-26T0300",
   "source": "data/sample-prototypes.json",
   "candidates": [
     {
-      "id": "protopedia:1",
-      "title": "クラッピーで仮装大賞",
-      "sourceUrl": "https://protopedia.net/prototype/1",
-      "summary": "合格したい！",
+      "id": "protopedia:1123",
+      "title": "寝かしつけ時に帰宅回避Bot",
+      "sourceUrl": "https://protopedia.net/prototype/1123",
+      "summary": "小さい子供を寝かしつけしているときにうっかり帰宅してしまい子供が覚醒、寝かしつけやり直しになることほど悲しいことはありません。 寝かしつけ時帰宅回避Botは家で寝かしつけがおこなわれているのか、もう寝かしつけが終わったのかを教えてくれるBotです。",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/9c507193-d695-4795-b0e6-4a11daa719e9.jpg",
+      "mainUrl": "https://protopedia.net/pic/75e25d37-8765-44fc-8836-4bd4cee86558.jpg",
       "authors": [
-        "ひさやん@hisayan"
+        "ajimitei@ajimitei"
       ],
       "tags": [
-        "おもちゃ",
-        "クラッピーチャレンジ"
+        "M5Stack"
       ],
+      "status": 2,
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:1140",
-      "title": "BlindGolf",
-      "sourceUrl": "https://protopedia.net/prototype/1140",
-      "summary": "ナイスショット!",
+      "id": "protopedia:2042",
+      "title": "ケッセ鬼を滅するMRチャンバラ運動アプリ",
+      "sourceUrl": "https://protopedia.net/prototype/2042",
+      "summary": "刀を振り回すチャンバラゲームによって有酸素運動を日々行い、減量を支援します。",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/1effacab-d5f9-46da-9f0b-04e4173e223f.jpg",
+      "mainUrl": "https://protopedia.net/pic/1e83aa14-13a5-4df4-a9e7-a559122dd98e.png",
       "authors": [
-        "@eigokainai",
-        "@kazumayasuda",
-        "@kendoi",
-        "@takerusunahase"
+        "HideG@hideg"
+      ],
+      "tags": [
+        "MagicLeap",
+        "MR",
+        "ゲーミフィケーション",
+        "呼吸"
+      ],
+      "status": 4,
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:1131",
+      "title": "COLOR BLASTER",
+      "sourceUrl": "https://protopedia.net/prototype/1131",
+      "summary": "作品概要 *** ** * ** *** **さあ、あなたの景色をゲームフィールドに。** COLOR BLASTERは身の回りにあるモノの「色」がマトになる新感覚シューティングゲームです。遊び方はシンプル。指定された色を持つモノを探し、狙いを定めてトリガーを引く、たったそれだけ。 場所を問わず、子供も大人も楽しむことができます。",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/4ab65b91-f7cd-458b-82c3-9a70a2192b0e.jpg",
+      "authors": [
+        "@HironoriSakata"
+      ],
+      "tags": [
+        "arduino",
+        "Python",
+        "Raspberry Pi"
+      ],
+      "status": 2,
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:1138",
+      "title": "Prace - キミの走りで制圧セヨ(ランニング × 道場破り)",
+      "sourceUrl": "https://protopedia.net/prototype/1138",
+      "summary": "ランニングの新しい世界観を作り上げます!ぜひタッチ&トライなどで御覧ください!",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/63e708bb-d380-4fe7-9b35-37a23c185d4e.png",
+      "authors": [
+        "@izumiwatanabe",
+        "@jonghyochang",
+        "@wataruyamaguchi"
       ],
       "tags": [
         "NRIハッカソン"
@@ -41,55 +77,21 @@
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:22",
-      "title": "コスラッピー",
-      "sourceUrl": "https://protopedia.net/prototype/22",
-      "summary": "クラッピーのコスプレ用です参考URL:",
+      "id": "protopedia:12",
+      "title": "DrunkenMaster byDrunker5",
+      "sourceUrl": "https://protopedia.net/prototype/12",
+      "summary": "お酒の場を楽しくするゲームです。酔っ払ってないとゲームはできません。",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/6c255377-2995-4a7f-9ee5-77b75faeb943.jpg",
+      "mainUrl": "https://protopedia.net/pic/88dc4f01-de60-4ad9-969c-a6f31f48451d.png",
       "authors": [
-        "Masawo Yamazaki@masawoyamazaki"
-      ],
-      "tags": [
-        "クラッピーチャレンジ"
-      ],
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:2",
-      "title": "プロジェクターをIoTしてみた",
-      "sourceUrl": "https://protopedia.net/prototype/2",
-      "summary": "昨年(2016年)に開催中止になった for Pro ハッカソンでつくりたかったアイデア。1年寝かせたけど、世に出てこなかったようなので、今回、締め切り前の1泊2日でつくってみました。",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/8d0c7a7e-0a87-416d-98a2-8bad511e6a89.png",
-      "authors": [
-        "ひさやん@hisayan"
-      ],
-      "tags": [
-        "FPGA"
-      ],
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:9",
-      "title": "ゆずったー 〜新たなつり革を創造する〜",
-      "sourceUrl": "https://protopedia.net/prototype/9",
-      "summary": "おばあちゃんに優しい乗り物とは何か、 そんなコンセプトで、作品を作りました。 ＊ おばあちゃんがつり革に掴まる → 座っている誰か一人の座席がブルブルッ！！ → 思わず立ち上がります → 「譲り」 → 「日本も捨てたもんじゃないねぇ、ありがとう」と「譲られる」 そんな、おもてなしを実現します。 ※ 構想の過程で、つり革のコミュニケーション能力の高さに気づき、 パーソナルメディアとしてのつり革の可能性に目覚めました。 （「あと何駅で降りるかを震えで伝える」「今日ヒマなら飲み行かない？と、呼びかける」とか。） でもそれは、未来の話。 ここでは、その第一歩、今回作ったものについて。 《登場人物》 1. おばあちゃん 2. つり革＋温湿度センサ＋BLEモジュール powered by Konashi + Uzuki (MACNICA) 3. iPhone 4. Mac Book Air 5. IDCFサーバ 6. MyThings by Yahoo! 7. LittleBit （Arduinoボード含む） 8. テクタイルデバイス（音→震え） 9. 善意の第三者（ゆずってくれる人たち） 《流れ詳細》 a. おばあちゃんがつり革に掴まると、温度が計測されます → このデータは無線でiPhoneに飛びます b. 温度が一定以上になると、IDCFサーバにMyThingsのトリガーとして記録されま…",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/cab3aa3d-de0a-45a1-a872-8722f59ad8dd.jpg",
-      "authors": [
-        "ひさやん@hisayan"
-      ],
-      "tags": [
-        "arduino",
-        "Bluetooth",
-        "ショッカソン2015",
-        "社会課題を解決するデザイン"
+        "@yuukankin",
+        "ひさやん@hisayan",
+        "佐田幸宏@yukihirosada"
       ],
       "licenseType": "CC BY 4+"
     }
   ],
   "offspringCandidates": [
-    "mashup-000007"
+    "mashup-000019"
   ]
 }
