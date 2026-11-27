@@ -1,13 +1,6 @@
 {
   "schemaVersion": 1,
   "days": {
-    "2026-11-20": {
-      "textCalls": 7,
-      "imageCalls": 1,
-      "inputTokens": 17005,
-      "outputTokens": 16557,
-      "estimatedNeurons": 801
-    },
     "2026-11-21": {
       "textCalls": 5,
       "imageCalls": 2,
@@ -49,6 +42,13 @@
       "inputTokens": 12236,
       "outputTokens": 10771,
       "estimatedNeurons": 602
+    },
+    "2026-11-27": {
+      "textCalls": 1,
+      "imageCalls": 1,
+      "inputTokens": 2398,
+      "outputTokens": 2474,
+      "estimatedNeurons": 154
     }
   }
 }

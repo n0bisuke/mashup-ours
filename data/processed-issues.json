@@ -220,9 +220,8 @@
   },
   "83": {
     "issue": 83,
-    "status": "failed",
-    "reason": "発明の生成に失敗しました: timeout: Cloudflare Workers AI [timeout]: タイムアウト",
-    "at": "2026-11-26T21:26:58.846Z",
-    "attempts": 1
+    "status": "resolved",
+    "at": "2026-11-27T04:10:06.060Z",
+    "attempts": 2
   }
 }

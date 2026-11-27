@@ -1932,5 +1932,68 @@
       "ミーティング",
       "安全管理"
     ]
+  },
+  {
+    "id": "mashup-000034",
+    "schemaVersion": 1,
+    "title": "VRハプティック・ジロカバディランナー",
+    "summary": "VRヘッドセットとハプティックバックパックを装着したランナーが、Meccanoベースの手持ちジャイロコントローラで3Dモーショングラフィティゲームを体感しながら安全に雪山を走る。BLEビーコンで位置を取得、顔認識・酒精濃度・心拍をモニタリングし、LINEボットで進捗・仮想報酬を共有。手の動きをゲーム内アクションに連動させ、サプライズ金色フレークとLEDスコア表示でエンターテインメント化。",
+    "concept": "VRハプティック・ジロカバディランナーは、雪山やトレイルを走るランナーを対象にした総合エンターテインメント装置である。ランナーは専用ヘッドセットとハプティックバックパックを装着し、仮想山道を走りながらリアルタイムで音響誘導と振動で方向・速度を指示される。<br><br>同時に、手に持つMeccanoベースのジャイロコントローラを揺らしたり回転させると、ウィンドウ内でリアルタイムに3Dカラフルなキャラクターがジャンプ・回避・投げ込みなどのアクションを行い、AI相手や他プレイヤーと対戦する。LEDディスプレイにスコア・状態が表示され、急に振動が加わる瞬間はハプティックバックパックも手入力のサウンドと振動で感覚を増幅。<br><br>安全面では、顔認識・酒精濃度推定・心拍・歩幅を継続監視し、酔いレベルが上昇すると自動でペースダウンや休息タイムを提案。<br><br>さらに、BLEビーコンにより位置が取得され、チェックポイントごとに金色サプライズモジュールが現れ、手を振ると金色フレークが散布。<br><br>LINE Messaging APIと連携して、実際の走行距離、ゲームスコア、仮想報酬をリアルタイムで共有でき、友人や家族とスコア競争や達成感を楽しむ。これにより、単なるランニングがバーチャル・ゲーム体験へと変わり、日常の運動不足解消とエンターテインメントが融合する。",
+    "mechanism": "1. ヘッドセットは360度音響誘導とヘッドマウントを備え、ハプティックバックパックは肩付近・腰付近に振動モーターを配置。<br>2. 手持ちジャイロコントローラはMeccanoベースで構成され、3軸ジャイロと加速度計を内蔵。Arduinoマイクロコントローラがデータをフィルタリングし、Bluetooth Low EnergyでVRシステムへ送信。<br>3. VRシステム側はNode.js/Node-REDで受信したジャイロ情報を3Dゲーム内でキャラクターの動きにマッピング。<br>4. BLEビーコンは経路全体に設置され、ランナーのGPSに代わり精密な位置情報を提供。<br>5. センサー融合により、顔認識(カメラ)、酒精濃度(センサーモジュール)、心拍(心拍センサー)、歩幅(加速度計)を継続測定。<br>6. これらのデータはリアルタイムで安全モニタリングアルゴリズムに入力され、酔いレベルや疲労度に応じてペース制御指示を音声・振動で反映。<br>7. 金色サプライズモジュールはBLEで位置チェックポイントを検知し、M5StickVモジュールを通じて手に届くフレーク生成。<br>8. LINE Messaging APIはイベント毎に通知を送信し、仮想報酬、スコア・進捗情報をチャットに表示。<br>9. LEDディスプレイはリアルタイムスコア・状態を表示し、ゲーム内での成功・失敗に連動。",
+    "useCases": [
+      "1. 週末に家族で雪山をランニングしつつ、VR内で3Dアクションを楽しむ親子ゲーム。",
+      "2. ランニングジムで導入し、利用者がバーチャルマップを走りながらゲーム化されたフィットネス体験を共有。",
+      "3. テーマパークのアトラクションとして、ランナーが12分間のVRトレイルを走り、勝者に金色フレークを授与。",
+      "4. 社外研修でチームビルディングを行い、社員同士がVR内の対戦ゲームで協調性と反射神経を鍛える。",
+      "5. スポーツイベントでメンバーがランニングレースとリアルタイムの3Dゲームを同時に体験し、SNSにシェア。",
+      "6. 高齢者向けの運動プログラムで、ハプティックと安全モニタリングを併せて安心のリハビリステップを提供。"
+    ],
+    "inheritedTraits": [
+      {
+        "parentId": "mashup-000019",
+        "trait": "雪山VRランニングサプライズBOTからは、VRヘッドセット音響誘導とハプティックバックパック振動、BLEビーコン位置取得、金色サプライズモジュール、Node.js/Node-REDクイズロジック、LINE Messaging API、安全確認（顔認識・酒精濃度推定・心拍・歩幅測定）を継承。これらにより、安全・音響誘導・ソーシャル共有の機能が実装される。"
+      },
+      {
+        "parentId": "mashup-000012",
+        "trait": "Gyro-Kabbadi 360からは、Meccanoベースのモジュール式構造、3軸ジャイロセンサーと加速度計、Arduinoマイクロコントローラでのデータフィルタリング、LEDディスプレイでスコア表示、ワイヤレスでスマートフォンへデータ送信、振動抑制設計と微調整用スクリューによる高精度姿勢制御を継承。これにより、体感型手持ちゲーム機としての操作性と高精度感覚が提供される。"
+      }
+    ],
+    "parents": [
+      "mashup-000019",
+      "mashup-000012"
+    ],
+    "generation": 5,
+    "mode": "fusion",
+    "sourceIssue": 83,
+    "slot": "2026-11-27T04",
+    "createdAt": "2026-11-27T04:10:06.060Z",
+    "model": "@cf/openai/gpt-oss-20b",
+    "status": "idea",
+    "imagePrompt": "A sleek, futuristic portable device ensemble: a lightweight VR headset resting on a smooth silver faceplate with integrated audio speakers, a compact haptic backpack hanging around a runner’s waist, and a handheld Meccano-like gyro controller in the runner’s hand. The controller features a vibrant RGB LED strip and a small screen displaying real-time score. LEDs on the backpack blink in sync with the audio cues. In the background, a snowy mountain trail glows with neon-lit checkpoints where golden flakes appear. A blue sky backdrop shows faint GPS beacon signals. The setting captures the essence of a high-tech, immersive running and gaming experience, blending motion, haptic feedback, and social connectivity. The image should highlight the interconnectedness of VR audio guidance, haptic vibrations, real-time motion sensing, and social sharing via bright LINE chat bubbles floating above the runner. The overall composition should feel dynamic and engaging, with clear visual cues for each technology: a headset, a haptic pack, a gyro controller, LED displays, a GPS indicator, and a gold surprise fragment. The device is depicted in a realistic, slightly glossy style with a slight reflection, showcasing the state-of-the-art hardware and user-friendly interface.. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
+    "imagePath": "assets/inventions/mashup-000034.png",
+    "requestHash": "895cc45e94223aca2c8ecaddbc77dc697391082e5e78da0a828efdcc9c49fbca",
+    "requesterAuto": true,
+    "technologies": [
+      "VRヘッドセット",
+      "ハプティックバックパック",
+      "BLEビーコン",
+      "M5StickV",
+      "Node.js",
+      "Node-RED"
+    ],
+    "domains": [
+      "エンターテインメント",
+      "日常生活"
+    ],
+    "keywords": [
+      "VRランニング",
+      "ハプティック",
+      "3Dモーションゲーム",
+      "ジロカバディ",
+      "LINE共有",
+      "安全モニタリング",
+      "金色サプライズ",
+      "LEDスコア表示"
+    ]
   }
 ]
