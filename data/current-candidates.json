@@ -1,67 +1,21 @@
 {
   "schemaVersion": 1,
-  "slot": "2026-11-27T1330",
-  "generatedAt": "2026-11-27T13:44:29.658Z",
-  "nextSlot": "2026-11-27T1345",
+  "slot": "2026-11-27T2215",
+  "generatedAt": "2026-11-27T22:23:23.162Z",
+  "nextSlot": "2026-11-27T2230",
   "source": "data/sample-prototypes.json",
   "candidates": [
     {
-      "id": "protopedia:101",
-      "title": "鯖江夕景",
-      "sourceUrl": "https://protopedia.net/prototype/101",
-      "summary": "鯖江夕景は鯖江市のオープンデータの鯖江百景を基に制作しています。夕景はその日ごとに違う顔を見せてくれて、季節ごとにも変化をもたらします。鯖江市の観光地の魅力を引き出すため、鯖江夕景を活用してください。",
+      "id": "protopedia:3351",
+      "title": "IRリモコン",
+      "sourceUrl": "https://protopedia.net/prototype/3351",
+      "summary": "エアコンの自動制御のテストとして、既製品のベッドランプのリモコンをM5StackのIRsensorで実装してみました。",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/4c30e575-7c24-42be-b318-3b00c001f7b1.png",
+      "mainUrl": "https://protopedia.net/pic/",
       "authors": [
-        "ひで@blue_islands"
+        "えりな@erina000"
       ],
       "status": 4,
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:18",
-      "title": "ハンドクラッピナー",
-      "sourceUrl": "https://protopedia.net/prototype/18",
-      "summary": "結構よく回ります *** ** * ** *** ハンドスピナー (2枚タイプ) パチパチトールくん (赤・黄各1個) 参考URL:",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/035f119d-9aa9-4f5e-88b6-e49b732c1491.jpg",
-      "authors": [
-        "Masawo Yamazaki@masawoyamazaki"
-      ],
-      "tags": [
-        "クラッピーチャレンジ"
-      ],
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:1137",
-      "title": "ボルダリング×IoT 〜ボルダーとセッターが高め合う世界へ〜",
-      "sourceUrl": "https://protopedia.net/prototype/1137",
-      "summary": "新たな技術に挑戦します。",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/95c3afb9-6581-45b0-9326-0ceba9db41d9.png",
-      "authors": [
-        "@yoshihiromaeda"
-      ],
-      "tags": [
-        "NRIハッカソン"
-      ],
-      "status": 2,
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:2",
-      "title": "プロジェクターをIoTしてみた",
-      "sourceUrl": "https://protopedia.net/prototype/2",
-      "summary": "昨年(2016年)に開催中止になった for Pro ハッカソンでつくりたかったアイデア。1年寝かせたけど、世に出てこなかったようなので、今回、締め切り前の1泊2日でつくってみました。",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/8d0c7a7e-0a87-416d-98a2-8bad511e6a89.png",
-      "authors": [
-        "ひさやん@hisayan"
-      ],
-      "tags": [
-        "FPGA"
-      ],
       "licenseType": "CC BY 4+"
     },
     {
@@ -81,9 +35,63 @@
         "新幹線"
       ],
       "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:1123",
+      "title": "寝かしつけ時に帰宅回避Bot",
+      "sourceUrl": "https://protopedia.net/prototype/1123",
+      "summary": "小さい子供を寝かしつけしているときにうっかり帰宅してしまい子供が覚醒、寝かしつけやり直しになることほど悲しいことはありません。 寝かしつけ時帰宅回避Botは家で寝かしつけがおこなわれているのか、もう寝かしつけが終わったのかを教えてくれるBotです。",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/75e25d37-8765-44fc-8836-4bd4cee86558.jpg",
+      "authors": [
+        "ajimitei@ajimitei"
+      ],
+      "tags": [
+        "M5Stack"
+      ],
+      "status": 2,
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:2042",
+      "title": "ケッセ鬼を滅するMRチャンバラ運動アプリ",
+      "sourceUrl": "https://protopedia.net/prototype/2042",
+      "summary": "刀を振り回すチャンバラゲームによって有酸素運動を日々行い、減量を支援します。",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/1e83aa14-13a5-4df4-a9e7-a559122dd98e.png",
+      "authors": [
+        "HideG@hideg"
+      ],
+      "tags": [
+        "MagicLeap",
+        "MR",
+        "ゲーミフィケーション",
+        "呼吸"
+      ],
+      "status": 4,
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:1147",
+      "title": "EEEEEカバディ",
+      "sourceUrl": "https://protopedia.net/prototype/1147",
+      "summary": "楽しいプロダクトを楽しく開発しました！",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/a7dc4dad-ef01-48c7-b7ce-202b2a3b9c53.jpg",
+      "authors": [
+        "@kojikumanami",
+        "Hiroyoshi Takahashi@hirotakahashi",
+        "岡田雄太@yutaokada",
+        "萩村卓也@takuyahagimura"
+      ],
+      "tags": [
+        "NRIハッカソン"
+      ],
+      "status": 2,
+      "licenseType": "CC BY 4+"
     }
   ],
   "offspringCandidates": [
-    "mashup-000017"
+    "mashup-000029"
   ]
 }
