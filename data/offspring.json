@@ -1995,5 +1995,67 @@
       "金色サプライズ",
       "LEDスコア表示"
     ]
+  },
+  {
+    "id": "mashup-000035",
+    "schemaVersion": 1,
+    "title": "アルコールリアルタイムアートゴルフVRパーティーシステム",
+    "summary": "アルコール量と姿勢をリアルタイムで検知し、VRゴルフの難易度を自動調整。手で振ると3Dグラフィティが生成され、ARで投影されるマルチメディアアートとハプティックフィードバックを同時に体験できる統合パーティーシステム。",
+    "concept": "山岳リゾートやスキー場での大人向けパーティーを想定し、参加者は腕に装着した M5StickV ベースのスマートウェアを装着。ウェアはジャイロ・加速度計で姿勢を測定、低消費電力アルコールセンサで血中アルコール濃度をリアルタイム判定。検知結果は BLE で VR コントローラへ送信され、VRゴルフのショット距離や難易度を動的に調整するとともに、ハプティックフィードバックデバイスが揺れや衝撃を再現。さらにウェアのモーションとアルコール状態を組み合わせて、Node‑RED と連携したアルゴリズムが 3D アートを生成し、OpenGL ES ベースの AR エンジンがスマートフォンやオーバーレイヘッドセットに投影。LEDリングでスコアや感情を可視化し、音声認識で語り込み操作も可能。LINE ベースのチャットボットがスコア共有や仮想ショップでの温泉クーポン購入を案内。参加者はゴルフのスコアと同時に、手の動きで作ったアートを仲間と共有でき、酔いと姿勢を安全にコントロールしながらエンターテインメントを楽しめる。",
+    "mechanism": "1) ウェア(ESP32‑M5StickV)はジャイロ・加速度計で姿勢角度を 100Hz で取得し、低消費電力アルコールセンサで 30秒毎に BAC を測定。2) 取得データは BLE で VR コントローラへ送信。3) VR システムは AI 酔い判定アルゴリズムにより難易度係数を算出し、音響誘導ゴルフのショット距離・風速を調整。4) 同時に、モーションデータと BAC 値を Node‑RED ブロックが受け取り、3D アート生成ライブラリへ入力。5) ライブラリは OpenGL ES で3D モデルを生成し、AR エンジンがスマートフォン画面に投影。6) LEDリングとサーボモーターで実際の報酬オブジェクト(金色ウンコ)を揺らし、ハプティックデバイスが物理的共鳴を提供。7) LINE Beacon で位置情報を取得しTLS暗号化通信でサーバへ同期、ユーザースコアやイベント通知をLINE Messaging API経由で配信。",
+    "useCases": [
+      "1) 山岳リゾートの夕方パーティーで参加者がVRゴルフを楽しみながら、酔いレベルに合わせた難易度調整と3Dアートを共有。",
+      "2) スキー場の夜間イベントで子供がジャイロで描く3Dグラフィティが雪面に投影され、大人はVRで安全にゴルフ。",
+      "3) 会社のリトリートでチームビルディングとして、飲酒量を調整しながらVRゴルフとARアートを競う。",
+      "4) スーパーマーケットのプロモーションで、購入した飲料で自動的にアルコールセンサが検知、ゲーム難易度調整とクーポン配布。",
+      "5) VRアートカフェで、訪問客が腕に装着したウェアでアート生成とゴルフエキサイメントを同時に体験。",
+      "6) 高齢者向け健康サロンで、軽いアルコール摂取と姿勢安定を調整し、VRゴルフでバランス訓練とアート作成を行う。"
+    ],
+    "inheritedTraits": [
+      {
+        "parentId": "mashup-000023",
+        "trait": "M5StickVベースのコンパクトなウェアに3軸ジャイロ・加速度計、低消費電力アルコールセンサ、BLEビーコン位置情報取得機能、Node‑REDで構築するクイズ・ゲームロジック、OpenGL ESベースのARエンジンでの3Dアート投影、サーボモーターでの金色ウンコサプライズ、LEDリングでスコア・感情可視化、音声認識とFSMでモード遷移管理。"
+      },
+      {
+        "parentId": "mashup-000033",
+        "trait": "LINE BeaconとBluetooth Low Energyで位置情報取得、VRヘッドセットとハプティックフィードバックデバイス、ジャイロモジュールで姿勢角度取得、AI酔い判定アルゴリズム、Node.jsサーバーとLINE Messaging APIによるチャットボット、TLS暗号化通信で安全通信、仮想ショップでの報酬購入システム。"
+      }
+    ],
+    "parents": [
+      "mashup-000023",
+      "mashup-000033"
+    ],
+    "generation": 5,
+    "mode": "fusion",
+    "sourceIssue": 85,
+    "slot": "2026-11-28T12",
+    "createdAt": "2026-11-28T12:53:17.674Z",
+    "model": "@cf/openai/gpt-oss-20b",
+    "status": "idea",
+    "imagePrompt": "A vibrant snowy mountain evening party scene: a group of adults wearing sleek M5StickV wristband devices that light up with glowing LED rings. One participant swings the wristband, creating a streak of colorful 3D graffiti that projects onto a nearby snowy flat surface via an AR headset. In the background, another attendee sports a VR headset and a haptic vest pulsing with subtle vibrations. The scene is illuminated by lanterns, with a golden glittering object like a gold bottle levitating above it all, representing a surprise reward. The image conveys a blend of interactive art, virtual golf gameplay, motion-driven sensory feedback, and alcohol tracking in a festive, snowy outdoor setting. The composition highlights motion, light, and immersive technology merging together, with dynamic lines of light radiating from the wristband to the AR projection.. Style: retro 16-bit pixel art illustration, flat shading, warm cozy laboratory aesthetic, harmonious with a small 8bit research lab scene. Square 1:1 composition, centered subject, clear silhouette. Show the device appearance, how it works, and a scene of it being used. Original design only: do not imitate characters or art from any existing game or franchise. Not a photograph: no photorealism. IMPORTANT: no text of any kind — no letters, no numbers, no Japanese characters, no logos, no captions, no speech bubbles.",
+    "imagePath": "assets/inventions/mashup-000035.png",
+    "requestHash": "d7470278f5b2921c671c5e90b6d2730cdec0c0deda2f71c26c69b7c77344cebf",
+    "requesterAuto": true,
+    "technologies": [
+      "ESP32",
+      "BLE",
+      "Node-RED",
+      "OpenGL ES",
+      "VRヘッドセット",
+      "ハプティックフィードバックデバイス"
+    ],
+    "domains": [
+      "エンターテインメント"
+    ],
+    "keywords": [
+      "VRゴルフ",
+      "アルコール判定",
+      "ハプティック",
+      "ARアート",
+      "姿勢安定",
+      "ソーシャル連携",
+      "自動難易度調整",
+      "サーボモーター"
+    ]
   }
 ]

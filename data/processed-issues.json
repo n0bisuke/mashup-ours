@@ -233,9 +233,8 @@
   },
   "85": {
     "issue": 85,
-    "status": "failed",
-    "reason": "発明の生成に失敗しました: AIの出力が空です",
-    "at": "2026-11-28T03:51:49.448Z",
-    "attempts": 2
+    "status": "resolved",
+    "at": "2026-11-28T12:53:17.674Z",
+    "attempts": 3
   }
 }

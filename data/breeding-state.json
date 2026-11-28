@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "lastSuccessAt": "2026-11-27T04:10:06.060Z",
-  "lastAttemptAt": "2026-11-28T03:51:49.452Z",
-  "consecutiveFailures": 2,
+  "lastSuccessAt": "2026-11-28T12:53:17.674Z",
+  "lastAttemptAt": "2026-11-28T12:53:17.674Z",
+  "consecutiveFailures": 0,
   "aiCalls": {
     "2026-11-22": 8,
     "2026-11-23": 7,
@@ -10,7 +10,7 @@
     "2026-11-25": 5,
     "2026-11-26": 9,
     "2026-11-27": 7,
-    "2026-11-28": 3
+    "2026-11-28": 7
   },
-  "lastSlot": "2026-11-27T1300JST"
+  "lastSlot": "2026-11-28T2100JST"
 }
