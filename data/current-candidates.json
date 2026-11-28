@@ -1,97 +1,89 @@
 {
   "schemaVersion": 1,
-  "slot": "2026-11-27T2215",
-  "generatedAt": "2026-11-27T22:23:23.162Z",
-  "nextSlot": "2026-11-27T2230",
+  "slot": "2026-11-28T0400",
+  "generatedAt": "2026-11-28T04:11:40.352Z",
+  "nextSlot": "2026-11-28T0415",
   "source": "data/sample-prototypes.json",
   "candidates": [
     {
-      "id": "protopedia:3351",
-      "title": "IRリモコン",
-      "sourceUrl": "https://protopedia.net/prototype/3351",
-      "summary": "エアコンの自動制御のテストとして、既製品のベッドランプのリモコンをM5StackのIRsensorで実装してみました。",
+      "id": "protopedia:93",
+      "title": "ドライブメモ for くるくるピ",
+      "sourceUrl": "https://protopedia.net/prototype/93",
+      "summary": "ドライブ中の気になる場所を見つけた時にくるくるピっと記録する 。",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/",
+      "mainUrl": "https://protopedia.net/pic/bf6338ec-5205-413a-bbaf-2239b34fae07.png",
       "authors": [
-        "えりな@erina000"
+        "ひで@blue_islands"
       ],
       "status": 4,
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:6",
-      "title": "スキー場での「会えない」を解決し「会いたい」を叶える雪山BOT with LINE Beacon",
-      "sourceUrl": "https://protopedia.net/prototype/6",
-      "summary": "全力でハッカソン！1%のアイデアと99%の実証実験！！",
+      "id": "protopedia:8",
+      "title": "Project Musha 視覚障害体験AR",
+      "sourceUrl": "https://protopedia.net/prototype/8",
+      "summary": "健常者にとって全盲は両目を閉じることで体感できますが、 視野狭窄や色盲がどの程度生活しづらいかは想像しにくいです。 それらをARで体験できるように、プロトタイプをつくりました。 \"左右別々の眼の症状\" を設定できる安価なシミュレーターは、実はなかなかの発明で \"世界初\" と思われます。 別々に設定し、体験すると、かなり気持ち悪いです。 動作環境は Androidスマホ + Chrome Browser 推奨環境は Google CardBoard などのスマホをAR/VRゴーグルにするガジェットです。 ※アプリ化し、いくつかAPIとのマッシュアップも検討したのですが、まずはどなたにも簡単に体験いただきやすいWebブラウザアプリとして開発してみました。",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/09de39fd-554f-4c27-bc72-4f80267d9150.jpg",
+      "mainUrl": "https://protopedia.net/pic/edc84a49-d26a-4336-98d1-053d7dcc716f.png",
+      "authors": [
+        "ひさやん@hisayan"
+      ],
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:3676",
+      "title": "メカノによる高精度機械式ジャイロ実験台",
+      "sourceUrl": "https://protopedia.net/prototype/3676",
+      "summary": "Meccano Based High-Precision Gyroscope Platform",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/290cc5ef-dee1-41eb-9621-191bac4e384d.jpg",
+      "authors": [
+        "Liem Peng Hong@liemph"
+      ],
+      "tags": [
+        "ジャイロ"
+      ],
+      "status": 4,
+      "licenseType": "CC BY 4+"
+    },
+    {
+      "id": "protopedia:4",
+      "title": "Pour or Drink",
+      "sourceUrl": "https://protopedia.net/prototype/4",
+      "summary": "一瞬で仲良くなれます。",
+      "generation": 0,
+      "mainUrl": "https://protopedia.net/pic/ddf1faf1-faf5-4a70-b079-c0a0b5b9644a.jpg",
       "authors": [
         "ひさやん@hisayan",
-        "佐田幸宏@yukihirosada"
+        "佐田幸宏@yukihirosada",
+        "鈴木まなみ@rin2tree"
       ],
       "tags": [
-        "LINE Beacon",
-        "ゲレンデ",
-        "新幹線"
+        "ノーコード",
+        "飲み会が盛り上がる"
       ],
       "licenseType": "CC BY 4+"
     },
     {
-      "id": "protopedia:1123",
-      "title": "寝かしつけ時に帰宅回避Bot",
-      "sourceUrl": "https://protopedia.net/prototype/1123",
-      "summary": "小さい子供を寝かしつけしているときにうっかり帰宅してしまい子供が覚醒、寝かしつけやり直しになることほど悲しいことはありません。 寝かしつけ時帰宅回避Botは家で寝かしつけがおこなわれているのか、もう寝かしつけが終わったのかを教えてくれるBotです。",
+      "id": "protopedia:1131",
+      "title": "COLOR BLASTER",
+      "sourceUrl": "https://protopedia.net/prototype/1131",
+      "summary": "作品概要 *** ** * ** *** **さあ、あなたの景色をゲームフィールドに。** COLOR BLASTERは身の回りにあるモノの「色」がマトになる新感覚シューティングゲームです。遊び方はシンプル。指定された色を持つモノを探し、狙いを定めてトリガーを引く、たったそれだけ。 場所を問わず、子供も大人も楽しむことができます。",
       "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/75e25d37-8765-44fc-8836-4bd4cee86558.jpg",
+      "mainUrl": "https://protopedia.net/pic/4ab65b91-f7cd-458b-82c3-9a70a2192b0e.jpg",
       "authors": [
-        "ajimitei@ajimitei"
+        "@HironoriSakata"
       ],
       "tags": [
-        "M5Stack"
-      ],
-      "status": 2,
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:2042",
-      "title": "ケッセ鬼を滅するMRチャンバラ運動アプリ",
-      "sourceUrl": "https://protopedia.net/prototype/2042",
-      "summary": "刀を振り回すチャンバラゲームによって有酸素運動を日々行い、減量を支援します。",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/1e83aa14-13a5-4df4-a9e7-a559122dd98e.png",
-      "authors": [
-        "HideG@hideg"
-      ],
-      "tags": [
-        "MagicLeap",
-        "MR",
-        "ゲーミフィケーション",
-        "呼吸"
-      ],
-      "status": 4,
-      "licenseType": "CC BY 4+"
-    },
-    {
-      "id": "protopedia:1147",
-      "title": "EEEEEカバディ",
-      "sourceUrl": "https://protopedia.net/prototype/1147",
-      "summary": "楽しいプロダクトを楽しく開発しました！",
-      "generation": 0,
-      "mainUrl": "https://protopedia.net/pic/a7dc4dad-ef01-48c7-b7ce-202b2a3b9c53.jpg",
-      "authors": [
-        "@kojikumanami",
-        "Hiroyoshi Takahashi@hirotakahashi",
-        "岡田雄太@yutaokada",
-        "萩村卓也@takuyahagimura"
-      ],
-      "tags": [
-        "NRIハッカソン"
+        "arduino",
+        "Python",
+        "Raspberry Pi"
       ],
       "status": 2,
       "licenseType": "CC BY 4+"
     }
   ],
   "offspringCandidates": [
-    "mashup-000029"
+    "mashup-000014"
   ]
 }
